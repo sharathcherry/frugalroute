@@ -59,7 +59,7 @@ Task Input
 [Predictive Route] predict.py     RouteLLM-style MF: P(need_remote) — skip local if obvious
    │
    ▼
-[Local Model]     providers.py    Qwen2.5-7B on AMD MI300X via vLLM (FREE)
+[Local Model]     providers.py    Qwen2.5-32B on AMD MI300X via vLLM (FREE)
    │
    ▼
 [Confidence Gate] verify.py       FrugalGPT cascade + Platt/Isotonic calibration
@@ -106,7 +106,7 @@ Then set `CALIB_PATH=calib.json` + the recommended `CONFIDENCE_THRESHOLD` in `.e
 ```bash
 # Start vLLM with ROCm + prefix caching
 VLLM_HOST_IP=127.0.0.1 python -m vllm.entrypoints.openai.api_server \
-  --model Qwen/Qwen2.5-7B-Instruct \
+  --model Qwen/Qwen2.5-32B-Instruct \
   --port 8001 \
   --api-key <key> \
   --enable-prefix-caching \
@@ -122,7 +122,7 @@ Then set `LOCAL_BASE_URL=http://<ip>:8001/v1` in `.env` and `MOCK=0`.
 ```ini
 MOCK=0
 LOCAL_BASE_URL=http://localhost:8001/v1
-LOCAL_MODEL=Qwen/Qwen2.5-7B-Instruct
+LOCAL_MODEL=Qwen/Qwen2.5-32B-Instruct
 REMOTE_PROVIDER=fireworks
 REMOTE_BASE_URL=https://api.fireworks.ai/inference/v1
 REMOTE_API_KEY=fw_xxx

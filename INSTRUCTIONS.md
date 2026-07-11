@@ -104,7 +104,7 @@ AZURE_OPENAI_API_VERSION=2024-06-01
 
 # Local
 LOCAL_BASE_URL=http://localhost:11434/v1
-LOCAL_MODEL=qwen2.5:3b-instruct
+LOCAL_MODEL=qwen2.5:32b-instruct
 
 # Gate + thresholds (tune with eval/harness.py)
 GATE_MODE=calibrated        # calibrated | automix
