@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Env / secrets
+.env
+*.key
+*.pem
+
+# Calibration logs (local only)
+calib_log.jsonl
+SESSION_LOG.md
+
+# Temp/scratch scripts
+check_config.py
+smoke_test.py
+run_remote.sh
+run_harness.sh
+run_block_b_on_gpu.sh
+
+# Planning / internal docs
+.planning/
+HANDOFF.md
+HANDOFF.json
+WINNING_PLAN.md
+KICKOFF_SPEC.md
+
+# Output
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp

@@ -1,7 +1,0 @@
-{"id": "s1", "answer": "[local:qwen2.5:3b-instruct] draft answer to: Classify the sentiment of: 'I love this product, works great", "source": "local", "remote_tokens": 0}
-{"id": "s2", "answer": "[local:qwen2.5:3b-instruct] draft answer to: Summarize: The quarterly report showed revenue growth of 12 ", "source": "local", "remote_tokens": 0}
-{"id": "s3", "answer": "[remote:accounts/fireworks/models/llama-v3p1-8b-instruct] high-quality answer to: Why does increasing temperature speed up chemical reaction ?", "source": "remote", "remote_tokens": 48}
-{"id": "s4", "answer": "[local:qwen2.5:3b-instruct] draft answer to: Extract all email addresses from: contact a@x.com or b@y.org", "source": "local", "remote_tokens": 0}
-{"id": "s5", "answer": "[remote:accounts/fireworks/models/llama-v3p1-8b-instruct] high-quality answer to: Calculate sum 145 278 .", "source": "remote", "remote_tokens": 39}
-{"id": "s6", "answer": "[local:qwen2.5:3b-instruct] draft answer to: What is the capital of France?", "source": "local", "remote_tokens": 0}
-{"id": "s7", "answer": "[remote:accounts/fireworks/models/llama-v3p1-8b-instruct] high-quality answer to: Explain step by step how HTTPS encrypts web request .", "source": "remote", "remote_tokens": 48}
