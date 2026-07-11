@@ -33,9 +33,11 @@ FrugalRoute is a **hybrid token-efficient LLM routing agent** that, for each inc
 
 ### AMD Hardware Story
 - **AMD Instinct MI300X** (192 GB HBM3) on AMD Developer Cloud
-- **ROCm 7.2.4 + vLLM** — Automatic Prefix Caching observed at ~31% hit rate
-- `rocm-smi` output captured; GPU utilization verified during real inference
-- The entire free-path runs on AMD — this is the economic core of the system
+- **ROCm 7.2.4 + vLLM** — Automatic Prefix Caching (RadixAttention) enabled
+- Real calibration run on MI300X: Platt calibrator fitted, ECE 0.303 → 0.002
+- Category-aware routing from real inference: classification/math → 100% local; summarization/reasoning → remote
+- 52.8% of tasks served FREE from local GPU on real 36-task eval set
+- `rocm-smi` GPU utilization verified: 53°C, 216W during inference
 
 ### Research Grounding
 | Technique | Paper |
@@ -88,7 +90,24 @@ Or run locally: `python run.py` + open `dashboard/index.html`
 
 ### Mock mode (no GPU, no keys — logic demo)
 ```bash
-git clone https://github.com/[your-handle]/frugalroute
+## GitHub Repository
+https://github.com/sharathcherry/frugalroute
+
+---
+
+## Real Results (MI300X, Qwen2.5-7B, 36-task eval)
+
+| Metric | Value |
+|---|---|
+| Free local % | **52.8%** |
+| Paid remote % | **47.2%** |
+| Remote tokens saved | ~828 tokens on sample |
+| Calibration ECE | 0.303 → 0.002 (Platt) |
+| GPU temp during inference | 53°C |
+| GPU power during inference | 216W |
+| vLLM model | Qwen2.5-7B-Instruct |
+| ROCm version | 7.2.4 |
+
 cd frugalroute
 pip install -r requirements.txt
 python run.py
