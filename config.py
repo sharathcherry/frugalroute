@@ -12,7 +12,7 @@ def _b(v):
     return str(v).lower() in ("1", "true", "yes", "on")
 
 
-MOCK = _b(os.getenv("MOCK", "1"))  # default ON so `python run.py` works immediately
+MOCK = _b(os.getenv("MOCK", "0"))  # default OFF for production (real inference)
 
 # --- Remote (PAID) provider — Fireworks by default; any OpenAI-compatible API ---
 REMOTE_BASE_URL = os.getenv("REMOTE_BASE_URL", "https://api.fireworks.ai/inference/v1")

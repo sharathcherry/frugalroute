@@ -25,7 +25,7 @@
 # only the model weights into /model-cache; the ROCm stage copies them in.
 FROM python:3.11-slim AS model-fetch
 
-ARG HF_MODEL=Qwen/Qwen2.5-7B-Instruct
+ARG HF_MODEL=Qwen/Qwen2.5-32B-Instruct
 ENV HF_HOME=/model-cache \
     TRANSFORMERS_CACHE=/model-cache \
     HF_HUB_DISABLE_PROGRESS_BARS=1
@@ -48,7 +48,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Baked-in model weights from fetch stage
-ARG HF_MODEL=Qwen/Qwen2.5-7B-Instruct
+ARG HF_MODEL=Qwen/Qwen2.5-32B-Instruct
 ENV HF_MODEL=${HF_MODEL} \
     HF_HOME=/model-cache \
     TRANSFORMERS_CACHE=/model-cache

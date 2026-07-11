@@ -70,7 +70,7 @@ def complete(messages, kind="remote", model=None, base_url=None, api_key=None,
         kwargs["model"] = m
 
     import time
-    from openai import RateLimitError
+    from openai import OpenAIError
     
     max_retries = 10
     for attempt in range(max_retries):
@@ -78,8 +78,8 @@ def complete(messages, kind="remote", model=None, base_url=None, api_key=None,
             r = client.chat.completions.create(**kwargs)
             u = r.usage
             return r.choices[0].message.content, u.prompt_tokens, u.completion_tokens
-        except RateLimitError as e:
+        except OpenAIError as e:
             if attempt == max_retries - 1:
                 raise e
-            print(f"Rate limited by Fireworks, waiting 30 seconds (attempt {attempt+1}/{max_retries})...")
+            print(f"API Error ({type(e).__name__}): {e}. Waiting 30 seconds (attempt {attempt+1}/{max_retries})...")
             time.sleep(30)
