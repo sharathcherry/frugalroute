@@ -1,0 +1,8 @@
+# vLLM on AMD ROCm with Automatic Prefix Caching enabled.
+# Build:  docker build -f serve/Dockerfile.vllm.rocm -t frugalroute-local .
+# Run  :  docker run --device=/dev/kfd --device=/dev/dri -p 8000:8000 frugalroute-local
+FROM rocm/vllm:latest
+ENV LOCAL_MODEL=Qwen/Qwen2.5-3B-Instruct
+EXPOSE 8000
+CMD vllm serve $LOCAL_MODEL --host 0.0.0.0 --port 8000 \
+    --enable-prefix-caching --gpu-memory-utilization 0.9

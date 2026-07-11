@@ -1,0 +1,18 @@
+# Core
+langgraph>=0.2
+openai>=1.40
+python-dotenv>=1.0
+tiktoken>=0.7
+
+# Semantic cache + triage (embeddings)
+fastembed>=0.3
+qdrant-client>=1.9
+
+# Phase 3 prompt compression (LLMLingua-2). Heavy; optional — fallback runs without it.
+llmlingua>=0.2
+
+# Serving (optional)
+fastapi>=0.110
+uvicorn>=0.29
+
+# NOTE: calibrate.py (Platt/Isotonic/ECE) is pure-Python — no sklearn needed.

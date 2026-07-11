@@ -1,0 +1,36 @@
+{"task": "Classify sentiment: 'I love this, works great!'", "category": "classification", "difficulty": "easy", "gold": "positive"}
+{"task": "Classify sentiment: 'This is the worst purchase ever.'", "category": "classification", "difficulty": "easy", "gold": "negative"}
+{"task": "Classify sentiment: 'The package arrived on Tuesday.'", "category": "classification", "difficulty": "med", "gold": "neutral"}
+{"task": "Is this spam? 'You won a free prize, click now!'", "category": "classification", "difficulty": "easy", "gold": "spam"}
+{"task": "Label the topic: 'The GDP grew 3% last quarter.'", "category": "classification", "difficulty": "med", "gold": "economics"}
+{"task": "Classify sentiment given sarcasm: 'Oh great, another delay. Wonderful.'", "category": "classification", "difficulty": "hard", "gold": "negative"}
+{"task": "Extract all email addresses from: contact a@x.com or b@y.org", "category": "extraction", "difficulty": "easy", "gold": "a@x.com, b@y.org"}
+{"task": "Extract the phone number from: call me at 555-1234 tomorrow", "category": "extraction", "difficulty": "easy", "gold": "555-1234"}
+{"task": "Extract the date from: the meeting is on 2026-07-06 at noon", "category": "extraction", "difficulty": "easy", "gold": "2026-07-06"}
+{"task": "Extract the total price from: 2 items at $5 each plus $3 shipping", "category": "extraction", "difficulty": "med", "gold": "13"}
+{"task": "Extract all company names from: Apple and Microsoft partnered with AMD", "category": "extraction", "difficulty": "med", "gold": "Apple, Microsoft, AMD"}
+{"task": "Extract the implied deadline from: submit before the second Friday of July 2026", "category": "extraction", "difficulty": "hard", "gold": "2026-07-10"}
+{"task": "Summarize in 5 words: The quarterly report showed revenue growth of 12% driven by cloud.", "category": "summarization", "difficulty": "med", "gold": "cloud drove 12% revenue growth"}
+{"task": "Summarize: The cat sat on the mat and then went to sleep.", "category": "summarization", "difficulty": "easy", "gold": "cat slept on mat"}
+{"task": "Summarize the key risk: Latency rose 40% after the deploy, errors doubled, users churned.", "category": "summarization", "difficulty": "med", "gold": "deploy caused latency, errors, churn"}
+{"task": "Summarize a dense legal clause about indemnification and liability caps.", "category": "summarization", "difficulty": "hard", "gold": "limits liability and shifts risk"}
+{"task": "What is the capital of France?", "category": "qa", "difficulty": "easy", "gold": "Paris"}
+{"task": "What is the chemical symbol for gold?", "category": "qa", "difficulty": "easy", "gold": "Au"}
+{"task": "How many continents are there?", "category": "qa", "difficulty": "easy", "gold": "7"}
+{"task": "Who wrote Romeo and Juliet?", "category": "qa", "difficulty": "easy", "gold": "Shakespeare"}
+{"task": "What year did the Berlin Wall fall?", "category": "qa", "difficulty": "med", "gold": "1989"}
+{"task": "What is the boiling point of water at sea level in Celsius?", "category": "qa", "difficulty": "med", "gold": "100"}
+{"task": "Why does increasing temperature speed up a chemical reaction? Explain step by step.", "category": "reasoning", "difficulty": "hard", "gold": "more kinetic energy, more effective collisions"}
+{"task": "Explain step by step why the sky appears blue.", "category": "reasoning", "difficulty": "hard", "gold": "rayleigh scattering of shorter wavelengths"}
+{"task": "Deduce who is oldest: Ann is older than Bob, Bob older than Cy.", "category": "reasoning", "difficulty": "med", "gold": "Ann"}
+{"task": "Explain the reasoning: if all A are B and all B are C, are all A C?", "category": "reasoning", "difficulty": "med", "gold": "yes"}
+{"task": "Why would a semantic cache reduce token cost? Reason it out.", "category": "reasoning", "difficulty": "hard", "gold": "reused answers skip paid generation"}
+{"task": "Explain step by step how backpropagation updates weights.", "category": "reasoning", "difficulty": "hard", "gold": "gradient of loss propagated via chain rule"}
+{"task": "Calculate the sum of 145 and 278.", "category": "math", "difficulty": "easy", "gold": "423"}
+{"task": "How many is 12 multiplied by 12?", "category": "math", "difficulty": "easy", "gold": "144"}
+{"task": "Solve for x: 2x + 6 = 20.", "category": "math", "difficulty": "med", "gold": "7"}
+{"task": "What is 15% of 240?", "category": "math", "difficulty": "med", "gold": "36"}
+{"task": "Calculate the product of 23 and 47.", "category": "math", "difficulty": "med", "gold": "1081"}
+{"task": "A train travels 60 km in 45 minutes; how many km/h?", "category": "math", "difficulty": "hard", "gold": "80"}
+{"task": "Compute the compound interest on 1000 at 5% for 2 years.", "category": "math", "difficulty": "hard", "gold": "102.5"}
+{"task": "How many multiply steps to compute 2^10 by squaring?", "category": "math", "difficulty": "hard", "gold": "4"}

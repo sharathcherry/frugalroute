@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FrugalRoute · Routing & Savings</title>
+<script src="data.js"></script>
+<style>
+  :root{
+    --bg:#070a12; --glass:rgba(22,28,40,.55); --line:rgba(255,255,255,.08);
+    --txt:#eaf0fb; --muted:#93a0b8; --local:#34d399; --remote:#fb7185;
+    --cache:#60a5fa; --warn:#fbbf24; --accent:#7c9cff;
+  }
+  *{box-sizing:border-box} html,body{margin:0;height:100%}
+  body{
+    background:
+      radial-gradient(1100px 600px at 12% -8%, rgba(124,156,255,.20), transparent 60%),
+      radial-gradient(1000px 700px at 110% 10%, rgba(52,211,153,.14), transparent 55%),
+      radial-gradient(900px 700px at 50% 120%, rgba(251,113,133,.12), transparent 55%),
+      #070a12;
+    color:var(--txt); font-family:'Inter',-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  #root{max-width:1160px;margin:0 auto;padding:34px 22px 80px}
+  .glass{background:var(--glass);border:1px solid var(--line);border-radius:18px;
+    backdrop-filter:blur(14px);box-shadow:0 10px 40px rgba(0,0,0,.35)}
+  .muted{color:var(--muted)}
+  ::selection{background:rgba(124,156,255,.35)}
+  .recharts-cartesian-axis-tick text{fill:#93a0b8;font-size:11px}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="importmap">
+{ "imports": {
+  "react": "https://esm.sh/react@18.2.0",
+  "react-dom/client": "https://esm.sh/react-dom@18.2.0/client?deps=react@18.2.0",
+  "framer-motion": "https://esm.sh/framer-motion@11.0.8?deps=react@18.2.0,react-dom@18.2.0",
+  "recharts": "https://esm.sh/recharts@2.12.7?deps=react@18.2.0,react-dom@18.2.0",
+  "htm": "https://esm.sh/htm@3.1.1"
+}}
+</script>
+
+<script type="module">
+import React, { useEffect, useState } from "react";
+import { createRoot } from "react-dom/client";
+import { motion, animate } from "framer-motion";
+import { PieChart, Pie, Cell, AreaChart, Area, BarChart, Bar, XAxis, YAxis,
+         Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import htm from "htm";
+const html = htm.bind(React.createElement);
+
+const D = window.DATA || { records: [], agg: {}, engine: "?" };
+const A = D.agg || {}, R = D.records || [];
+const COL = { local:"#34d399", triage_local:"#34d399", remote:"#fb7185",
+              cache:"#60a5fa", triage_block:"#fbbf24", other:"#93a0b8" };
+
+const fmt = (n) => (Math.round(n*10)/10).toString();
+
+function CountUp({ value, suffix="", dur=1.1 }) {
+  const [v, setV] = useState(0);
+  useEffect(() => {
+    const c = animate(0, value || 0, { duration: dur, ease: [0.16,1,0.3,1],
+      onUpdate: x => setV(x) });
+    return () => c.stop();
+  }, [value]);
+  const dec = String(value).includes(".");
+  return html`<span>${dec ? fmt(v) : Math.round(v)}${suffix}</span>`;
+}
+
+const container = { hidden:{}, show:{ transition:{ staggerChildren:0.06 } } };
+const item = { hidden:{ opacity:0, y:14 }, show:{ opacity:1, y:0,
+  transition:{ type:"spring", stiffness:220, damping:22 } } };
+
+function Kpi({ label, value, suffix, color }) {
+  return html`
+    <${motion.div} variants=${item} whileHover=${{ y:-4, scale:1.015 }}
+      class="glass" style=${{ padding:"18px 18px 16px", position:"relative", overflow:"hidden" }}>
+      <div style=${{ position:"absolute", inset:0, background:
+        `radial-gradient(120px 60px at 20% 0%, ${color}22, transparent 70%)` }}></div>
+      <div style=${{ fontSize:30, fontWeight:800, letterSpacing:"-.02em", color }}>
+        <${CountUp} value=${value} suffix=${suffix||""} />
+      </div>
+      <div class="muted" style=${{ fontSize:12, marginTop:4 }}>${label}</div>
+    <//>`;
+}
+
+function Card({ title, children, span }) {
+  return html`
+    <${motion.div} variants=${item} class="glass"
+      style=${{ padding:18, gridColumn: span ? "1 / -1" : "auto" }}>
+      <div style=${{ fontSize:13, fontWeight:600, marginBottom:12, color:"#cdd7ee" }}>${title}</div>
+      ${children}
+    <//>`;
+}
+
+const tip = { contentStyle:{ background:"#0d1220", border:"1px solid rgba(255,255,255,.1)",
+  borderRadius:10, color:"#eaf0fb", fontSize:12 }, cursor:{ fill:"rgba(255,255,255,.04)" } };
+
+function App() {
+  const mix = A.mix || {};
+  const mixData = Object.keys(mix).map(k => ({ name:k, value:mix[k] }));
+  let cum = 0;
+  const area = R.map((r,i) => ({ i:i+1, tokens: (cum += (r.remote_tokens||0)) }));
+  const cats = Object.keys(A.by_category || {});
+  const catData = cats.map(c => ({ cat:c, ...A.by_category[c] }));
+  const kpis = [
+    { label:"remote tokens (paid)", value:A.remote_tokens||0, color:"#fb7185" },
+    { label:"tokens saved (compress)", value:A.tokens_saved||0, color:"#34d399" },
+    { label:"handled free (local+cache)", value:A.free_pct||0, suffix:"%", color:"#7c9cff" },
+    { label:"escalated to remote", value:A.escalate_pct||0, suffix:"%", color:"#fbbf24" },
+    { label:"cache hits (0 tokens)", value:A.cache_hits||0, color:"#60a5fa" },
+  ];
+
+  return html`
+    <${motion.div} initial=${{ opacity:0, y:-8 }} animate=${{ opacity:1, y:0 }}
+      transition=${{ duration:.6 }}>
+      <div style=${{ display:"flex", alignItems:"baseline", gap:12, flexWrap:"wrap" }}>
+        <div style=${{ fontSize:26, fontWeight:800, letterSpacing:"-.03em",
+          background:"linear-gradient(90deg,#eaf0fb,#7c9cff)", WebkitBackgroundClip:"text",
+          WebkitTextFillColor:"transparent" }}>FrugalRoute</div>
+        <div class="muted" style=${{ fontSize:13 }}>routing &amp; savings · ${A.n||0} tasks · lower remote tokens = better</div>
+      </div>
+      <div class="muted" style=${{ fontSize:11, marginTop:4 }}>engine: ${D.engine}</div>
+    <//>
+
+    <${motion.div} variants=${container} initial="hidden" animate="show"
+      style=${{ display:"grid", gridTemplateColumns:"repeat(5,1fr)", gap:14, margin:"20px 0" }}>
+      ${kpis.map((k,i) => html`<${Kpi} key=${i} ...${k} />`)}
+    <//>
+
+    <${motion.div} variants=${container} initial="hidden" animate="show"
+      style=${{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16 }}>
+
+      <${Card} title="Routing mix">
+        <${ResponsiveContainer} width="100%" height=${240}>
+          <${PieChart}>
+            <${Pie} data=${mixData} dataKey="value" nameKey="name" innerRadius=${58}
+              outerRadius=${92} paddingAngle=${3} stroke="none">
+              ${mixData.map((d,i) => html`<${Cell} key=${i} fill=${COL[d.name]||COL.other} />`)}
+            <//>
+            <${Tooltip} ...${tip} />
+          <//>
+        <//>
+        <div style=${{ display:"flex", gap:14, flexWrap:"wrap", justifyContent:"center", marginTop:6 }}>
+          ${mixData.map((d,i) => html`
+            <span key=${i} class="muted" style=${{ fontSize:12, display:"flex", alignItems:"center", gap:6 }}>
+              <span style=${{ width:9, height:9, borderRadius:9, background:COL[d.name]||COL.other }}></span>
+              ${d.name} · ${d.value}
+            </span>`)}
+        </div>
+      <//>
+
+      <${Card} title="Remote tokens (cumulative)">
+        <${ResponsiveContainer} width="100%" height=${240}>
+          <${AreaChart} data=${area} margin=${{ top:8, right:8, left:-18, bottom:0 }}>
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#fb7185" stopOpacity=${0.55}/>
+                <stop offset="100%" stopColor="#fb7185" stopOpacity=${0.02}/>
+              </linearGradient>
+            </defs>
+            <${CartesianGrid} strokeDasharray="3 3" stroke="rgba(255,255,255,.06)" />
+            <${XAxis} dataKey="i" tickLine=${false} axisLine=${false} />
+            <${YAxis} tickLine=${false} axisLine=${false} width=${44} />
+            <${Tooltip} ...${tip} />
+            <${Area} type="monotone" dataKey="tokens" stroke="#fb7185" strokeWidth=${2.5}
+              fill="url(#g)" animationDuration=${1100} />
+          <//>
+        <//>
+      <//>
+
+      <${Card} title="Local vs remote by category" span=${true}>
+        <${ResponsiveContainer} width="100%" height=${260}>
+          <${BarChart} data=${catData} margin=${{ top:8, right:8, left:-18, bottom:0 }}>
+            <${CartesianGrid} strokeDasharray="3 3" stroke="rgba(255,255,255,.06)" />
+            <${XAxis} dataKey="cat" tickLine=${false} axisLine=${false} />
+            <${YAxis} tickLine=${false} axisLine=${false} width=${44} allowDecimals=${false} />
+            <${Tooltip} ...${tip} />
+            <${Bar} dataKey="local" stackId="s" fill="#34d399" radius=${[0,0,0,0]} animationDuration=${900} />
+            <${Bar} dataKey="cache" stackId="s" fill="#60a5fa" animationDuration=${900} />
+            <${Bar} dataKey="remote" stackId="s" fill="#fb7185" radius=${[5,5,0,0]} animationDuration=${900} />
+          <//>
+        <//>
+      <//>
+
+      <${Card} title="Per-task routing" span=${true}>
+        <div style=${{ overflowX:"auto" }}>
+          <table style=${{ width:"100%", borderCollapse:"collapse", fontSize:13 }}>
+            <thead><tr class="muted" style=${{ textAlign:"left" }}>
+              ${["Task","Category","Source","route_p","conf","remote"].map((h,i) =>
+                html`<th key=${i} style=${{ padding:"8px 8px", borderBottom:"1px solid var(--line)",
+                  textAlign: i>2 ? "right" : "left", fontWeight:600 }}>${h}</th>`)}
+            </tr></thead>
+            <tbody>
+              ${R.map((r,i) => html`
+                <${motion.tr} key=${i} initial=${{ opacity:0, x:-8 }} animate=${{ opacity:1, x:0 }}
+                  transition=${{ delay: 0.03*i, duration:.35 }}>
+                  <td style=${{ padding:"8px 8px", borderBottom:"1px solid var(--line)" }}>${(r.task||"").slice(0,58)}</td>
+                  <td class="muted" style=${{ padding:"8px 8px", borderBottom:"1px solid var(--line)" }}>${r.category||""}</td>
+                  <td style=${{ padding:"8px 8px", borderBottom:"1px solid var(--line)" }}>
+                    <span style=${{ padding:"2px 9px", borderRadius:20, fontSize:11, fontWeight:600,
+                      color:COL[r.source]||COL.other, background:(COL[r.source]||COL.other)+"22" }}>${r.source||""}</span></td>
+                  ${["route_p","confidence","remote_tokens"].map((k,j) =>
+                    html`<td key=${j} style=${{ padding:"8px 8px", textAlign:"right",
+                      borderBottom:"1px solid var(--line)", fontVariantNumeric:"tabular-nums" }}>
+                      ${r[k]==null ? "—" : r[k]}</td>`)}
+                <//>`)}
+            </tbody>
+          </table>
+        </div>
+      <//>
+    <//>
+  `;
+}
+
+createRoot(document.getElementById("root")).render(html`<${App} />`);
+</script>
+</body>
+</html>

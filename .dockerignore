@@ -1,0 +1,40 @@
+# secrets / keys
+.env
+*.pem
+*.key
+*.pub
+
+# python
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# calibration runtime outputs (these are generated at runtime)
+calib_log.jsonl
+
+# dashboard generated data
+dashboard/data.js
+
+# planning / docs (not needed in the image)
+.planning/
+*.docx
+*.pdf
+SESSION_LOG.md
+
+# git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,7 @@
+{"id": "s1", "task": "Classify the sentiment of: 'I love this product, works great!'"}
+{"id": "s2", "task": "Summarize: The quarterly report showed revenue growth of 12 percent driven by cloud."}
+{"id": "s3", "task": "Why does increasing temperature speed up a chemical reaction? Explain step by step."}
+{"id": "s4", "task": "Extract all email addresses from: contact a@x.com or b@y.org today."}
+{"id": "s5", "task": "Calculate the sum of 145 and 278."}
+{"id": "s6", "task": "What is the capital of France?"}
+{"id": "s7", "task": "Explain step by step how HTTPS encrypts a web request."}
