@@ -99,12 +99,33 @@ def local(state, policy):
 
 
 def gate(state):
-    """Phase 2 cascade: accept local only if CALIBRATED confidence clears the bar."""
+    """Phase 2 cascade: accept local only if CALIBRATED confidence clears the bar.
+
+    Category fast-path (from real MI300X calibration on Qwen2.5-7B):
+      Force-local  (100% accuracy): classification, math
+      Force-remote (0-33% accuracy): summarization, reasoning
+      Gate-decide  (50-83%): qa, extraction — use selfrate confidence
+    """
     if state.get("skip_local"):
         state["confident"] = False
         return state
-    accept, val = verify.accept_local(state["category"], state["task"], state.get("candidate", ""))
-    state["confidence"] = round(val, 2)     # calibrated conf OR automix belief
+
+    cat = state.get("category", "qa")
+
+    # Category fast-path — bypass expensive selfrate call
+    FORCE_LOCAL = {"classification", "math"}
+    FORCE_REMOTE = {"summarization", "reasoning"}
+    if cat in FORCE_LOCAL:
+        state.update(confidence=1.0, confident=True,
+                     answer=state.get("candidate", ""), done=True)
+        return state
+    if cat in FORCE_REMOTE:
+        state.update(confidence=0.0, confident=False)
+        return state
+
+    # For qa / extraction — use calibrated selfrate
+    accept, val = verify.accept_local(cat, state["task"], state.get("candidate", ""))
+    state["confidence"] = round(val, 2)
     state["confident"] = accept
     if accept:
         state.update(answer=state["candidate"], done=True)
