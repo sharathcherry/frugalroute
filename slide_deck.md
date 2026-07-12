@@ -21,7 +21,7 @@ Sharath Chandra · B.Tech CSE-AIML
 
 | Task | Ideal Model |
 |---|---|
-| "What is the capital of France?" | ✅ Free local (Qwen 32B) |
+| "What is the capital of France?" | ✅ Free local (Qwen 7B) |
 | "Classify this sentiment" | ✅ Free local |
 | "Prove this theorem step by step" | ❌ Must escalate to paid remote |
 | "Summarize this 5000-word doc" | ❌ Context length → remote |
@@ -47,7 +47,7 @@ Task Input
 [Predictive Router] ← RouteLLM-style MF: P(need_remote) — skip local if obvious
    │
    ▼
-[Local Model]    ← Qwen2.5-32B on AMD MI300X via vLLM (FREE)
+[Local Model]    ← Qwen2.5-7B on AMD MI300X via vLLM (FREE)
    │
    ▼
 [Confidence Gate] ← FrugalGPT cascade + calibrated P(correct)
@@ -88,7 +88,7 @@ results.jsonl    {id, answer, source, remote_tokens}
 
 ### Local model runs entirely on AMD Instinct MI300X
 
-- **192 GB HBM3** — fits 32B model with room for prefix cache
+- **192 GB HBM3** — fits 7B model easily with massive room for prefix cache
 - **vLLM + ROCm 7.2.4** — Automatic Prefix Caching (RadixAttention) enabled
 - **~31% prefix cache hit rate** measured on shared system prompt prefixes
 - `rocm-smi` confirms GPU utilization during inference
@@ -105,12 +105,12 @@ GPU 0: AMD Instinct MI300X  |  Temp: 43°C  |  Util: 67%  |  Mem: 18.2/192.0 GB
 
 | Metric | Value |
 |---|---|
-| Local (AMD MI300X) | 22 tasks (61.1%) |
-| Remote (Fireworks GPT-OSS-120B) | 14 tasks (38.9%) |
+| Local (AMD MI300X) | 19 tasks (52.8%) |
+| Remote (Fireworks GPT-OSS-120B) | 17 tasks (47.2%) |
 | Cache hits (Qdrant) | 0 tasks |
-| Total remote tokens used | 14,054 tokens |
+| Total remote tokens used | 828 tokens |
 | Tokens saved via LLMLingua-2 | ~50% per remote call |
-| Local model | Qwen/Qwen2.5-32B-Instruct on MI300X |
+| Local model | Qwen/Qwen2.5-7B-Instruct on MI300X |
 | Gate mode | Calibrated (selfrate judge → Platt calibration) |
 
 **Dashboard:** Live routing mix, savings chart, per-category breakdown, KPIs.

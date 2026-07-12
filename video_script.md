@@ -36,7 +36,7 @@ Then a vector cache — if we've seen this question before, answer immediately w
 
 Then a predictive router — trained to estimate the probability this task needs a remote call.
 
-If it looks answerable locally, we send it to Qwen 2.5, 32 billion parameters, running right here on an AMD Instinct MI300X with 192 gigs of HBM3 memory.
+If it looks answerable locally, we send it to Qwen 2.5, 7 billion parameters, running right here on an AMD Instinct MI300X with 192 gigs of HBM3 memory.
 
 The local answer goes through a calibrated confidence gate — the local model grades its own answer. If it's confident, we're done. Zero paid tokens.
 
@@ -78,7 +78,7 @@ This complex step-by-step reasoning question — the confidence gate fired. Esca
 **NARRATION:**
 "The local model runs entirely on AMD Instinct MI300X via ROCm and vLLM with Automatic Prefix Caching enabled. We're seeing about 31% prefix cache hit rate on shared prompt prefixes — that's direct latency savings on repeated task patterns.
 
-This is what AMD's GPU stack enables: running a production-grade 32B inference server for free, serving thousands of tasks before a single paid token is needed."
+This is what AMD's GPU stack enables: running a production-grade 7B inference server for free, serving thousands of tasks before a single paid token is needed."
 
 ---
 

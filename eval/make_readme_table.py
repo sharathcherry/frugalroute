@@ -56,6 +56,7 @@ def main():
     plt.figure(figsize=(10, 6))
     plt.style.use('dark_background')
     
+    texts = []
     for row in data:
         color = 'gold' if '⭐' in row.get('pick', '') else 'lightblue'
         marker = '*' if '⭐' in row.get('pick', '') else 'o'
@@ -66,8 +67,18 @@ def main():
             size = 150
             
         plt.scatter(row['remote_tokens'], row['accuracy'], color=color, marker=marker, s=size, edgecolors='white')
-        plt.text(row['remote_tokens'] + 10, row['accuracy'] + 0.005, row['model'], fontsize=9, alpha=0.9)
+        texts.append(plt.text(row['remote_tokens'], row['accuracy'], row['model'], fontsize=9, alpha=0.9))
     
+    try:
+        from adjustText import adjust_text
+        adjust_text(texts, arrowprops=dict(arrowstyle="-", color='gray', lw=0.5))
+    except ImportError:
+        print("adjustText not found. Falling back to simple offsets. Run 'pip install adjustText' for better label placement.")
+        for i, t in enumerate(texts):
+            # Simple alternating offset to help reduce overlap
+            x, y = t.get_position()
+            t.set_position((x + 10, y + (0.005 if i % 2 == 0 else -0.005)))
+            
     plt.xlabel('Remote Tokens (Cost) ↓', fontsize=12)
     plt.ylabel('Accuracy ↑', fontsize=12)
     plt.title('Cost vs Accuracy Pareto Frontier (MI300X Small Model Routing)', fontsize=14)
