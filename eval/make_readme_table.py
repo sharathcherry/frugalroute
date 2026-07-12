@@ -53,42 +53,73 @@ def main():
     print(f"Updated BENCHMARK.md table")
 
     # Generate Pareto Chart
-    plt.figure(figsize=(10, 6))
+    fig, ax = plt.subplots(figsize=(10, 6))
     plt.style.use('dark_background')
     
-    texts = []
-    for row in data:
-        color = 'gold' if '⭐' in row.get('pick', '') else 'lightblue'
-        marker = '*' if '⭐' in row.get('pick', '') else 'o'
-        size = 200 if '⭐' in row.get('pick', '') else 100
-        if 'control' in row.get('pick', '') or '32B' in row['model']:
-            color = 'red'
-            marker = 'X'
-            size = 150
-            
-        plt.scatter(row['remote_tokens'], row['accuracy'], color=color, marker=marker, s=size, edgecolors='white')
-        texts.append(plt.text(row['remote_tokens'], row['accuracy'], row['model'], fontsize=9, alpha=0.9))
+    # Force a solid background color so transparency doesn't hide text in markdown
+    fig.patch.set_facecolor('#111111')
+    ax.set_facecolor('#111111')
     
-    try:
-        from adjustText import adjust_text
-        adjust_text(texts, arrowprops=dict(arrowstyle="-", color='gray', lw=0.5))
-    except ImportError:
-        print("adjustText not found. Falling back to simple offsets. Run 'pip install adjustText' for better label placement.")
-        for i, t in enumerate(texts):
-            # Simple alternating offset to help reduce overlap
-            x, y = t.get_position()
-            t.set_position((x + 10, y + (0.005 if i % 2 == 0 else -0.005)))
+    cmap = plt.get_cmap('tab20')
+    
+    for i, row in enumerate(data):
+        is_star = '⭐' in row.get('pick', '')
+        is_control = 'control' in row.get('pick', '') or '32B' in row['model']
+        
+        marker = '*' if is_star else ('X' if is_control else 'o')
+        size = 350 if is_star else (200 if is_control else 120)
+        
+        color = cmap(i % 20)
+        if is_star:
+            color = 'gold'
+        elif is_control:
+            color = '#ff4444'
             
-    plt.xlabel('Remote Tokens (Cost) ↓', fontsize=12)
-    plt.ylabel('Accuracy ↑', fontsize=12)
-    plt.title('Cost vs Accuracy Pareto Frontier (MI300X Small Model Routing)', fontsize=14)
-    plt.grid(True, alpha=0.3, linestyle='--')
+        ax.scatter(
+            row['remote_tokens'], 
+            row['accuracy'], 
+            color=color, 
+            marker=marker, 
+            s=size, 
+            edgecolors='white', 
+            linewidths=1.5,
+            label=row['model'],
+            zorder=5
+        )
+    
+    # Explicitly label the axes with bright text
+    ax.set_xlabel('Remote Tokens (Cost) ↓', fontsize=13, color='white', labelpad=10)
+    ax.set_ylabel('Accuracy ↑', fontsize=13, color='white', labelpad=10)
+    ax.set_title('Cost vs Accuracy Pareto Frontier (MI300X Routing)', fontsize=15, color='white', pad=15)
+    
+    # Format tick marks so numbers are clearly visible
+    ax.tick_params(axis='both', colors='white', labelsize=11)
+    
+    # Add a prominent grid
+    ax.grid(True, color='gray', alpha=0.4, linestyle='--')
     
     # Invert x-axis so better (fewer tokens) is to the right
-    plt.gca().invert_xaxis()
+    ax.invert_xaxis()
+    
+    # Adjust limits to add some padding around the points
+    x_vals = [r['remote_tokens'] for r in data]
+    y_vals = [r['accuracy'] for r in data]
+    if x_vals and y_vals:
+        x_range = max(x_vals) - min(x_vals) if len(x_vals) > 1 else 100
+        y_range = max(y_vals) - min(y_vals) if len(y_vals) > 1 else 0.1
+        ax.set_xlim(max(x_vals) + x_range*0.1, min(x_vals) - x_range*0.1) # inverted
+        ax.set_ylim(min(y_vals) - y_range*0.1, max(y_vals) + y_range*0.1)
+    
+    # Put a legend to the right
+    legend = ax.legend(bbox_to_anchor=(1.04, 1), loc="upper left", borderaxespad=0, title="Models", fontsize=11)
+    legend.get_title().set_color('white')
+    for text in legend.get_texts():
+        text.set_color('white')
+    legend.get_frame().set_facecolor('#222222')
+    legend.get_frame().set_edgecolor('gray')
     
     pareto_path = os.path.join(os.path.dirname(__file__), "pareto.png")
-    plt.savefig(pareto_path, dpi=300, bbox_inches='tight')
+    plt.savefig(pareto_path, dpi=300, bbox_inches='tight', facecolor=fig.get_facecolor())
     print(f"Generated {pareto_path}")
 
 if __name__ == "__main__":

@@ -2,8 +2,7 @@ import json
 import re
 
 LOG_FILES = [
-    r"C:\Users\katuk\.gemini\antigravity-cli\brain\e9e4bf6d-4d61-4b04-9e9d-e315cf2f0b8e\.system_generated\tasks\task-2266.log",
-    r"C:\Users\katuk\.gemini\antigravity-cli\brain\e9e4bf6d-4d61-4b04-9e9d-e315cf2f0b8e\.system_generated\tasks\task-2306.log"
+    r"C:\Users\katuk\Claude\Projects\AMD Project\frugalroute\eval\full_bench.log"
 ]
 
 MODEL_METADATA = {

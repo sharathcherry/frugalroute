@@ -1,0 +1,257 @@
+
+==================================================
+Benchmarking Qwen/Qwen2.5-0.5B-Instruct
+==================================================
+Running on remote: docker rm -f frugal-vllm
+Running on remote: docker run -d --name frugal-vllm --network host -v /root/.cache/huggingface:/root/.cache/huggingface -e VLLM_HOST_IP=127.0.0.1 -e GLOO_SOCKET_IFNAME=lo -e NCCL_SOCKET_IFNAME=lo --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined vllm/vllm-openai-rocm:v0.23.0 --model Qwen/Qwen2.5-0.5B-Instruct --host 0.0.0.0 --port 8001 --api-key frugal-amd-7k2x --enable-prefix-caching --max-model-len 8192 --trust-remote-code
+Waiting for vLLM to be ready...
+vLLM is ready!
+Running on remote: rocm-smi --showuse | grep 'GPU use'
+Running harness.py...
+samples = 36   raw local accuracy = 0.556
+ECE before = 0.428   isotonic = 0.140   platt = 0.002
+best calibrator = platt   (Brier = 0.247)
+saved -> calib.json  (set CALIB_PATH=calib.json to use it)
+
+Per-category local accuracy:
+  classification       2/6 = 0.33
+  extraction           3/6 = 0.50
+  math                 8/8 = 1.00
+  qa                   6/6 = 1.00
+  reasoning            1/6 = 0.17
+  summarization        0/4 = 0.00
+
+AutoMix gate: belief_threshold=0.90  remote_calls=34/36  accuracy=1.000  saved -> automix.json
+
+threshold sweep (accuracy floor = 0.8):
+  thr   remote_calls   accuracy
+  0.00        0        0.556
+  0.10        0        0.556
+  0.20        0        0.556
+  0.30        0        0.556
+  0.40        0        0.556
+  0.50        0        0.556
+  0.60       36        1.000  <-
+  0.70       36        1.000
+  0.80       36        1.000
+  0.90       36        1.000
+  1.00       36        1.000
+
+RECOMMEND CONFIDENCE_THRESHOLD = 0.60  ->  remote_calls = 36/36  accuracy = 1.000  tokens_saved = 0.0%
+
+PredictiveRouter trained. weights = [-0.47, 3.45, -0.54]
+
+Running run.py...
+[DEBUG] Local model text: 'positive'
+[DEBUG] Local model text: 'negative'
+[DEBUG] Local model text: 'neutral'
+[DEBUG] Local model text: "No, it's not spam. It's a friendly reminder."
+[DEBUG] Local model text: 'economy'
+[DEBUG] Local model text: 'neutral'
+[DEBUG] Local model text: 'contact a@x.com, b@y.org'
+[DEBUG] Local model text: '555-1234'
+[DEBUG] Local model text: '2026-07-06'
+[DEBUG] Local model text: '8'
+[DEBUG] Local model text: 'Apple, Microsoft, and AMD'
+[DEBUG] Local model text: 'second Friday of July 2026'
+[DEBUG] Local model text: "Revenue growth from cloud leads to quarter's success."
+[DEBUG] Local model text: 'The cat was sitting on the mat and fell asleep.'
+[DEBUG] Local model text: 'Key Risk: High latency, increased errors, and high churn.'
+[DEBUG] Local model text: "The clause states that an insurer will be liable for any damages caused by the insured's negligence or misconduct, but it limits the amount of compensation they can pay to no more than 3% of the insured's total claims. This means that the insurer cannot exceed $3 per claim, even if the insured has made significant financial losses. The clause also allows the insurer to limit their own liability to no more than $1 million per claim."
+[DEBUG] Local model text: 'The capital of France is Paris.'
+[DEBUG] Local model text: 'Au'
+[DEBUG] Local model text: 'There are 6 continents: Africa, Antarctica, Asia, Australia, North America, and South America.'
+[DEBUG] Local model text: 'Shakespeare'
+[DEBUG] Local model text: 'The Berlin Wall fell on 16 August 1989.'
+[DEBUG] Local model text: 'Boiling point of water at sea level in Celsius is 100 degrees.'
+[DEBUG] Local model text: 'Increasing temperature speeds up a chemical reaction because it increases the kinetic energy of the particles in the reactants. Kinetic energy is the energy that causes objects to move and vibrate. When the temperature rises, more of these molecules have enough energy to overcome the intermolecular forces holding them together and move freely. This increased movement allows the molecules to collide more frequently and with greater force, resulting in faster reactions.'
+[DEBUG] Local model text: 'The sky appears blue because it reflects sunlight. When sunlight enters our eyes, it passes through the atmosphere, which is made up of gases like nitrogen and oxygen. The gases scatter the light according to their wavelength, causing it to be scattered in all directions except towards the blue end of the spectrum. This scattering causes the blue light from the sun to be scattered more than other colors, making the sky appear blue.'
+[DEBUG] Local model text: 'Cy is the oldest.'
+[DEBUG] Local model text: 'No, because A could be any type of object, B could be any type of object, and C could be any type of object.'
+[DEBUG] Local model text: 'A semantic cache reduces token cost by storing frequently used tokens instead of re-creating them from scratch each time they are needed. This allows the system to quickly retrieve previously computed results, which can improve performance and reduce memory usage.'
+[DEBUG] Local model text: "Backpropagation is an algorithm used in machine learning to update the weights of neural networks so that they can better approximate the function being trained. Here's a step-by-step explanation:\n\n1. **Initialization**: Start by initializing the weights of the network to random values.\n\n2. **Forward Pass**: The forward pass involves passing inputs through the network one layer at a time. Each input is multiplied by its corresponding weight, then summed up, and this sum is added to the bias term. This gives the output of the current layer.\n\n3. **Error Calculation**: Calculate the error between the actual output and the expected output. This is done using"
+[DEBUG] Local model text: '323'
+[DEBUG] Local model text: '144'
+[DEBUG] Local model text: 'x = 7'
+[DEBUG] Local model text: '36'
+[DEBUG] Local model text: '991'
+[DEBUG] Local model text: 'To convert hours to kilometers per hour:\n\nTime in hours = 45 / 60 = 0.75 hours\n\nSpeed in km/h = Distance * Time / 3600 = 60 * 0.75 / 3600 = 0.01875 km/h\n\nSo, the speed of the train is approximately 0.01875 km/h.'
+[DEBUG] Local model text: '$625.00'
+[DEBUG] Local model text: '4'
+# FrugalRoute | engine=langgraph
+
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=0 Classify sentiment: 'I love this, works 
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=1 Classify sentiment: 'This is the worst p
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=2 Classify sentiment: 'The package arrived
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=3 Is this spam? 'You won a free prize, cli
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=4 Label the topic: 'The GDP grew 3% last q
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=5 Classify sentiment given sarcasm: 'Oh gr
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=6 Extract all email addresses from: contac
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=7 Extract the phone number from: call me a
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=8 Extract the date from: the meeting is on
+[local       ] remote=   0 route_p=0.28 conf=0.9  id=9 Extract the total price from: 2 items at
+[local       ] remote=   0 route_p=0.28 conf=0.9  id=10 Extract all company names from: Apple an
+[local       ] remote=   0 route_p=0.29 conf=0.9  id=11 Extract the implied deadline from: submi
+[local       ] remote=   0 route_p=0.3  conf=0.9  id=12 Summarize in 5 words: The quarterly repo
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=13 Summarize: The cat sat on the mat and th
+[local       ] remote=   0 route_p=0.3  conf=0.9  id=14 Summarize the key risk: Latency rose 40%
+[local       ] remote=   0 route_p=0.28 conf=0.55 id=15 Summarize a dense legal clause about ind
+[local       ] remote=   0 route_p=0.25 conf=0.9  id=16 What is the capital of France?
+[local       ] remote=   0 route_p=0.26 conf=0.9  id=17 What is the chemical symbol for gold?
+[local       ] remote=   0 route_p=0.87 conf=1.0  id=18 How many continents are there?
+[local       ] remote=   0 route_p=0.25 conf=0.9  id=19 Who wrote Romeo and Juliet?
+[local       ] remote=   0 route_p=0.26 conf=0.9  id=20 What year did the Berlin Wall fall?
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=21 What is the boiling point of water at se
+[local       ] remote=   0 route_p=0.89 conf=0.55 id=22 Why does increasing temperature speed up
+[local       ] remote=   0 route_p=0.88 conf=0.55 id=23 Explain step by step why the sky appears
+[local       ] remote=   0 route_p=0.88 conf=0.9  id=24 Deduce who is oldest: Ann is older than 
+[local       ] remote=   0 route_p=0.89 conf=0.9  id=25 Explain the reasoning: if all A are B an
+[local       ] remote=   0 route_p=0.88 conf=0.55 id=26 Why would a semantic cache reduce token 
+[local       ] remote=   0 route_p=0.88 conf=0.55 id=27 Explain step by step how backpropagation
+[local       ] remote=   0 route_p=0.87 conf=1.0  id=28 Calculate the sum of 145 and 278.
+[local       ] remote=   0 route_p=0.87 conf=1.0  id=29 How many is 12 multiplied by 12?
+[local       ] remote=   0 route_p=0.87 conf=1.0  id=30 Solve for x: 2x + 6 = 20.
+[local       ] remote=   0 route_p=0.24 conf=0.9  id=31 What is 15% of 240?
+[local       ] remote=   0 route_p=0.87 conf=1.0  id=32 Calculate the product of 23 and 47.
+[local       ] remote=   0 route_p=0.88 conf=1.0  id=33 A train travels 60 km in 45 minutes; how
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=34 Compute the compound interest on 1000 at
+[local       ] remote=   0 route_p=0.88 conf=1.0  id=35 How many multiply steps to compute 2^10 
+
+remote_tokens=0  tokens_saved=0  free%=100.0  escalate%=0.0  cache_hits=0
+
+results -> out/Qwen2.5-0.5B-Instruct.jsonl  (36 tasks, remote_tokens=0)
+
+Parsing results...
+Running on remote: docker rm -f frugal-vllm
+Finished Qwen/Qwen2.5-0.5B-Instruct
+
+
+==================================================
+Benchmarking google/gemma-2-2b-it
+==================================================
+Running on remote: docker rm -f frugal-vllm
+Running on remote: docker run -d --name frugal-vllm --network host -v /root/.cache/huggingface:/root/.cache/huggingface -e VLLM_HOST_IP=127.0.0.1 -e GLOO_SOCKET_IFNAME=lo -e NCCL_SOCKET_IFNAME=lo --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined vllm/vllm-openai-rocm:v0.23.0 --model google/gemma-2-2b-it --host 0.0.0.0 --port 8001 --api-key frugal-amd-7k2x --enable-prefix-caching --max-model-len 8192 --trust-remote-code
+Waiting for vLLM to be ready...
+vLLM is ready!
+Running on remote: rocm-smi --showuse | grep 'GPU use'
+Running harness.py...
+samples = 36   raw local accuracy = 0.722
+ECE before = 0.261   isotonic = 0.080   platt = 0.003
+best calibrator = platt   (Brier = 0.201)
+saved -> calib.json  (set CALIB_PATH=calib.json to use it)
+
+Per-category local accuracy:
+  classification       6/6 = 1.00
+  extraction           5/6 = 0.83
+  math                 8/8 = 1.00
+  qa                   6/6 = 1.00
+  reasoning            1/6 = 0.17
+  summarization        0/4 = 0.00
+
+AutoMix gate: belief_threshold=0.90  remote_calls=35/36  accuracy=1.000  saved -> automix.json
+
+threshold sweep (accuracy floor = 0.8):
+  thr   remote_calls   accuracy
+  0.00        0        0.722
+  0.10        0        0.722
+  0.20        0        0.722
+  0.30        0        0.722
+  0.40        0        0.722
+  0.50        0        0.722
+  0.60        0        0.722
+  0.70        0        0.722
+  0.80       36        1.000
+  0.90       36        1.000
+  1.00       36        1.000
+
+RECOMMEND CONFIDENCE_THRESHOLD = 0.75  ->  remote_calls = 36/36  accuracy = 1.000  tokens_saved = 0.0%
+
+PredictiveRouter trained. weights = [-1.66, 3.17, 0.69]
+
+Running run.py...
+[DEBUG] Local model text: 'positive \n'
+[DEBUG] Local model text: 'negative \n'
+[DEBUG] Local model text: 'neutral \n'
+[DEBUG] Local model text: 'Yes. \n'
+[DEBUG] Local model text: 'Economy \n'
+[DEBUG] Local model text: 'negative \n'
+[DEBUG] Local model text: 'a@x.com, b@y.org \n'
+[DEBUG] Local model text: '555-1234 \n'
+[DEBUG] Local model text: '2026-07-06 \n'
+[DEBUG] Local model text: '$18 \n'
+[DEBUG] Local model text: 'Apple, Microsoft, AMD \n'
+[DEBUG] Local model text: 'second Friday of July 2026 \n'
+[DEBUG] Local model text: 'Cloud growth drives revenue surge. \n'
+[DEBUG] Local model text: 'Cat slept after sitting on the mat. \n'
+[DEBUG] Local model text: 'Deployment caused significant performance issues: latency increased, errors doubled, and user churn increased. \n'
+[DEBUG] Local model text: "This clause outlines that one party will be responsible for covering the other party's legal costs and potential damages, up to a specified limit.  \n"
+[DEBUG] Local model text: 'Paris \n'
+[DEBUG] Local model text: 'Au \n'
+[DEBUG] Local model text: '7 \n'
+[DEBUG] Local model text: 'William Shakespeare \n'
+[DEBUG] Local model text: '1989 \n'
+[DEBUG] Local model text: '100 °C \n'
+[DEBUG] Local model text: "Here's a step-by-step explanation of how increasing temperature speeds up a chemical reaction:\n\n**1. Energy and Activation Energy:**\n\n* **Chemical reactions** require a certain amount of energy to get started, called the **activation energy**.  \n* Think of it like pushing a boulder over a hill. The activation energy is the initial push needed to get the boulder rolling.\n\n**2. Molecular Motion:**\n\n* **Temperature** is a measure of the average kinetic energy of the molecules in a substance.  \n* **Higher temperature** means molecules are moving faster and with more energy.\n\n**3. Collision"
+[DEBUG] Local model text: "Here's the breakdown of why the sky appears blue:\n\n1. **Sunlight and its Colors:** Sunlight is actually made up of all the colors of the rainbow.  We perceive these colors as white light.\n\n2. **Earth's Atmosphere:** Our atmosphere is made up of tiny particles like nitrogen and oxygen molecules.\n\n3. **Rayleigh Scattering:** When sunlight enters the atmosphere, it collides with these particles.  This is called Rayleigh scattering.  \n\n4. **Blue Light's Advantage:**  Blue light has a shorter wavelength than other colors in the visible spectrum.  This means it gets scattered more strongly"
+[DEBUG] Local model text: 'Ann is the oldest. \n'
+[DEBUG] Local model text: "Yes, if all A are B and all B are C, then all A are C. \n\nThis is a classic example of a logical deduction called **transitive property**. \n\nHere's why:\n\n* **All A are B:**  This means if something is an A, it must also be a B.\n* **All B are C:** This means if something is a B, it must also be a C.\n\nSince all A are B, and all B are C, then by the transitive property, all A must also be C. \n"
+[DEBUG] Local model text: "A semantic cache reduces token cost by:\n\n* **Reducing redundant computations:**  Semantic caches store pre-computed representations of language models' outputs. This means instead of recalculating the same information every time, the cache can quickly retrieve the pre-computed result. \n* **Improving efficiency:**  This reduces the computational load on the model, leading to faster processing and lower token costs. \n* **Enabling faster inference:**  By reducing the time needed to generate responses, semantic caches enable faster inference, which is crucial for real-time applications. \n\n\nEssentially, a semantic cache acts as a memory for language model outputs,"
+[DEBUG] Local model text: "Here's a breakdown of how backpropagation updates weights in a neural network:\n\n**1. Forward Pass:**\n\n* **Input:** The input data (e.g., image pixels) is fed into the network.\n* **Hidden Layers:** The data travels through each layer of neurons, performing calculations (weighted sums and activation functions) to produce an output.\n* **Output:** The final layer produces the network's prediction (e.g., classifying the image as a cat or dog).\n\n**2. Calculate Error:**\n\n* **Loss Function:** The difference between the network's prediction and the actual target value"
+[DEBUG] Local model text: '423 \n'
+[DEBUG] Local model text: '144 \n'
+[DEBUG] Local model text: 'x = 6 \n'
+[DEBUG] Local model text: '36 \n'
+[DEBUG] Local model text: '1081 \n'
+[DEBUG] Local model text: 'Action: calculator\nAction Input: 60 km / 45 minutes \n'
+[DEBUG] Executing tool: calculator with input '60 km / 45 minutes'
+[DEBUG] Observation: '1.3333333333333333'
+[DEBUG] Local model text: '133.33 km/h \n'
+[DEBUG] Local model text: 'Action: calculator\nAction Input: 1000 * (1.05)^2 \n'
+[DEBUG] Executing tool: calculator with input '1000 * (1.05)^2'
+[DEBUG] Observation: '1102.5'
+[DEBUG] Local model text: 'The compound interest is $102.50 \n'
+[DEBUG] Local model text: '10 \n'
+# FrugalRoute | engine=langgraph
+
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=0 Classify sentiment: 'I love this, works 
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=1 Classify sentiment: 'This is the worst p
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=2 Classify sentiment: 'The package arrived
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=3 Is this spam? 'You won a free prize, cli
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=4 Label the topic: 'The GDP grew 3% last q
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=5 Classify sentiment given sarcasm: 'Oh gr
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=6 Extract all email addresses from: contac
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=7 Extract the phone number from: call me a
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=8 Extract the date from: the meeting is on
+[local       ] remote=   0 route_p=0.28 conf=0.9  id=9 Extract the total price from: 2 items at
+[local       ] remote=   0 route_p=0.28 conf=0.9  id=10 Extract all company names from: Apple an
+[local       ] remote=   0 route_p=0.29 conf=0.9  id=11 Extract the implied deadline from: submi
+[local       ] remote=   0 route_p=0.3  conf=0.9  id=12 Summarize in 5 words: The quarterly repo
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=13 Summarize: The cat sat on the mat and th
+[local       ] remote=   0 route_p=0.3  conf=0.9  id=14 Summarize the key risk: Latency rose 40%
+[local       ] remote=   0 route_p=0.28 conf=0.9  id=15 Summarize a dense legal clause about ind
+[local       ] remote=   0 route_p=0.25 conf=0.9  id=16 What is the capital of France?
+[local       ] remote=   0 route_p=0.26 conf=0.9  id=17 What is the chemical symbol for gold?
+[local       ] remote=   0 route_p=0.87 conf=1.0  id=18 How many continents are there?
+[local       ] remote=   0 route_p=0.25 conf=0.9  id=19 Who wrote Romeo and Juliet?
+[local       ] remote=   0 route_p=0.26 conf=0.9  id=20 What year did the Berlin Wall fall?
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=21 What is the boiling point of water at se
+[local       ] remote=   0 route_p=0.89 conf=0.72 id=22 Why does increasing temperature speed up
+[local       ] remote=   0 route_p=0.88 conf=0.72 id=23 Explain step by step why the sky appears
+[local       ] remote=   0 route_p=0.88 conf=0.9  id=24 Deduce who is oldest: Ann is older than 
+[local       ] remote=   0 route_p=0.89 conf=0.72 id=25 Explain the reasoning: if all A are B an
+[local       ] remote=   0 route_p=0.88 conf=0.72 id=26 Why would a semantic cache reduce token 
+[local       ] remote=   0 route_p=0.88 conf=0.71 id=27 Explain step by step how backpropagation
+[local       ] remote=   0 route_p=0.87 conf=1.0  id=28 Calculate the sum of 145 and 278.
+[local       ] remote=   0 route_p=0.87 conf=1.0  id=29 How many is 12 multiplied by 12?
+[local       ] remote=   0 route_p=0.87 conf=1.0  id=30 Solve for x: 2x + 6 = 20.
+[local       ] remote=   0 route_p=0.24 conf=0.9  id=31 What is 15% of 240?
+[local       ] remote=   0 route_p=0.87 conf=1.0  id=32 Calculate the product of 23 and 47.
+[local       ] remote=   0 route_p=0.88 conf=None id=33 A train travels 60 km in 45 minutes; how
+[local       ] remote=   0 route_p=0.27 conf=None id=34 Compute the compound interest on 1000 at
+[local       ] remote=   0 route_p=0.88 conf=1.0  id=35 How many multiply steps to compute 2^10 
+
+remote_tokens=0  tokens_saved=0  free%=100.0  escalate%=0.0  cache_hits=0
+
+results -> out/gemma-2-2b-it.jsonl  (36 tasks, remote_tokens=0)
+
+Par
