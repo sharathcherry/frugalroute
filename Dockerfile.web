@@ -1,0 +1,26 @@
+# ============================================================
+# FrugalRoute — Web/API service image (Railway)
+#
+# This is the ROUTER web service only. It does NOT run the model —
+# the local model lives remotely (AMD MI300X via vLLM), reached over
+# LOCAL_BASE_URL. Railway is CPU-only, so no GPU/vLLM here.
+#
+# The frontend is deployed as a SEPARATE Railway service (Node/Nitro).
+# ============================================================
+FROM python:3.11-slim
+
+WORKDIR /app
+ENV PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    MOCK=0
+
+# Slim deps — heavy embedding/compression libs are optional (code falls back).
+COPY requirements.web.txt ./
+RUN pip install -r requirements.web.txt
+
+# App code (frontend/ is excluded via .dockerignore)
+COPY . .
+
+# Railway injects $PORT
+EXPOSE 8000
+CMD ["sh", "-c", "uvicorn server:app --host 0.0.0.0 --port ${PORT:-8000}"]

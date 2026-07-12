@@ -57,7 +57,7 @@ def judge_raw(category, task, answer):
     )
     try:
         text, _, _ = providers.complete(
-            [{"role": "user", "content": grade_prompt}], kind="local")
+            [{"role": "user", "content": grade_prompt}], kind="local", max_tokens=8)
         m = re.search(r"(?:0(?:\.\d+)?|1(?:\.0+)?)", text)
         v = float(m.group()) if m else 0.5
         return max(0.0, min(1.0, v))

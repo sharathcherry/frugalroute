@@ -14,6 +14,20 @@ In MOCK mode returns canned text + token counts (no network).
 import config
 import tokens
 
+# Runtime override for the active LOCAL model (set from the UI via /api/models).
+# Falls back to config.LOCAL_MODEL when unset.
+_LOCAL_OVERRIDE = None
+
+
+def set_local_model(name):
+    """Switch the active local model at runtime (no restart needed)."""
+    global _LOCAL_OVERRIDE
+    _LOCAL_OVERRIDE = name or None
+
+
+def active_local_model():
+    return _LOCAL_OVERRIDE or config.LOCAL_MODEL
+
 
 def _mock_complete(messages, model, kind):
     prompt = messages[-1]["content"] if messages else ""
@@ -40,7 +54,7 @@ def _remote_client_and_model(model):
 
 
 def complete(messages, kind="remote", model=None, base_url=None, api_key=None,
-             max_tokens=None):
+             max_tokens=None, temperature=0):
     """Return (text, prompt_tokens, completion_tokens).
 
     Args:
@@ -52,11 +66,11 @@ def complete(messages, kind="remote", model=None, base_url=None, api_key=None,
                     network (prevents runaway slow responses). Default: None
                     (no cap) for remote, 400 for local via nodes.py.
     """
-    default_model = config.LOCAL_MODEL if kind == "local" else config.REMOTE_MODEL
+    default_model = active_local_model() if kind == "local" else config.REMOTE_MODEL
     if config.MOCK:
         return _mock_complete(messages, model or default_model, kind)
 
-    kwargs = {"model": None, "messages": messages, "temperature": 0}
+    kwargs = {"model": None, "messages": messages, "temperature": temperature}
     if max_tokens is not None:
         kwargs["max_tokens"] = max_tokens
 
@@ -64,7 +78,7 @@ def complete(messages, kind="remote", model=None, base_url=None, api_key=None,
         from openai import OpenAI
         client = OpenAI(base_url=base_url or config.LOCAL_BASE_URL,
                         api_key=api_key or config.LOCAL_API_KEY)
-        kwargs["model"] = model or config.LOCAL_MODEL
+        kwargs["model"] = model or active_local_model()
     else:
         client, m = _remote_client_and_model(model)
         kwargs["model"] = m

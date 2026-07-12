@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>NEURAL_OS | Premium AI Interface</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&amp;family=Geist:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.04);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(32px);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .ai-bubble-accent {
+            border-left: 2px solid #00A3E0;
+            background: linear-gradient(90deg, rgba(0, 163, 224, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
+        }
+        .user-bubble-accent {
+            border-right: 2px solid #ED1C24;
+            background: linear-gradient(270deg, rgba(237, 28, 36, 0.05) 0%, rgba(0, 0, 0, 0) 100%);
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        @keyframes pulse-blue {
+            0%, 100% { box-shadow: 0 0 10px rgba(0, 163, 224, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(0, 163, 224, 0.4); }
+        }
+        .glow-blue {
+            animation: pulse-blue 3s infinite;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "inverse-surface": "#e2e1eb",
+                    "secondary-fixed-dim": "#81cfff",
+                    "primary-fixed": "#ffdad6",
+                    "on-surface-variant": "#e8bcb7",
+                    "on-tertiary-fixed-variant": "#474646",
+                    "on-tertiary-fixed": "#1c1b1b",
+                    "error": "#ffb4ab",
+                    "inverse-on-surface": "#2f3037",
+                    "on-tertiary": "#313030",
+                    "primary-container": "#ff544b",
+                    "on-error": "#690005",
+                    "background": "#0D0D0D",
+                    "tertiary-container": "#929090",
+                    "on-primary": "#690006",
+                    "surface": "#12131a",
+                    "on-error-container": "#ffdad6",
+                    "surface-bright": "#383940",
+                    "secondary-fixed": "#c6e7ff",
+                    "secondary": "#81cfff",
+                    "on-primary-fixed": "#410002",
+                    "surface-variant": "#33343c",
+                    "tertiary-fixed-dim": "#c9c6c5",
+                    "secondary-container": "#00a3e0",
+                    "error-container": "#93000a",
+                    "on-primary-container": "#5c0005",
+                    "on-secondary-fixed": "#001e2d",
+                    "surface-dim": "#12131a",
+                    "on-secondary-fixed-variant": "#004c6b",
+                    "surface-container-lowest": "#0c0e14",
+                    "inverse-primary": "#c00014",
+                    "primary": "#ffb4ab",
+                    "surface-container": "#1e1f26",
+                    "surface-container-high": "#282a31",
+                    "surface-tint": "#ffb4ab",
+                    "tertiary-fixed": "#e5e2e1",
+                    "primary-fixed-dim": "#ffb4ab",
+                    "outline-variant": "#5e3f3c",
+                    "outline": "#ae8783",
+                    "surface-container-highest": "#33343c",
+                    "surface-container-low": "#1a1b22",
+                    "on-surface": "#e2e1eb",
+                    "on-secondary-container": "#00354c",
+                    "on-secondary": "#00344b",
+                    "tertiary": "#c9c6c5",
+                    "on-tertiary-container": "#2a2a29",
+                    "on-background": "#e2e1eb",
+                    "on-primary-fixed-variant": "#93000d"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "base": "4px",
+                    "md": "24px",
+                    "sm": "16px",
+                    "margin-desktop": "64px",
+                    "xs": "8px",
+                    "margin-mobile": "16px",
+                    "lg": "48px",
+                    "xl": "80px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Geist"],
+                    "code-inline": ["Space Mono"],
+                    "headline-lg-mobile": ["Geist"],
+                    "body-md": ["Geist"],
+                    "label-sm": ["Space Mono"],
+                    "headline-xl": ["Geist"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+                    "code-inline": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "headline-xl": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.04em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-background text-on-surface font-body-md selection:bg-primary-container selection:text-white overflow-hidden">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full bg-background/80 backdrop-blur-xl flex justify-between items-center px-4 md:px-margin-desktop h-16 w-full z-50 border-b border-white/10">
+<div class="flex items-center gap-4">
+<span class="font-headline-lg text-primary tracking-tighter uppercase">NEURAL_OS</span>
+</div>
+<div class="hidden md:flex items-center gap-6">
+<div class="flex items-center gap-2 px-4 py-1.5 rounded-full border border-secondary/20 bg-secondary/5 text-secondary-fixed-dim glow-blue">
+<span class="material-symbols-outlined text-[18px]">bolt</span>
+<span class="font-label-sm uppercase tracking-widest">Tokens Saved: <span id="token-counter">14,054</span></span>
+</div>
+<div class="flex gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-white/5 transition-colors p-2 rounded-lg active:scale-95 transition-transform">database</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-white/5 transition-colors p-2 rounded-lg active:scale-95 transition-transform">settings</button>
+</div>
+<div class="flex items-center gap-3 ml-2 pl-6 border-l border-white/10">
+<span class="font-label-sm text-primary uppercase">32.4k TOKENS</span>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-white/20">
+<img class="w-full h-auto" data-alt="A cinematic, high-detail digital portrait of a cybernetic avatar with glowing neural pathways across its face. The lighting is deep blue and vibrant red, reflecting a high-tech obsidian environment. The aesthetic is ultra-modern and minimalist, emphasizing quiet computational power and high-performance AI technology." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKmoVOmjhVzwkhGue_Dw0bJzmfN5OXr9ZbF-a4KPZLtiTXI111EmU-48CyXAa4wmsPnjHuy99FDR7UBlN_T-uNRwEJKm1HSYRLXUZbfMIF2A_a1U5KG723s1tQqBRCMBtndaPrKKGyPa6bBQIRbqAbmlcSY-ShIF9MW0pHX5___EKLVL7git1vTEH8x16jHwhmqbwddTfXV_Ua4ZD9G-V8D8Y7IvL2HkHJj1r9Y3DvM6qJSkKoJeQYuDEMIayTu2rq2fF5sR-F6g"/>
+</div>
+</div>
+</div>
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden material-symbols-outlined text-on-surface">menu</button>
+</header>
+<!-- Side Navigation Bar -->
+<aside class="fixed left-0 top-0 h-full w-64 hidden md:flex flex-col bg-surface-container-lowest/60 backdrop-blur-2xl border-r border-white/10 shadow-xl shadow-secondary/5 z-40 py-md px-sm pt-20">
+<div class="flex items-center gap-3 mb-8 px-2">
+<div class="w-10 h-10 rounded bg-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">neurology</span>
+</div>
+<div>
+<p class="font-headline-lg-mobile text-secondary-fixed text-sm">NEURAL_CORE</p>
+<p class="text-[10px] text-on-surface-variant/60 font-label-sm uppercase tracking-tighter">V2.0.4-LTS</p>
+</div>
+</div>
+<button class="mb-6 flex items-center gap-3 text-secondary border-l-2 border-secondary bg-secondary-container/10 px-4 py-3 cursor-pointer transition-all duration-200 hover:bg-white/5">
+<span class="material-symbols-outlined">add</span>
+<span class="font-body-md">New Chat</span>
+</button>
+<nav class="flex-1 space-y-1">
+<div class="text-on-surface-variant px-4 py-3 flex items-center gap-3 cursor-pointer transition-all duration-200 hover:bg-white/5">
+<span class="material-symbols-outlined">history</span>
+<span class="font-body-md">Recent</span>
+</div>
+<div class="text-on-surface-variant px-4 py-3 flex items-center gap-3 cursor-pointer transition-all duration-200 hover:bg-white/5">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-body-md">Saved</span>
+</div>
+<div class="text-on-surface-variant px-4 py-3 flex items-center gap-3 cursor-pointer transition-all duration-200 hover:bg-white/5">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-body-md">Archive</span>
+</div>
+</nav>
+<div class="mt-auto space-y-1 pt-6 border-t border-white/10">
+<div class="text-on-surface-variant px-4 py-3 flex items-center gap-3 cursor-pointer transition-all duration-200 hover:bg-white/5">
+<span class="material-symbols-outlined">help</span>
+<span class="font-body-md">Help</span>
+</div>
+<div class="text-on-surface-variant px-4 py-3 flex items-center gap-3 cursor-pointer transition-all duration-200 hover:bg-white/5">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-body-md">Sign Out</span>
+</div>
+<div class="px-2 pt-4">
+<button class="w-full py-3 bg-secondary-container text-on-secondary-container font-label-sm uppercase tracking-widest rounded-lg hover:opacity-90 transition-opacity">
+                    Upgrade Plan
+                </button>
+</div>
+</div>
+</aside>
+<!-- Main Chat Canvas -->
+<main class="md:ml-64 pt-16 h-screen flex flex-col relative overflow-hidden">
+<!-- Subtle Ambient Background Shader -->
+<div class="absolute inset-0 pointer-events-none z-0 opacity-20">
+
+</div>
+<!-- Scrollable Messages Container -->
+<div class="flex-1 overflow-y-auto px-4 md:px-lg py-xl space-y-12 relative z-10" id="chat-container">
+    <!-- Welcome Info (Bento Style) -->
+    <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-gutter mb-20" id="welcome-bento">
+        <div class="glass-card p-sm rounded-xl col-span-1 md:col-span-2">
+            <h2 class="text-headline-lg font-headline-lg text-primary mb-2">Neural Interface Online</h2>
+            <p class="text-on-surface-variant text-body-md opacity-80">Accessing local Qwen-3B and remote Fireworks clusters. Your session is token-optimized.</p>
+        </div>
+        <div class="glass-card p-sm rounded-xl flex flex-col justify-center items-center text-center">
+            <span class="material-symbols-outlined text-secondary text-4xl mb-2">speed</span>
+            <p class="text-label-sm uppercase tracking-widest text-secondary">Latency</p>
+            <p class="text-headline-lg font-headline-lg" id="bento-latency">--ms</p>
+        </div>
+    </div>
+    <div id="chat-history"></div>
+    <div id="chat-spacer" class="h-32"></div>
+</div>
+<!-- Input Area (Bottom Fixed) -->
+<div class="absolute bottom-0 left-0 w-full p-4 md:p-md pointer-events-none z-50">
+<div class="max-w-4xl mx-auto w-full glass-card p-2 rounded-2xl flex items-center gap-2 pointer-events-auto border border-white/20">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-white/5 p-3 rounded-xl transition-all">attach_file</button>
+<textarea id="chat-input" class="flex-1 bg-transparent border-none focus:ring-0 text-body-md text-on-surface placeholder:text-on-surface-variant/40 resize-none py-3" placeholder="Enter command or query..." rows="1"></textarea>
+<div class="flex items-center gap-2 pr-2">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-white/5 p-3 rounded-xl transition-all">mic</button>
+<button id="chat-send" class="w-12 h-12 flex items-center justify-center bg-primary text-white rounded-xl shadow-[0_0_15px_rgba(237,28,36,0.3)] hover:shadow-[0_0_25px_rgba(237,28,36,0.5)] transition-all active:scale-95">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">send</span>
+</button>
+</div>
+</div>
+<p class="text-center text-[10px] text-on-surface-variant/40 mt-3 font-label-sm tracking-widest">NEURAL_OS V2.0.4 // LOCAL QUANTIZATION ACTIVE // END-TO-END ENCRYPTED</p>
+</div>
+</main>
+
+    <script>
+        const counter = document.getElementById('token-counter');
+        const bentoLatency = document.getElementById('bento-latency');
+        const chatHistory = document.getElementById('chat-history');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        const welcomeBento = document.getElementById('welcome-bento');
+
+        // Auto-resize textarea
+        chatInput.addEventListener("input", function() {
+            this.style.height = 0;
+            this.style.height = (this.scrollHeight) + "px";
+        }, false);
+
+        chatInput.addEventListener("keydown", function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        chatSend.addEventListener("click", sendMessage);
+
+        async function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            chatInput.value = '';
+            chatInput.style.height = 0;
+            welcomeBento.style.display = 'none';
+
+            // Add user bubble
+            appendUserMessage(text);
+            scrollToBottom();
+
+            // Add loading AI bubble
+            const loadingId = appendAILoading();
+            scrollToBottom();
+
+            try {
+                const res = await fetch('/api/route', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ task: text })
+                });
+                const data = await res.json();
+                
+                // Update loading bubble with actual data
+                replaceAILoading(loadingId, data);
+                scrollToBottom();
+
+                // Update Stats
+                counter.innerText = data.session.remote_tokens.toLocaleString();
+                bentoLatency.innerText = data.latency_ms + 'ms';
+                
+                // Flash glow effect
+                const parent = counter.parentElement;
+                parent.style.transition = 'all 0.3s ease';
+                parent.style.boxShadow = '0 0 30px rgba(0, 163, 224, 0.6)';
+                setTimeout(() => {
+                    parent.style.boxShadow = '';
+                }, 400);
+
+            } catch (err) {
+                console.error(err);
+                document.getElementById(loadingId).innerHTML = '<p class="text-error text-body-md">Error connecting to Neural Core.</p>';
+            }
+        }
+
+        function appendUserMessage(text) {
+            const div = document.createElement('div');
+            div.className = "flex flex-col items-end gap-3 max-w-3xl ml-auto mb-12";
+            div.innerHTML = `
+                <div class="glass-card user-bubble-accent p-sm rounded-tl-2xl rounded-bl-2xl rounded-br-2xl bg-white/5">
+                    <p class="text-body-md text-on-surface whitespace-pre-wrap">${text.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>
+                </div>
+                <div class="mr-2 text-[10px] font-label-sm text-on-surface-variant/60 uppercase">Sent Just Now</div>
+            `;
+            chatHistory.appendChild(div);
+        }
+
+        function appendAILoading() {
+            const id = 'loading-' + Date.now();
+            const div = document.createElement('div');
+            div.className = "flex flex-col items-start gap-3 max-w-3xl mb-12";
+            div.innerHTML = `
+                <div id="${id}" class="glass-card ai-bubble-accent p-sm rounded-tr-2xl rounded-br-2xl rounded-bl-2xl">
+                    <p class="text-body-md text-on-surface/50 animate-pulse">Processing via Neural Core...</p>
+                </div>
+            `;
+            chatHistory.appendChild(div);
+            return id;
+        }
+
+        function replaceAILoading(id, data) {
+            const bubble = document.getElementById(id);
+            
+            let badgeHtml = '';
+            if (data.source === 'cache') {
+                badgeHtml = `<span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-label-sm uppercase tracking-tighter text-on-surface-variant border border-white/5 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-white/40"></span>🧠 Cache</span>`;
+            } else if (data.source === 'local') {
+                badgeHtml = `<span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-label-sm uppercase tracking-tighter text-on-surface-variant border border-white/5 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-secondary shadow-[0_0_5px_#00A3E0]"></span>⚡ Local (Qwen 3B)</span>`;
+            } else {
+                badgeHtml = `
+                <span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-label-sm uppercase tracking-tighter text-on-surface-variant border border-white/5 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_5px_#ED1C24]"></span>☁️ Remote (Fireworks)</span>
+                <span class="px-3 py-1 bg-surface-container rounded-full text-[10px] font-label-sm uppercase tracking-tighter text-on-surface-variant border border-white/5 flex items-center gap-1.5"><span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">bolt</span>${data.remote_tokens} Tokens Spent</span>`;
+            }
+
+            bubble.innerHTML = `<p class="text-body-md text-on-surface whitespace-pre-wrap">${data.answer.replace(/</g, "&lt;").replace(/>/g, "&gt;")}</p>`;
+            
+            // Append badges wrapper below the bubble
+            const badgesDiv = document.createElement('div');
+            badgesDiv.className = "flex items-center gap-2 ml-2";
+            badgesDiv.innerHTML = badgeHtml;
+            bubble.parentElement.appendChild(badgesDiv);
+        }
+
+        function scrollToBottom() {
+            const container = document.getElementById('chat-container');
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // Dummy handlers for other buttons
+        document.querySelectorAll('button:not(#chat-send)').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const text = btn.innerText.trim();
+                alert(`The '${text || 'Icon'}' feature is coming soon in a future update!`);
+            });
+        });
+    </script>
+
+</body></html>

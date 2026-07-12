@@ -15,6 +15,7 @@ calib_log.jsonl
 SESSION_LOG.md
 
 # Temp/scratch scripts
+scratch/
 check_config.py
 smoke_test.py
 run_remote.sh

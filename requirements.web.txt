@@ -1,0 +1,10 @@
+# Slim deps for the Railway web/API service (no model runs here).
+# The heavy libs (fastembed, qdrant-client, llmlingua) are intentionally
+# omitted — triage falls back to keyword matching, cache to difflib (and
+# caching is disabled anyway), and compression to a no-op fallback.
+openai>=1.40
+python-dotenv>=1.0
+tiktoken>=0.7
+langgraph>=0.2
+fastapi>=0.110
+uvicorn>=0.29

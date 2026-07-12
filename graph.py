@@ -17,6 +17,7 @@ import nodes
 class S(TypedDict, total=False):
     id: str           # task identifier — passed through to results.jsonl
     task: str
+    augmented_task: str
     category: str
     candidate: str
     answer: str

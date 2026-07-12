@@ -1,0 +1,568 @@
+
+==================================================
+Benchmarking Qwen/Qwen2.5-0.5B-Instruct
+==================================================
+Running on remote: docker rm -f frugal-vllm
+Running on remote: docker run -d --name frugal-vllm --network host -v /root/.cache/huggingface:/root/.cache/huggingface -e VLLM_HOST_IP=127.0.0.1 -e GLOO_SOCKET_IFNAME=lo -e NCCL_SOCKET_IFNAME=lo --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined vllm/vllm-openai-rocm:v0.23.0 --model Qwen/Qwen2.5-0.5B-Instruct --host 0.0.0.0 --port 8001 --api-key frugal-amd-7k2x --enable-prefix-caching --max-model-len 8192 --trust-remote-code
+Waiting for vLLM to be ready...
+vLLM is ready!
+Running on remote: rocm-smi --showuse | grep 'GPU use'
+Running harness.py...
+samples = 36   raw local accuracy = 0.556
+ECE before = 0.428   isotonic = 0.140   platt = 0.002
+best calibrator = platt   (Brier = 0.247)
+saved -> calib.json  (set CALIB_PATH=calib.json to use it)
+
+Per-category local accuracy:
+  classification       2/6 = 0.33
+  extraction           3/6 = 0.50
+  math                 8/8 = 1.00
+  qa                   6/6 = 1.00
+  reasoning            1/6 = 0.17
+  summarization        0/4 = 0.00
+
+AutoMix gate: belief_threshold=0.90  remote_calls=34/36  accuracy=1.000  saved -> automix.json
+
+threshold sweep (accuracy floor = 0.8):
+  thr   remote_calls   accuracy
+  0.00        0        0.556
+  0.10        0        0.556
+  0.20        0        0.556
+  0.30        0        0.556
+  0.40        0        0.556
+  0.50        0        0.556
+  0.60       36        1.000  <-
+  0.70       36        1.000
+  0.80       36        1.000
+  0.90       36        1.000
+  1.00       36        1.000
+
+RECOMMEND CONFIDENCE_THRESHOLD = 0.60  ->  remote_calls = 36/36  accuracy = 1.000  tokens_saved = 0.0%
+
+PredictiveRouter trained. weights = [-0.47, 3.45, -0.54]
+Running run.py...
+# FrugalRoute | engine=langgraph
+
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=0 Classify sentiment: 'I love this, works 
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=1 Classify sentiment: 'This is the worst p
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=2 Classify sentiment: 'The package arrived
+[local       ] remote=   0 route_p=0.27 conf=0.95 id=3 Is this spam? 'You won a free prize, cli
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=4 Label the topic: 'The GDP grew 3% last q
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=5 Classify sentiment given sarcasm: 'Oh gr
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=6 Extract all email addresses from: contac
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=7 Extract the phone number from: call me a
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=8 Extract the date from: the meeting is on
+[local       ] remote=   0 route_p=0.28 conf=0.97 id=9 Extract the total price from: 2 items at
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=10 Extract all company names from: Apple an
+[local       ] remote=   0 route_p=0.29 conf=0.95 id=11 Extract the implied deadline from: submi
+[remote      ] remote= 460 route_p=0.3  conf=0.0  id=12 Summarize in 5 words: The quarterly repo
+[remote      ] remote= 162 route_p=0.27 conf=0.0  id=13 Summarize: The cat sat on the mat and th
+[remote      ] remote= 209 route_p=0.3  conf=0.0  id=14 Summarize the key risk: Latency rose 40%
+[remote      ] remote= 573 route_p=0.28 conf=0.0  id=15 Summarize a dense legal clause about ind
+[local       ] remote=   0 route_p=0.25 conf=0.95 id=16 What is the capital of France?
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=17 What is the chemical symbol for gold?
+[remote      ] remote= 299 route_p=0.87 conf=None id=18 How many continents are there?
+[local       ] remote=   0 route_p=0.25 conf=0.95 id=19 Who wrote Romeo and Juliet?
+[local       ] remote=   0 route_p=0.26 conf=0.95 id=20 What year did the Berlin Wall fall?
+[local       ] remote=   0 route_p=0.27 conf=0.95 id=21 What is the boiling point of water at se
+[remote      ] remote=1014 route_p=0.89 conf=None id=22 Why does increasing temperature speed up
+[remote      ] remote= 693 route_p=0.88 conf=None id=23 Explain step by step why the sky appears
+[remote      ] remote= 142 route_p=0.88 conf=None id=24 Deduce who is oldest: Ann is older than 
+[remote      ] remote=1626 route_p=0.89 conf=None id=25 Explain the reasoning: if all A are B an
+[remote      ] remote=1109 route_p=0.88 conf=None id=26 Why would a semantic cache reduce token 
+[remote      ] remote= 996 route_p=0.88 conf=None id=27 Explain step by step how backpropagation
+[remote      ] remote= 159 route_p=0.87 conf=None id=28 Calculate the sum of 145 and 278.
+[remote      ] remote=  89 route_p=0.87 conf=None id=29 How many is 12 multiplied by 12?
+[remote      ] remote= 122 route_p=0.87 conf=None id=30 Solve for x: 2x + 6 = 20.
+[local       ] remote=   0 route_p=0.24 conf=0.82 id=31 What is 15% of 240?
+[remote      ] remote= 145 route_p=0.87 conf=None id=32 Calculate the product of 23 and 47.
+[remote      ] remote= 209 route_p=0.88 conf=None id=33 A train travels 60 km in 45 minutes; how
+[local       ] remote=   0 route_p=0.27 conf=0.97 id=34 Compute the compound interest on 1000 at
+[remote      ] remote= 946 route_p=0.88 conf=None id=35 How many multiply steps to compute 2^10 
+
+remote_tokens=8953  tokens_saved=34  free%=52.8  escalate%=47.2  cache_hits=0
+
+results -> out/Qwen2.5-0.5B-Instruct.jsonl  (36 tasks, remote_tokens=8953)
+
+Parsing results...
+Running on remote: docker rm -f frugal-vllm
+Finished Qwen/Qwen2.5-0.5B-Instruct
+
+
+==================================================
+Benchmarking HuggingFaceTB/SmolLM2-1.7B-Instruct
+==================================================
+Running on remote: docker rm -f frugal-vllm
+Running on remote: docker run -d --name frugal-vllm --network host -v /root/.cache/huggingface:/root/.cache/huggingface -e VLLM_HOST_IP=127.0.0.1 -e GLOO_SOCKET_IFNAME=lo -e NCCL_SOCKET_IFNAME=lo --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined vllm/vllm-openai-rocm:v0.23.0 --model HuggingFaceTB/SmolLM2-1.7B-Instruct --host 0.0.0.0 --port 8001 --api-key frugal-amd-7k2x --enable-prefix-caching --max-model-len 8192 --trust-remote-code
+Waiting for vLLM to be ready...
+Failed to start vLLM for HuggingFaceTB/SmolLM2-1.7B-Instruct. Skipping.
+Running on remote: docker rm -f frugal-vllm
+
+==================================================
+Benchmarking Qwen/Qwen2.5-3B-Instruct
+==================================================
+Running on remote: docker rm -f frugal-vllm
+Running on remote: docker run -d --name frugal-vllm --network host -v /root/.cache/huggingface:/root/.cache/huggingface -e VLLM_HOST_IP=127.0.0.1 -e GLOO_SOCKET_IFNAME=lo -e NCCL_SOCKET_IFNAME=lo --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined vllm/vllm-openai-rocm:v0.23.0 --model Qwen/Qwen2.5-3B-Instruct --host 0.0.0.0 --port 8001 --api-key frugal-amd-7k2x --enable-prefix-caching --max-model-len 8192 --trust-remote-code
+Waiting for vLLM to be ready...
+vLLM is ready!
+Running on remote: rocm-smi --showuse | grep 'GPU use'
+Running harness.py...
+samples = 36   raw local accuracy = 0.639
+ECE before = 0.339   isotonic = 0.222   platt = 0.060
+best calibrator = platt   (Brier = 0.225)
+saved -> calib.json  (set CALIB_PATH=calib.json to use it)
+
+Per-category local accuracy:
+  classification       5/6 = 0.83
+  extraction           3/6 = 0.50
+  math                 8/8 = 1.00
+  qa                   5/6 = 0.83
+  reasoning            2/6 = 0.33
+  summarization        0/4 = 0.00
+
+AutoMix gate: belief_threshold=0.90  remote_calls=36/36  accuracy=1.000  saved -> automix.json
+
+threshold sweep (accuracy floor = 0.8):
+  thr   remote_calls   accuracy
+  0.00        0        0.639
+  0.10        0        0.639
+  0.20        0        0.639
+  0.30        0        0.639
+  0.40        0        0.639
+  0.50        0        0.639
+  0.60        2        0.694
+  0.70       36        1.000  <-
+  0.80       36        1.000
+  0.90       36        1.000
+  1.00       36        1.000
+
+RECOMMEND CONFIDENCE_THRESHOLD = 0.70  ->  remote_calls = 36/36  accuracy = 1.000  tokens_saved = 0.0%
+
+PredictiveRouter trained. weights = [-0.77, 2.93, -0.5]
+Running run.py...
+# FrugalRoute | engine=langgraph
+
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=0 Classify sentiment: 'I love this, works 
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=1 Classify sentiment: 'This is the worst p
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=2 Classify sentiment: 'The package arrived
+[remote      ] remote= 157 route_p=0.27 conf=0.0  id=3 Is this spam? 'You won a free prize, cli
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=4 Label the topic: 'The GDP grew 3% last q
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=5 Classify sentiment given sarcasm: 'Oh gr
+[remote      ] remote= 221 route_p=0.27 conf=0.0  id=6 Extract all email addresses from: contac
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=7 Extract the phone number from: call me a
+[local       ] remote=   0 route_p=0.27 conf=0.95 id=8 Extract the date from: the meeting is on
+[remote      ] remote= 129 route_p=0.28 conf=0.2  id=9 Extract the total price from: 2 items at
+[local       ] remote=   0 route_p=0.28 conf=0.75 id=10 Extract all company names from: Apple an
+[remote      ] remote=1361 route_p=0.29 conf=0.0  id=11 Extract the implied deadline from: submi
+[remote      ] remote= 460 route_p=0.3  conf=0.0  id=12 Summarize in 5 words: The quarterly repo
+[remote      ] remote= 162 route_p=0.27 conf=0.0  id=13 Summarize: The cat sat on the mat and th
+[remote      ] remote= 209 route_p=0.3  conf=0.0  id=14 Summarize the key risk: Latency rose 40%
+[remote      ] remote= 573 route_p=0.28 conf=0.0  id=15 Summarize a dense legal clause about ind
+[local       ] remote=   0 route_p=0.25 conf=1.0  id=16 What is the capital of France?
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=17 What is the chemical symbol for gold?
+[remote      ] remote= 299 route_p=0.87 conf=None id=18 How many continents are there?
+[local       ] remote=   0 route_p=0.25 conf=1.0  id=19 Who wrote Romeo and Juliet?
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=20 What year did the Berlin Wall fall?
+[remote      ] remote= 111 route_p=0.27 conf=0.1  id=21 What is the boiling point of water at se
+[remote      ] remote=1014 route_p=0.89 conf=None id=22 Why does increasing temperature speed up
+[remote      ] remote= 693 route_p=0.88 conf=None id=23 Explain step by step why the sky appears
+[remote      ] remote= 140 route_p=0.88 conf=None id=24 Deduce who is oldest: Ann is older than 
+[remote      ] remote=1626 route_p=0.89 conf=None id=25 Explain the reasoning: if all A are B an
+[remote      ] remote=1109 route_p=0.88 conf=None id=26 Why would a semantic cache reduce token 
+[remote      ] remote= 996 route_p=0.88 conf=None id=27 Explain step by step how backpropagation
+[remote      ] remote= 158 route_p=0.87 conf=None id=28 Calculate the sum of 145 and 278.
+[remote      ] remote=  89 route_p=0.87 conf=None id=29 How many is 12 multiplied by 12?
+[remote      ] remote= 122 route_p=0.87 conf=None id=30 Solve for x: 2x + 6 = 20.
+[local       ] remote=   0 route_p=0.24 conf=0.85 id=31 What is 15% of 240?
+[remote      ] remote= 145 route_p=0.87 conf=None id=32 Calculate the product of 23 and 47.
+[remote      ] remote= 209 route_p=0.88 conf=None id=33 A train travels 60 km in 45 minutes; how
+[local       ] remote=   0 route_p=0.27 conf=0.7  id=34 Compute the compound interest on 1000 at
+[remote      ] remote= 946 route_p=0.88 conf=None id=35 How many multiply steps to compute 2^10 
+
+remote_tokens=10929  tokens_saved=44  free%=38.9  escalate%=61.1  cache_hits=0
+
+results -> out/Qwen2.5-3B-Instruct.jsonl  (36 tasks, remote_tokens=10929)
+
+Parsing results...
+Running on remote: docker rm -f frugal-vllm
+Finished Qwen/Qwen2.5-3B-Instruct
+
+
+==================================================
+Benchmarking microsoft/Phi-3.5-mini-instruct
+==================================================
+Running on remote: docker rm -f frugal-vllm
+Running on remote: docker run -d --name frugal-vllm --network host -v /root/.cache/huggingface:/root/.cache/huggingface -e VLLM_HOST_IP=127.0.0.1 -e GLOO_SOCKET_IFNAME=lo -e NCCL_SOCKET_IFNAME=lo --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined vllm/vllm-openai-rocm:v0.23.0 --model microsoft/Phi-3.5-mini-instruct --host 0.0.0.0 --port 8001 --api-key frugal-amd-7k2x --enable-prefix-caching --max-model-len 8192 --trust-remote-code
+Waiting for vLLM to be ready...
+vLLM is ready!
+Running on remote: rocm-smi --showuse | grep 'GPU use'
+Running harness.py...
+samples = 36   raw local accuracy = 0.722
+ECE before = 0.261   isotonic = 0.056   platt = 0.003
+best calibrator = platt   (Brier = 0.196)
+saved -> calib.json  (set CALIB_PATH=calib.json to use it)
+
+Per-category local accuracy:
+  classification       6/6 = 1.00
+  extraction           4/6 = 0.67
+  math                 8/8 = 1.00
+  qa                   6/6 = 1.00
+  reasoning            2/6 = 0.33
+  summarization        0/4 = 0.00
+
+AutoMix gate: belief_threshold=0.90  remote_calls=36/36  accuracy=1.000  saved -> automix.json
+
+threshold sweep (accuracy floor = 0.8):
+  thr   remote_calls   accuracy
+  0.00        0        0.722
+  0.10        0        0.722
+  0.20        0        0.722
+  0.30        0        0.722
+  0.40        0        0.722
+  0.50        0        0.722
+  0.60        0        0.722
+  0.70        0        0.722
+  0.80       36        1.000
+  0.90       36        1.000
+  1.00       36        1.000
+
+RECOMMEND CONFIDENCE_THRESHOLD = 0.75  ->  remote_calls = 36/36  accuracy = 1.000  tokens_saved = 0.0%
+
+PredictiveRouter trained. weights = [-1.42, 3.16, 0.12]
+Running run.py...
+# FrugalRoute | engine=langgraph
+
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=0 Classify sentiment: 'I love this, works 
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=1 Classify sentiment: 'This is the worst p
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=2 Classify sentiment: 'The package arrived
+[local       ] remote=   0 route_p=0.27 conf=0.95 id=3 Is this spam? 'You won a free prize, cli
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=4 Label the topic: 'The GDP grew 3% last q
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=5 Classify sentiment given sarcasm: 'Oh gr
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=6 Extract all email addresses from: contac
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=7 Extract the phone number from: call me a
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=8 Extract the date from: the meeting is on
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=9 Extract the total price from: 2 items at
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=10 Extract all company names from: Apple an
+[local       ] remote=   0 route_p=0.29 conf=1.0  id=11 Extract the implied deadline from: submi
+[remote      ] remote= 395 route_p=0.3  conf=0.0  id=12 Summarize in 5 words: The quarterly repo
+[remote      ] remote= 162 route_p=0.27 conf=0.0  id=13 Summarize: The cat sat on the mat and th
+[remote      ] remote= 209 route_p=0.3  conf=0.0  id=14 Summarize the key risk: Latency rose 40%
+[remote      ] remote= 573 route_p=0.28 conf=0.0  id=15 Summarize a dense legal clause about ind
+[local       ] remote=   0 route_p=0.25 conf=1.0  id=16 What is the capital of France?
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=17 What is the chemical symbol for gold?
+[remote      ] remote= 104 route_p=0.87 conf=None id=18 How many continents are there?
+[local       ] remote=   0 route_p=0.25 conf=1.0  id=19 Who wrote Romeo and Juliet?
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=20 What year did the Berlin Wall fall?
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=21 What is the boiling point of water at se
+[remote      ] remote=1074 route_p=0.89 conf=None id=22 Why does increasing temperature speed up
+[remote      ] remote= 693 route_p=0.88 conf=None id=23 Explain step by step why the sky appears
+[remote      ] remote= 140 route_p=0.88 conf=None id=24 Deduce who is oldest: Ann is older than 
+[remote      ] remote=1626 route_p=0.89 conf=None id=25 Explain the reasoning: if all A are B an
+[remote      ] remote=1109 route_p=0.88 conf=None id=26 Why would a semantic cache reduce token 
+[remote      ] remote=1413 route_p=0.88 conf=None id=27 Explain step by step how backpropagation
+[remote      ] remote= 158 route_p=0.87 conf=None id=28 Calculate the sum of 145 and 278.
+[remote      ] remote=  89 route_p=0.87 conf=None id=29 How many is 12 multiplied by 12?
+[remote      ] remote= 122 route_p=0.87 conf=None id=30 Solve for x: 2x + 6 = 20.
+[local       ] remote=   0 route_p=0.24 conf=1.0  id=31 What is 15% of 240?
+[remote      ] remote= 145 route_p=0.87 conf=None id=32 Calculate the product of 23 and 47.
+[remote      ] remote= 209 route_p=0.88 conf=None id=33 A train travels 60 km in 45 minutes; how
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=34 Compute the compound interest on 1000 at
+[remote      ] remote= 946 route_p=0.88 conf=None id=35 How many multiply steps to compute 2^10 
+
+remote_tokens=9167  tokens_saved=34  free%=52.8  escalate%=47.2  cache_hits=0
+
+results -> out/Phi-3.5-mini-instruct.jsonl  (36 tasks, remote_tokens=9167)
+
+Parsing results...
+Running on remote: docker rm -f frugal-vllm
+Finished microsoft/Phi-3.5-mini-instruct
+
+
+==================================================
+Benchmarking Qwen/Qwen2.5-7B-Instruct
+==================================================
+Running on remote: docker rm -f frugal-vllm
+Running on remote: docker run -d --name frugal-vllm --network host -v /root/.cache/huggingface:/root/.cache/huggingface -e VLLM_HOST_IP=127.0.0.1 -e GLOO_SOCKET_IFNAME=lo -e NCCL_SOCKET_IFNAME=lo --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined vllm/vllm-openai-rocm:v0.23.0 --model Qwen/Qwen2.5-7B-Instruct --host 0.0.0.0 --port 8001 --api-key frugal-amd-7k2x --enable-prefix-caching --max-model-len 8192 --trust-remote-code
+Waiting for vLLM to be ready...
+vLLM is ready!
+Running on remote: rocm-smi --showuse | grep 'GPU use'
+Running harness.py...
+samples = 36   raw local accuracy = 0.639
+ECE before = 0.331   isotonic = 0.117   platt = 0.002
+best calibrator = platt   (Brier = 0.228)
+saved -> calib.json  (set CALIB_PATH=calib.json to use it)
+
+Per-category local accuracy:
+  classification       5/6 = 0.83
+  extraction           3/6 = 0.50
+  math                 8/8 = 1.00
+  qa                   5/6 = 0.83
+  reasoning            2/6 = 0.33
+  summarization        0/4 = 0.00
+
+AutoMix gate: belief_threshold=0.90  remote_calls=36/36  accuracy=1.000  saved -> automix.json
+
+threshold sweep (accuracy floor = 0.8):
+  thr   remote_calls   accuracy
+  0.00        0        0.639
+  0.10        0        0.639
+  0.20        0        0.639
+  0.30        0        0.639
+  0.40        0        0.639
+  0.50        0        0.639
+  0.60        0        0.639
+  0.70       36        1.000
+  0.80       36        1.000
+  0.90       36        1.000
+  1.00       36        1.000
+
+RECOMMEND CONFIDENCE_THRESHOLD = 0.65  ->  remote_calls = 36/36  accuracy = 1.000  tokens_saved = 0.0%
+
+PredictiveRouter trained. weights = [-0.77, 2.93, -0.5]
+Running run.py...
+# FrugalRoute | engine=langgraph
+
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=0 Classify sentiment: 'I love this, works 
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=1 Classify sentiment: 'This is the worst p
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=2 Classify sentiment: 'The package arrived
+[local       ] remote=   0 route_p=0.27 conf=0.95 id=3 Is this spam? 'You won a free prize, cli
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=4 Label the topic: 'The GDP grew 3% last q
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=5 Classify sentiment given sarcasm: 'Oh gr
+[local       ] remote=   0 route_p=0.27 conf=0.85 id=6 Extract all email addresses from: contac
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=7 Extract the phone number from: call me a
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=8 Extract the date from: the meeting is on
+[remote      ] remote= 129 route_p=0.28 conf=0.67 id=9 Extract the total price from: 2 items at
+[local       ] remote=   0 route_p=0.28 conf=0.85 id=10 Extract all company names from: Apple an
+[remote      ] remote=1397 route_p=0.29 conf=0.3  id=11 Extract the implied deadline from: submi
+[remote      ] remote=1001 route_p=0.3  conf=0.0  id=12 Summarize in 5 words: The quarterly repo
+[remote      ] remote= 131 route_p=0.27 conf=0.0  id=13 Summarize: The cat sat on the mat and th
+[remote      ] remote= 209 route_p=0.3  conf=0.0  id=14 Summarize the key risk: Latency rose 40%
+[remote      ] remote= 693 route_p=0.28 conf=0.0  id=15 Summarize a dense legal clause about ind
+[local       ] remote=   0 route_p=0.25 conf=1.0  id=16 What is the capital of France?
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=17 What is the chemical symbol for gold?
+[remote      ] remote= 104 route_p=0.87 conf=None id=18 How many continents are there?
+[local       ] remote=   0 route_p=0.25 conf=1.0  id=19 Who wrote Romeo and Juliet?
+[local       ] remote=   0 route_p=0.26 conf=0.95 id=20 What year did the Berlin Wall fall?
+[local       ] remote=   0 route_p=0.27 conf=0.95 id=21 What is the boiling point of water at se
+[remote      ] remote=1069 route_p=0.89 conf=None id=22 Why does increasing temperature speed up
+[remote      ] remote= 642 route_p=0.88 conf=None id=23 Explain step by step why the sky appears
+[remote      ] remote= 140 route_p=0.88 conf=None id=24 Deduce who is oldest: Ann is older than 
+[remote      ] remote=1626 route_p=0.89 conf=None id=25 Explain the reasoning: if all A are B an
+[remote      ] remote=1109 route_p=0.88 conf=None id=26 Why would a semantic cache reduce token 
+[remote      ] remote=1254 route_p=0.88 conf=None id=27 Explain step by step how backpropagation
+[remote      ] remote=  70 route_p=0.87 conf=None id=28 Calculate the sum of 145 and 278.
+[remote      ] remote=  90 route_p=0.87 conf=None id=29 How many is 12 multiplied by 12?
+[remote      ] remote= 122 route_p=0.87 conf=None id=30 Solve for x: 2x + 6 = 20.
+[local       ] remote=   0 route_p=0.24 conf=1.0  id=31 What is 15% of 240?
+[remote      ] remote= 145 route_p=0.87 conf=None id=32 Calculate the product of 23 and 47.
+[remote      ] remote= 209 route_p=0.88 conf=None id=33 A train travels 60 km in 45 minutes; how
+[remote      ] remote= 288 route_p=0.27 conf=0.35 id=34 Compute the compound interest on 1000 at
+[remote      ] remote= 946 route_p=0.88 conf=None id=35 How many multiply steps to compute 2^10 
+
+remote_tokens=11374  tokens_saved=41  free%=44.4  escalate%=55.6  cache_hits=0
+
+results -> out/Qwen2.5-7B-Instruct.jsonl  (36 tasks, remote_tokens=11374)
+
+Parsing results...
+Running on remote: docker rm -f frugal-vllm
+Finished Qwen/Qwen2.5-7B-Instruct
+
+
+==================================================
+Benchmarking deepseek-ai/DeepSeek-R1-Distill-Qwen-7B
+==================================================
+Running on remote: docker rm -f frugal-vllm
+Running on remote: docker run -d --name frugal-vllm --network host -v /root/.cache/huggingface:/root/.cache/huggingface -e VLLM_HOST_IP=127.0.0.1 -e GLOO_SOCKET_IFNAME=lo -e NCCL_SOCKET_IFNAME=lo --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined vllm/vllm-openai-rocm:v0.23.0 --model deepseek-ai/DeepSeek-R1-Distill-Qwen-7B --host 0.0.0.0 --port 8001 --api-key frugal-amd-7k2x --enable-prefix-caching --max-model-len 8192 --trust-remote-code
+Waiting for vLLM to be ready...
+vLLM is ready!
+Running on remote: rocm-smi --showuse | grep 'GPU use'
+Running harness.py...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 1/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 2/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 3/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 4/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 5/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 6/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 7/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 8/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 9/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 1/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 2/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 3/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 4/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 5/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 6/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 7/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 8/10)...
+API Error (BadRequestError): Error code: 400 - {'error': {'message': "This model's maximum context length is 8192 tokens. However, you requested 0 output tokens and your prompt contains at least 8193 input tokens, for a total of at least 8193 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=8193)", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}. Waiting 30 seconds (attempt 9/10)...
+samples = 36   raw local accuracy = 0.667
+ECE before = 0.518   isotonic = 0.215   platt = 0.010
+best calibrator = platt   (Brier = 0.217)
+saved -> calib.json  (set CALIB_PATH=calib.json to use it)
+
+Per-category local accuracy:
+  classification       5/6 = 0.83
+  extraction           4/6 = 0.67
+  math                 8/8 = 1.00
+  qa                   5/6 = 0.83
+  reasoning            2/6 = 0.33
+  summarization        0/4 = 0.00
+
+AutoMix gate: belief_threshold=0.90  remote_calls=36/36  accuracy=1.000  saved -> automix.json
+
+threshold sweep (accuracy floor = 0.8):
+  thr   remote_calls   accuracy
+  0.00        0        0.667
+  0.10        0        0.667
+  0.20        0        0.667
+  0.30        0        0.667
+  0.40        0        0.667
+  0.50        0        0.667
+  0.60        0        0.667
+  0.70       24        0.917
+  0.80       36        1.000
+  0.90       36        1.000
+  1.00       36        1.000
+
+RECOMMEND CONFIDENCE_THRESHOLD = 0.65  ->  remote_calls = 22/36  accuracy = 0.917  tokens_saved = 38.9%
+
+PredictiveRouter trained. weights = [-0.96, 2.92, -0.31]
+Running run.py...
+# FrugalRoute | engine=langgraph
+
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=0 Classify sentiment: 'I love this, works 
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=1 Classify sentiment: 'This is the worst p
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=2 Classify sentiment: 'The package arrived
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=3 Is this spam? 'You won a free prize, cli
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=4 Label the topic: 'The GDP grew 3% last q
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=5 Classify sentiment given sarcasm: 'Oh gr
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=6 Extract all email addresses from: contac
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=7 Extract the phone number from: call me a
+[remote      ] remote= 111 route_p=0.27 conf=0.0  id=8 Extract the date from: the meeting is on
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=9 Extract the total price from: 2 items at
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=10 Extract all company names from: Apple an
+[local       ] remote=   0 route_p=0.29 conf=1.0  id=11 Extract the implied deadline from: submi
+[remote      ] remote= 460 route_p=0.3  conf=0.0  id=12 Summarize in 5 words: The quarterly repo
+[remote      ] remote= 162 route_p=0.27 conf=0.0  id=13 Summarize: The cat sat on the mat and th
+[remote      ] remote= 209 route_p=0.3  conf=0.0  id=14 Summarize the key risk: Latency rose 40%
+[remote      ] remote= 808 route_p=0.28 conf=0.0  id=15 Summarize a dense legal clause about ind
+[local       ] remote=   0 route_p=0.25 conf=1.0  id=16 What is the capital of France?
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=17 What is the chemical symbol for gold?
+[remote      ] remote= 299 route_p=0.87 conf=None id=18 How many continents are there?
+[local       ] remote=   0 route_p=0.25 conf=1.0  id=19 Who wrote Romeo and Juliet?
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=20 What year did the Berlin Wall fall?
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=21 What is the boiling point of water at se
+[remote      ] remote= 996 route_p=0.89 conf=None id=22 Why does increasing temperature speed up
+[remote      ] remote= 787 route_p=0.88 conf=None id=23 Explain step by step why the sky appears
+[remote      ] remote= 140 route_p=0.88 conf=None id=24 Deduce who is oldest: Ann is older than 
+[remote      ] remote=1626 route_p=0.89 conf=None id=25 Explain the reasoning: if all A are B an
+[remote      ] remote=1109 route_p=0.88 conf=None id=26 Why would a semantic cache reduce token 
+[remote      ] remote= 996 route_p=0.88 conf=None id=27 Explain step by step how backpropagation
+[remote      ] remote= 158 route_p=0.87 conf=None id=28 Calculate the sum of 145 and 278.
+[remote      ] remote=  89 route_p=0.87 conf=None id=29 How many is 12 multiplied by 12?
+[remote      ] remote= 122 route_p=0.87 conf=None id=30 Solve for x: 2x + 6 = 20.
+[local       ] remote=   0 route_p=0.24 conf=1.0  id=31 What is 15% of 240?
+[remote      ] remote= 145 route_p=0.87 conf=None id=32 Calculate the product of 23 and 47.
+[remote      ] remote= 209 route_p=0.88 conf=None id=33 A train travels 60 km in 45 minutes; how
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=34 Compute the compound interest on 1000 at
+[remote      ] remote= 946 route_p=0.88 conf=None id=35 How many multiply steps to compute 2^10 
+
+remote_tokens=9372  tokens_saved=37  free%=50.0  escalate%=50.0  cache_hits=0
+
+results -> out/DeepSeek-R1-Distill-Qwen-7B.jsonl  (36 tasks, remote_tokens=9372)
+
+Parsing results...
+Running on remote: docker rm -f frugal-vllm
+Finished deepseek-ai/DeepSeek-R1-Distill-Qwen-7B
+
+
+==================================================
+Benchmarking Qwen/Qwen2.5-32B-Instruct
+==================================================
+Running on remote: docker rm -f frugal-vllm
+Running on remote: docker run -d --name frugal-vllm --network host -v /root/.cache/huggingface:/root/.cache/huggingface -e VLLM_HOST_IP=127.0.0.1 -e GLOO_SOCKET_IFNAME=lo -e NCCL_SOCKET_IFNAME=lo --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined vllm/vllm-openai-rocm:v0.23.0 --model Qwen/Qwen2.5-32B-Instruct --host 0.0.0.0 --port 8001 --api-key frugal-amd-7k2x --enable-prefix-caching --max-model-len 8192 --trust-remote-code
+Waiting for vLLM to be ready...
+vLLM is ready!
+Running on remote: rocm-smi --showuse | grep 'GPU use'
+Running harness.py...
+samples = 36   raw local accuracy = 0.667
+ECE before = 0.300   isotonic = 0.095   platt = 0.001
+best calibrator = platt   (Brier = 0.221)
+saved -> calib.json  (set CALIB_PATH=calib.json to use it)
+
+Per-category local accuracy:
+  classification       6/6 = 1.00
+  extraction           3/6 = 0.50
+  math                 8/8 = 1.00
+  qa                   5/6 = 0.83
+  reasoning            2/6 = 0.33
+  summarization        0/4 = 0.00
+
+AutoMix gate: belief_threshold=0.90  remote_calls=36/36  accuracy=1.000  saved -> automix.json
+
+threshold sweep (accuracy floor = 0.8):
+  thr   remote_calls   accuracy
+  0.00        0        0.667
+  0.10        0        0.667
+  0.20        0        0.667
+  0.30        0        0.667
+  0.40        0        0.667
+  0.50        0        0.667
+  0.60        0        0.667
+  0.70       36        1.000  <-
+  0.80       36        1.000
+  0.90       36        1.000
+  1.00       36        1.000
+
+RECOMMEND CONFIDENCE_THRESHOLD = 0.70  ->  remote_calls = 36/36  accuracy = 1.000  tokens_saved = 0.0%
+
+PredictiveRouter trained. weights = [-0.97, 2.99, -0.31]
+Running run.py...
+# FrugalRoute | engine=langgraph
+
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=0 Classify sentiment: 'I love this, works 
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=1 Classify sentiment: 'This is the worst p
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=2 Classify sentiment: 'The package arrived
+[local       ] remote=   0 route_p=0.27 conf=0.95 id=3 Is this spam? 'You won a free prize, cli
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=4 Label the topic: 'The GDP grew 3% last q
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=5 Classify sentiment given sarcasm: 'Oh gr
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=6 Extract all email addresses from: contac
+[local       ] remote=   0 route_p=0.27 conf=0.95 id=7 Extract the phone number from: call me a
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=8 Extract the date from: the meeting is on
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=9 Extract the total price from: 2 items at
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=10 Extract all company names from: Apple an
+[local       ] remote=   0 route_p=0.29 conf=0.75 id=11 Extract the implied deadline from: submi
+[remote      ] remote= 460 route_p=0.3  conf=0.0  id=12 Summarize in 5 words: The quarterly repo
+[remote      ] remote= 162 route_p=0.27 conf=0.0  id=13 Summarize: The cat sat on the mat and th
+[remote      ] remote= 209 route_p=0.3  conf=0.0  id=14 Summarize the key risk: Latency rose 40%
+[remote      ] remote= 573 route_p=0.28 conf=0.0  id=15 Summarize a dense legal clause about ind
+[local       ] remote=   0 route_p=0.25 conf=1.0  id=16 What is the capital of France?
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=17 What is the chemical symbol for gold?
+[remote      ] remote= 279 route_p=0.87 conf=None id=18 How many continents are there?
+[local       ] remote=   0 route_p=0.25 conf=1.0  id=19 Who wrote Romeo and Juliet?
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=20 What year did the Berlin Wall fall?
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=21 What is the boiling point of water at se
+[remote      ] remote=1014 route_p=0.89 conf=None id=22 Why does increasing temperature speed up
+[remote      ] remote= 825 route_p=0.88 conf=None id=23 Explain step by step why the sky appears
+[remote      ] remote= 146 route_p=0.88 conf=None id=24 Deduce who is oldest: Ann is older than 
+[remote      ] remote=1626 route_p=0.89 conf=None id=25 Explain the reasoning: if all A are B an
+[remote      ] remote=1080 route_p=0.88 conf=None id=26 Why would a semantic cache reduce token 
+[remote      ] remote= 996 route_p=0.88 conf=None id=27 Explain step by step how backpropagation
+[remote      ] remote= 158 route_p=0.87 conf=None id=28 Calculate the sum of 145 and 278.
+[remote      ] remote=  89 route_p=0.87 conf=None id=29 How many is 12 multiplied by 12?
+[remote      ] remote= 122 route_p=0.87 conf=None id=30 Solve for x: 2x + 6 = 20.
+[local       ] remote=   0 route_p=0.24 conf=0.95 id=31 What is 15% of 240?
+[remote      ] remote= 148 route_p=0.87 conf=None id=32 Calculate the product of 23 and 47.
+[remote      ] remote= 209 route_p=0.88 conf=None id=33 A train travels 60 km in 45 minutes; how
+[local       ] remote=   0 route_p=0.27 conf=0.95 id=34 Compute the compound interest on 1000 at
+[remote      ] remote=1956 route_p=0.88 conf=None id=35 How many multiply steps to compute 2^10 
+
+remote_tokens=10052  tokens_saved=34  free%=52.8  escalate%=47.2  cache_hits=0
+
+results -> out/Qwen2.5-32B-Instruct.jsonl  (36 tasks, remote_tokens=10052)
+
+Parsing results...
+Running on remote: docker rm -f frugal-vllm
+Finished Qwen/Qwen2.5-32B-Instruct
+
+Saved eval/benchmark.json

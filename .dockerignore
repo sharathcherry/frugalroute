@@ -38,3 +38,10 @@ SESSION_LOG.md
 # OS
 .DS_Store
 Thumbs.db
+
+# frontend is deployed as its own Railway (Node/Nitro) service
+frontend/node_modules/
+frontend/dist/
+frontend/.output/
+frontend/.nitro/
+frontend/.tanstack/

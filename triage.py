@@ -41,9 +41,11 @@ if _HAVE_EMB:
         return any(_cos(q, v) >= radius for v in vecs)
 else:
     def _hit(task, phrases, radius=None):
-        words = set(re.findall(r"[a-z']+", task.lower()))
-        # match a phrase only if ALL its words appear as whole words
-        return any(all(w in words for w in p.split()) for p in phrases)
+        # Match only the CONTIGUOUS phrase (with word boundaries). This avoids
+        # false positives where the words merely appear scattered in the text —
+        # e.g. code or docs that discuss a "system prompt" shouldn't be blocked.
+        low = task.lower()
+        return any(re.search(r"\b" + re.escape(p) + r"\b", low) for p in phrases)
 
 
 def triage(task):

@@ -17,17 +17,29 @@ per-task time budget -> fewer paid escalations.
 # Keep EXACTLY constant across all local calls.
 SYSTEM_PREFIX = (
     "You are a concise task solver. Answer correctly and briefly. "
+    "Always respond in English unless the user explicitly asks for another language. "
+    "For translation requests, give the translation clearly and show the informal (tu) "
+    "and formal (vous) forms when relevant. "
     "For classification reply with the single label only. "
     "For extraction reply with the values only, comma-separated. "
-    "For numeric questions reply with the number only."
+    "For numeric questions reply with the number only. "
+    "You have access to tools. To use a tool, output exactly:\n"
+    "Action: [calculator or web_search]\n"
+    "Action Input: [your query]\n"
+    "Wait for the Observation before continuing. Do not hallucinate facts or math if a tool would help."
 )
 
 # Optional fixed few-shot block — also part of the cached prefix. Keep constant.
 FEWSHOT = [
     {"role": "user", "content": "Classify sentiment: 'great product'"},
     {"role": "assistant", "content": "positive"},
-    {"role": "user", "content": "Calculate the sum of 2 and 3."},
-    {"role": "assistant", "content": "5"},
+    {"role": "user", "content": "Translate 'how are you?' to French."},
+    {"role": "assistant", "content": "\"How are you?\" in French is \"Comment vas-tu ?\" "
+     "(informal, tu) or \"Comment allez-vous ?\" (formal, vous)."},
+    {"role": "user", "content": "What is the stock price of Apple?"},
+    {"role": "assistant", "content": "Action: web_search\nAction Input: Apple stock price"},
+    {"role": "user", "content": "Observation: Search Results:\n[1] Apple Inc. (AAPL) Stock Price: $190.25.\nNow provide the final answer, or take another action."},
+    {"role": "assistant", "content": "$190.25"},
 ]
 
 

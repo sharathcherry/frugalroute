@@ -29,12 +29,28 @@ AZURE_OPENAI_DEPLOYMENT = os.getenv("AZURE_OPENAI_DEPLOYMENT", "")    # your dep
 # --- Local (FREE) provider — vLLM/ROCm or Ollama; OpenAI-compatible endpoint ---
 LOCAL_BASE_URL = os.getenv("LOCAL_BASE_URL", "http://localhost:11434/v1")
 LOCAL_API_KEY = os.getenv("LOCAL_API_KEY", "ollama")
-LOCAL_MODEL = os.getenv("LOCAL_MODEL", "qwen2.5:3b-instruct")
+
+# LOCAL_MODEL=auto -> pick the best model that fits THIS machine's GPU (hwselect).
+# Any explicit tag (e.g. qwen2.5:7b-instruct) overrides the auto-selection.
+_LM = os.getenv("LOCAL_MODEL", "auto").strip()
+if _LM.lower() in ("", "auto") and not MOCK:
+    try:
+        import hwselect
+        LOCAL_MODEL = hwselect.choose()
+    except Exception:
+        LOCAL_MODEL = "qwen2.5:3b-instruct"
+else:
+    LOCAL_MODEL = _LM or "qwen2.5:3b-instruct"
 
 # --- Thresholds (tune on your eval set via eval/harness.py) ---
 CONFIDENCE_THRESHOLD = float(os.getenv("CONFIDENCE_THRESHOLD", "0.7"))
+# Fast gate: accept a short, non-hedging local answer without a 2nd selfrate call
+FAST_GATE = _b(os.getenv("FAST_GATE", "1"))
+FAST_GATE_MAXLEN = int(os.getenv("FAST_GATE_MAXLEN", "160"))
 JUDGE_MODE = os.getenv("JUDGE_MODE", "selfrate")   # selfrate (real local self-grade) | heuristic
 CACHE_SIM_THRESHOLD = float(os.getenv("CACHE_SIM_THRESHOLD", "0.92"))
+# Semantic cache on/off. Off avoids stale answers on time-sensitive queries.
+CACHE_ENABLED = _b(os.getenv("CACHE_ENABLED", "1"))
 ROUTE_THRESHOLD = float(os.getenv("ROUTE_THRESHOLD", "0.75"))
 COMPRESS = _b(os.getenv("COMPRESS", "1"))
 CALIB_PATH = os.getenv("CALIB_PATH", "")

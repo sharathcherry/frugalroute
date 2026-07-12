@@ -12,6 +12,7 @@ import predict
 import compress
 import prompts
 import config
+import tools
 
 CATEGORY_KEYWORDS = {
     "math": ["calculate", "sum of", "product of", "solve", "equation", "how many", "multiply"],
@@ -68,6 +69,10 @@ def triage_node(state):
 
 
 def cache_lookup(state, cache):
+    # Semantic cache disabled: it can serve a stale answer for time-sensitive
+    # queries (e.g. a different stock's price), so skip lookups when CACHE_ENABLED=0.
+    if not config.CACHE_ENABLED:
+        return state
     hit = cache.lookup(state["task"])
     if hit is not None:
         state.update(answer=hit, source="cache", remote_tokens=0, done=True)
@@ -82,7 +87,10 @@ def route(state):
         return state
     p = predict.need_remote_prob(state["task"], state["category"])
     state["route_p"] = round(p, 2)
-    if p >= config.ROUTE_THRESHOLD:
+    # Local-first: keep the predictive signal for the dashboard, but only pre-skip
+    # the (free) local+tools attempt when the router is near-certain remote is
+    # needed. The confidence gate is the real safety net, so we let local try.
+    if p >= 0.99:
         state["skip_local"] = True
     return state
 
@@ -93,8 +101,53 @@ def local(state, policy):
         state["skip_local"] = True
         return state
     msgs = prompts.build_local_messages(state["task"])   # prefix-stable for RadixAttention/APC
-    text, _, _ = providers.complete(msgs, kind="local", max_tokens=LOCAL_MAX_TOKENS)
-    state.update(candidate=text, source="local", remote_tokens=0)
+    
+    max_steps = 3
+    final_text = ""
+    new_observations = []
+    for _ in range(max_steps):
+        text, _, _ = providers.complete(msgs, kind="local", max_tokens=LOCAL_MAX_TOKENS)
+        print(f"[DEBUG] Local model text: {repr(text)}")
+        final_text = text
+        
+        # Check for tool call
+        import re
+        action_match = re.search(r"Action:\s*([^\n]+)", text, re.IGNORECASE)
+        input_match = re.search(r"Action Input:\s*([^\n]+)", text, re.IGNORECASE)
+        
+        if action_match and input_match:
+            tool_name = action_match.group(1).strip()
+            tool_input = input_match.group(1).strip()
+            print(f"[DEBUG] Executing tool: {tool_name} with input {repr(tool_input)}")
+            observation = tools.execute_tool(tool_name, tool_input)
+            print(f"[DEBUG] Observation: {repr(observation)}")
+            
+            msgs.append({"role": "assistant", "content": text})
+            obs_content = f"Observation: {observation}\nNow provide the final answer, or take another action."
+            msgs.append({"role": "user", "content": obs_content})
+            new_observations.append(observation)
+        else:
+            break
+
+    # If tools were used but the model STILL hasn't produced a final answer
+    # (it kept emitting Action:), force ONE final FREE local synthesis call
+    # instead of wastefully escalating to the paid remote model.
+    if new_observations and re.search(r"Action:", final_text, re.IGNORECASE):
+        msgs.append({"role": "user", "content":
+                     "You now have enough information from the Observations above. "
+                     "Answer the original question directly and concisely. "
+                     "Do NOT output another Action."})
+        forced, _, _ = providers.complete(msgs, kind="local", max_tokens=LOCAL_MAX_TOKENS)
+        print(f"[DEBUG] Forced final local answer: {repr(forced)}")
+        if forced and not re.search(r"Action:", forced, re.IGNORECASE):
+            final_text = forced
+
+    # If tools were used, gather the observations to pass to the remote model if it escalates
+    augmented_task = state["task"]
+    if new_observations:
+        augmented_task += "\n\nContext from Web Search:\n" + "\n".join(new_observations)
+
+    state.update(candidate=final_text, source="local", remote_tokens=0, augmented_task=augmented_task)
     return state
 
 
@@ -106,21 +159,47 @@ def gate(state):
       Force-remote (0-33% accuracy): summarization, reasoning
       Gate-decide  (50-83%): qa, extraction — use selfrate confidence
     """
-    if state.get("skip_local"):
+    if state.get("skip_local") or not state.get("candidate"):
         state["confident"] = False
         return state
 
+    # FAST PATH: If the local model successfully used a tool (like web search), 
+    # it is factually grounded. We can bypass the confidence gate and accept it!
+    if "Context from Web Search:" in state.get("augmented_task", ""):
+        # But ONLY if it actually provided an answer, not just another action loop
+        if "Action:" not in state.get("candidate", ""):
+            state["confident"] = True
+            state.update(answer=state["candidate"], done=True)
+            return state
+
     cat = state.get("category", "qa")
 
-    # Category fast-path — bypass expensive selfrate call
+    # Category fast-path — bypass expensive selfrate call.
+    # Local-first: classification/math are always safe locally. Everything else
+    # (including reasoning/summarization) tries local and is accepted when the
+    # confidence gate clears the bar — we only pay remote when local is genuinely
+    # unsure, never by category alone.
     FORCE_LOCAL = {"classification", "math"}
-    FORCE_REMOTE = {"summarization", "reasoning"}
     if cat in FORCE_LOCAL:
         state.update(confidence=1.0, confident=True,
                      answer=state.get("candidate", ""), done=True)
         return state
-    if cat in FORCE_REMOTE:
-        state.update(confidence=0.0, confident=False)
+
+    # If the model failed and just spat out an uncompleted action, FORCE escalate
+    if "Action:" in state.get("candidate", "") and "Action Input:" in state.get("candidate", ""):
+        state["confident"] = False
+        return state
+
+    # FAST GATE: a short, direct, non-hedging answer is almost always right and
+    # doesn't need a second (selfrate) local call. Accept it in ONE call — this
+    # roughly halves latency for simple qa/reasoning. Longer or hedging answers
+    # fall through to the calibrated selfrate gate below.
+    _cand = state.get("candidate", "").strip()
+    _HEDGE = ("i don't know", "i'm not sure", "i am not sure", "cannot answer",
+              "as an ai", "i do not have", "not able to", "unable to")
+    if config.FAST_GATE and _cand and len(_cand) <= config.FAST_GATE_MAXLEN \
+            and not any(h in _cand.lower() for h in _HEDGE):
+        state.update(confidence=0.9, confident=True, answer=_cand, done=True)
         return state
 
     # For qa / extraction — use calibrated selfrate
@@ -134,12 +213,18 @@ def gate(state):
 
 def remote(state):
     """Phase 3: compress the payload, then call the paid model."""
-    prompt = state["task"]
+    prompt = state.get("augmented_task", state["task"])
     saved = 0
     if config.COMPRESS:
         prompt, saved = compress.compress(prompt)
     state["tokens_saved"] = state.get("tokens_saved", 0) + saved
-    msgs = [{"role": "user", "content": prompt}]
+    
+    print(f"[DEBUG] Remote model prompt: {repr(prompt)}")
+    # Add a strict system prompt so the remote model doesn't just say "I'll check..."
+    msgs = [
+        {"role": "system", "content": "You are a direct, concise AI. If the user provides Context from Web Search, use it to answer the question immediately. NEVER say 'I will check' or 'One moment'. Provide the final answer."},
+        {"role": "user", "content": prompt}
+    ]
     text, pt, ct = providers.complete(msgs, kind="remote")
     state.update(answer=text, source="remote", remote_tokens=pt + ct, done=True)
     return state
@@ -147,7 +232,8 @@ def remote(state):
 
 def account(state, cache, policy):
     """Post-task accounting: update cache + policy + log calibration signal."""
-    cache.add(state["task"], state.get("answer", ""))
+    if config.CACHE_ENABLED:
+        cache.add(state["task"], state.get("answer", ""))
 
     went_local = state.get("source") in ("local", "triage_local")
     gold = state.get("gold")          # populated if the eval harness injected a label

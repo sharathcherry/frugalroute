@@ -6,6 +6,8 @@ Invoke the `/caveman:caveman` skill (Skill tool: `caveman:caveman`) at the start
 
 ## Project
 
+**Repo:** https://github.com/sharathcherry/frugalroute
+
 Local-first LLM routing agent (AMD Hackathon Track 1). Routes each task to a free local model (Ollama `qwen2.5:3b-instruct`) or escalates to a paid remote model, minimizing paid tokens while holding accuracy ≥ 0.95.
 
 - Pipeline: `ingest → triage → cache → route → local → gate → remote → account` (`nodes.py`; LangGraph in `graph.py`, stdlib fallback `engine.py`)
