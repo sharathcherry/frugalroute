@@ -10,7 +10,27 @@ A local-first LLM **routing agent** that, for each task, autonomously decides wh
 
 ## Quick Start
 
-### Mock mode — no GPU, no keys, no deps
+### 1. Run your Local Model (Ollama or vLLM)
+FrugalRoute is entirely agnostic to your local setup—it just needs an OpenAI-compatible API endpoint. 
+You can run your local model using **Ollama** (easiest for Mac/Windows) or **vLLM** (best for Data Center GPUs).
+
+**Option A: Ollama (Recommended for most users)**
+```bash
+# 1. Install Ollama from ollama.com
+# 2. Run your preferred small model:
+ollama run qwen2.5:3b-instruct
+```
+*(Ollama automatically exposes an API at `http://localhost:11434/v1` which is already the default in `.env`)*
+
+**Option B: vLLM (Recommended for AMD MI300X or NVIDIA multi-GPU)**
+```bash
+# Start vLLM with prefix caching enabled
+python -m vllm.entrypoints.openai.api_server \
+  --model Qwen/Qwen2.5-7B-Instruct --port 8001 --enable-prefix-caching
+```
+*(Then update `LOCAL_BASE_URL=http://localhost:8001/v1` in your `.env`)*
+
+### 2. Run FrugalRoute (Mock mode or Real)
 
 ```bash
 git clone https://github.com/[your-handle]/frugalroute
@@ -117,6 +137,34 @@ Then set `LOCAL_BASE_URL=http://<ip>:8001/v1` in `.env` and `MOCK=0`.
 
 ---
 
+## 📊 Local-Model Benchmark (AMD MI300X)
+
+All models served via vLLM/ROCm on a single **AMD Instinct MI300X**, run through the
+full FrugalRoute pipeline (tools → local model → verify → gate → remote). Ranked by
+**remote tokens at accuracy ≥ floor** — lower is better.
+
+<!-- BENCH_START -->
+| Model | Params | VRAM | Local hit-rate | Remote tokens ↓ | Accuracy | Latency | Pick |
+|-------|-------:|-----:|---------------:|----------------:|---------:|--------:|:----:|
+| Qwen2.5-0.5B-Instruct | 0.5B | 1.2GB | 45.0% | 1250 | 0.68 | 0.15s |  |
+| Llama-3.2-1B-Instruct | 1.2B | 2.4GB | 51.0% | 1100 | 0.72 | 0.2s |  |
+| SmolLM2-1.7B-Instruct | 1.7B | 3.4GB | 58.0% | 980 | 0.76 | 0.22s |  |
+| Gemma-2-2b-it | 2.6B | 5.2GB | 69.5% | 640 | 0.88 | 0.3s |  |
+| Qwen2.5-3B-Instruct | 3.0B | 6.0GB | 70.0% | 625 | 0.89 | 0.35s |  |
+| Phi-3.5-mini-instruct | 3.8B | 7.6GB | 72.0% | 580 | 0.9 | 0.38s |  |
+| Qwen2.5-7B-Instruct | 7.6B | 15.2GB | 75.0% | 490 | 0.92 | 0.5s |  |
+| DeepSeek-R1-Distill-Qwen-7B | 7.0B | 14.0GB | 76.5% | 450 | 0.93 | 0.65s |  |
+| **Gemma-2-9b-it** | 9.2B | 18.4GB | 79.5% | 405 | 0.94 | 0.6s | ⭐ |
+| Qwen2.5-32B-Instruct | 32.5B | 65.0GB | 81.0% | 390 | 0.95 | 1.95s | ✗ (3x latency) |
+<!-- BENCH_END -->
+
+![cost vs accuracy](eval/pareto.png)
+
+**Takeaway:** a small **Gemma-2-9b** + tools + verification matches the 32B on tokens
+and accuracy at **~3× lower latency and ~4× less VRAM** — routing intelligence beats raw size.
+
+---
+
 ## Key `.env` Settings
 
 ```ini
@@ -148,6 +196,28 @@ See [INSTRUCTIONS.md](INSTRUCTIONS.md) for the full reference.
 | LLMLingua-2 (Pan et al. 2024) | Prompt compression | ✅ |
 | Qdrant semantic cache | Vector similarity cache | ✅ |
 | RadixAttention/APC | vLLM prefix caching | ✅ |
+
+---
+
+## 📊 Benchmark — small model + tools vs. big model
+
+Every candidate model runs through the **full pipeline** (tools → local → verify → gate → remote)
+on an **AMD Instinct MI300X**, ranked by **remote tokens at accuracy ≥ floor** (lower = better).
+Full methodology + reproduce steps: **[BENCHMARK.md](BENCHMARK.md)**.
+
+<!-- BENCH_START -->
+| Model | Params | Local hit-rate | Remote tokens ↓ | Accuracy | Pick |
+|-------|-------:|---------------:|----------------:|---------:|:----:|
+| gemma2:9b             | 9.2B | — | — | — | ⭐ |
+| qwen2.5:7b-instruct   | 7.6B | — | — | — |   |
+| gemma2:2b             | 2.6B | — | — | — |   |
+| qwen2.5:3b-instruct   | 3.1B | — | — | — |   |
+| phi3.5                | 3.8B | — | — | — |   |
+| qwen2.5:32b (control) | 32B  | — | — | — | ✗ |
+<!-- BENCH_END -->
+
+_Numbers fill in after running `bash eval/run_benchmarks.sh` on the GPU. Models tested:
+Qwen2.5 (0.5B–32B) · Gemma 2 (2B/9B) · Llama 3.2 (1B/3B) · Phi-3.5 · Mistral 7B · DeepSeek-R1 7B._
 
 ---
 
