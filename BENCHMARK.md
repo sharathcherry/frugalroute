@@ -49,18 +49,7 @@ placeholders until the sweep runs on the MI300X._
 <!-- BENCH_START -->
 | Model | Params | VRAM | Local hit-rate | Remote tokens ↓ | Accuracy | Latency | Pick |
 |-------|-------:|-----:|---------------:|----------------:|---------:|--------:|:----:|
-| Qwen2.5-0.5B-Instruct | 0.5B | 1.2GB | 100.0% | 0.0 | 0.556 | 0.0s |  |
-| Qwen2.5-1.5B-Instruct | 1.5B | 2.0GB | 97.2% | 732.0 | 0.639 | 0.0s |  |
-| Llama-3.2-1B-Instruct | 1.2B | 2.4GB | 0.0% | 0.0 | 0.611 | 0.0s |  |
-| gemma-2-2b-it | 2.6B | 5.2GB | 0.0% | 0.0 | 0.722 | 0.0s |  |
-| Qwen2.5-3B-Instruct | 3.1B | 6.0GB | 100.0% | 0.0 | 0.639 | 0.0s |  |
-| Llama-3.2-3B-Instruct | 3.2B | 6.2GB | 100.0% | 0.0 | 0.611 | 0.0s |  |
-| Phi-3.5-mini-instruct | 3.8B | 7.6GB | 0.0% | 0.0 | 0.694 | 0.0s |  |
-| Mistral-7B-Instruct-v0.3 | 7B | 14.0GB | 97.2% | 211.0 | 0.639 | 0.0s |  |
-| Qwen2.5-7B-Instruct | 7.6B | 15.2GB | 97.2% | 185.0 | 0.639 | 0.0s |  |
-| DeepSeek-R1-Distill-Qwen-7B | 7.0B | 14.0GB | 100.0% | 0.0 | 0.667 | 0.0s |  |
-| **gemma-2-9b-it** | 9.2B | 18.4GB | 0.0% | 0.0 | 0.75 | 0.0s | ⭐ |
-| Qwen2.5-32B-Instruct | 32.5B | 65.0GB | 100.0% | 0.0 | 0.667 | 0.0s | ✗ (3x latency) |
+| **gemma-2-9b-it** | 9.2B | 18.4GB | 100.0% | 0.0 | 0.0 | 0.0s | ⭐ |
 <!-- BENCH_END -->
 
 <!-- ![cost vs accuracy](eval/pareto.png) -->

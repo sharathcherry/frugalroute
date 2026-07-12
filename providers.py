@@ -79,6 +79,20 @@ def complete(messages, kind="remote", model=None, base_url=None, api_key=None,
         client = OpenAI(base_url=base_url or config.LOCAL_BASE_URL,
                         api_key=api_key or config.LOCAL_API_KEY)
         kwargs["model"] = model or active_local_model()
+        
+        # FIX: Gemma-2 does not support system role and requires alternating user/assistant.
+        if "gemma" in kwargs["model"].lower():
+            new_msgs = []
+            sys_text = ""
+            for msg in kwargs["messages"]:
+                if msg["role"] == "system":
+                    sys_text += "SYSTEM INSTRUCTION:\n" + msg["content"] + "\n\n"
+                elif msg["role"] == "user" and sys_text:
+                    new_msgs.append({"role": "user", "content": sys_text + msg["content"]})
+                    sys_text = ""
+                else:
+                    new_msgs.append(msg)
+            kwargs["messages"] = new_msgs
     else:
         client, m = _remote_client_and_model(model)
         kwargs["model"] = m
