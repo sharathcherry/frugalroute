@@ -152,6 +152,8 @@ The local model (Qwen2.5-7B-Instruct) was served via vLLM/ROCm on a single **AMD
 | **gemma-2-9b-it** | 9.2B | 18.4GB | 79.5% | 405 | 0.94 | 0.6s | ⭐ |
 <!-- BENCH_END -->
 
+![Cost vs Accuracy Pareto Frontier](eval/pareto.png)
+
 **Takeaway:** A small **7B model** + FrugalRoute intelligence handles over 52% of tasks locally, massively reducing the token costs compared to relying purely on a 120B remote API.
 
 ---

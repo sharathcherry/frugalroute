@@ -254,4 +254,199 @@ remote_tokens=0  tokens_saved=0  free%=100.0  escalate%=0.0  cache_hits=0
 
 results -> out/gemma-2-2b-it.jsonl  (36 tasks, remote_tokens=0)
 
-Par
+Parsing results...
+Running on remote: docker rm -f frugal-vllm
+Finished google/gemma-2-2b-it
+
+
+==================================================
+Benchmarking Qwen/Qwen2.5-3B-Instruct
+==================================================
+Running on remote: docker rm -f frugal-vllm
+Running on remote: docker run -d --name frugal-vllm --network host -v /root/.cache/huggingface:/root/.cache/huggingface -e VLLM_HOST_IP=127.0.0.1 -e GLOO_SOCKET_IFNAME=lo -e NCCL_SOCKET_IFNAME=lo --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined vllm/vllm-openai-rocm:v0.23.0 --model Qwen/Qwen2.5-3B-Instruct --host 0.0.0.0 --port 8001 --api-key frugal-amd-7k2x --enable-prefix-caching --max-model-len 8192 --trust-remote-code
+Waiting for vLLM to be ready...
+vLLM is ready!
+Running on remote: rocm-smi --showuse | grep 'GPU use'
+Running harness.py...
+samples = 36   raw local accuracy = 0.639
+ECE before = 0.339   isotonic = 0.222   platt = 0.060
+best calibrator = platt   (Brier = 0.225)
+saved -> calib.json  (set CALIB_PATH=calib.json to use it)
+
+Per-category local accuracy:
+  classification       5/6 = 0.83
+  extraction           3/6 = 0.50
+  math                 8/8 = 1.00
+  qa                   5/6 = 0.83
+  reasoning            2/6 = 0.33
+  summarization        0/4 = 0.00
+
+AutoMix gate: belief_threshold=0.90  remote_calls=36/36  accuracy=1.000  saved -> automix.json
+
+threshold sweep (accuracy floor = 0.8):
+  thr   remote_calls   accuracy
+  0.00        0        0.639
+  0.10        0        0.639
+  0.20        0        0.639
+  0.30        0        0.639
+  0.40        0        0.639
+  0.50        0        0.639
+  0.60        2        0.694
+  0.70       36        1.000  <-
+  0.80       36        1.000
+  0.90       36        1.000
+  1.00       36        1.000
+
+RECOMMEND CONFIDENCE_THRESHOLD = 0.70  ->  remote_calls = 36/36  accuracy = 1.000  tokens_saved = 0.0%
+
+PredictiveRouter trained. weights = [-0.77, 2.93, -0.5]
+
+Running run.py...
+[DEBUG] Local model text: 'positive'
+[DEBUG] Local model text: 'negative'
+[DEBUG] Local model text: 'neutral'
+[DEBUG] Local model text: 'Yes'
+[DEBUG] Local model text: 'economic_growth'
+[DEBUG] Local model text: 'negative'
+[DEBUG] Local model text: 'a@x.com, b@y.org'
+[DEBUG] Local model text: '555-1234'
+[DEBUG] Local model text: '2026-07-06'
+[DEBUG] Local model text: '13'
+[DEBUG] Local model text: 'Apple, Microsoft, AMD'
+[DEBUG] Local model text: '7/14/2026'
+[DEBUG] Local model text: 'Revenue up 12% due to cloud'
+[DEBUG] Local model text: 'The cat sat on the mat before going to sleep.'
+[DEBUG] Local model text: 'Key risks: Latency increased by 40%, errors doubled, and user churn occurred.'
+[DEBUG] Local model text: 'Action: web_search\nAction Input: Summarize a dense legal clause about indemnification and liability caps'
+[DEBUG] Executing tool: web_search with input 'Summarize a dense legal clause about indemnification and liability caps'
+[DEBUG] Observation: "Search Results:\n[1] Indemnification Cap Sample Clauses: 163 Samples | Law Insider: February 3, 2026 - The Escrow Funds shall serve as the sole and exclusive source of payment of any claim for indemnification pursuant to Section 9.10 until the date which is two (2) years from the Closing Date and from such date until the date which is three (3) ...\n[2] Indemnity Cap Clause Samples | Law Insider: April 30, 2026 - Sellers’ liability for ... pursuant to Section 11.3(a) shall be limited in total and in the aggregate to fifteen percent (15%) of the Base Purchase Price (the “Indemnity Cap”); provided, however, that the Indemnity ...\n[3] Indemnification Clauses in Commercial Contracts | Thomson Reuters: Such a clause may enable the indemnified party to: Recover certain types of losses, such as reasonable attorney's fees, which are not typically recoverable under a common law cause of action · Reduce its liability by incorporating liability cap, materiality qualifiers, and liability basket"
+[DEBUG] Local model text: 'Action: calculator\nAction Input: None needed for summarization'
+[DEBUG] Executing tool: calculator with input 'None needed for summarization'
+[DEBUG] Observation: 'Error: invalid syntax (<string>, line 0)'
+[DEBUG] Local model text: 'It seems there was an error with the observation. Please provide the dense legal clause text for summarization.'
+[DEBUG] Local model text: 'Paris'
+[DEBUG] Local model text: 'Au'
+[DEBUG] Local model text: '7'
+[DEBUG] Local model text: 'William Shakespeare'
+[DEBUG] Local model text: '1989'
+[DEBUG] Local model text: '100'
+[DEBUG] Local model text: 'Increasing temperature speeds up a chemical reaction through several steps:\n1. **Increased Kinetic Energy**: Higher temperatures provide particles with more kinetic energy, causing them to move faster.\n2. **More Collisions**: With more frequent collisions between reactant molecules, there are more opportunities for successful reactions.\n3. **Higher Frequency of Effective Collisions**: Not all collisions result in a reaction; effective collisions require sufficient energy. Temperature increases the likelihood of these effective collisions.\n4. **Enhanced Activation Energy**: At higher temperatures, a greater proportion of molecules possess the necessary energy to overcome the activation energy barrier, leading to more successful reactions.\n\nThis results in'
+[DEBUG] Local model text: "The sky appears blue due to the way sunlight interacts with Earth's atmosphere. Here’s a step-by-step explanation:\n\n1. **Sunlight Composition**: Sunlight is composed of different colors, each with a different wavelength. These colors include red, orange, yellow, green, blue, indigo, and violet.\n\n2. **Rayleigh Scattering**: When sunlight enters Earth's atmosphere, it encounters molecules and tiny particles like dust and water droplets. This interaction causes the light to scatter in all directions.\n\n3. **Scattering Intensity**: Blue light has a shorter wavelength compared to other colors. Because of this, blue light sc"
+[DEBUG] Local model text: 'Ann'
+[DEBUG] Local model text: 'Yes, if all A are B and all B are C, then by transitivity, all A must be C.'
+[DEBUG] Local model text: 'A semantic cache can reduce token cost by storing and reusing preprocessed representations of text data, such as embeddings or summaries, instead of generating new tokens for similar queries. This reduces the computational load and the need for generating new tokens, thereby saving on computational resources and potentially lowering costs.'
+[DEBUG] Local model text: "Backpropagation updates weights by following these steps:\n\n1. **Forward Pass**: Calculate the output of each neuron in the network using the current weights.\n2. **Compute Error**: Determine the error between the predicted output and the actual target value.\n3. **Backward Pass**: Propagate the error backwards through the network.\n4. **Calculate Gradient**: Compute the gradient of the loss function with respect to the weights.\n5. **Update Weights**: Adjust the weights in the opposite direction of the gradient to minimize the loss.\n\nThis process is repeated for multiple iterations to optimize the model's performance."
+[DEBUG] Local model text: 'Action: calculator\nAction Input: 145 + 278'
+[DEBUG] Executing tool: calculator with input '145 + 278'
+[DEBUG] Observation: '423'
+[DEBUG] Local model text: '423'
+[DEBUG] Local model text: '144'
+[DEBUG] Local model text: 'Action: calculator\nAction Input: solve(2*x + 6 = 20, x)'
+[DEBUG] Executing tool: calculator with input 'solve(2*x + 6 = 20, x)'
+[DEBUG] Observation: 'Error: invalid syntax. Perhaps you forgot a comma? (<string>, line 1)'
+[DEBUG] Local model text: 'x = 4'
+[DEBUG] Local model text: '36'
+[DEBUG] Local model text: 'Action: calculator\nAction Input: 23 * 47'
+[DEBUG] Executing tool: calculator with input '23 * 47'
+[DEBUG] Observation: '1081'
+[DEBUG] Local model text: '1081'
+[DEBUG] Local model text: '80'
+[DEBUG] Local model text: 'Action: calculator\nAction Input: 1000 * (1 + 0.05)^2 - 1000'
+[DEBUG] Executing tool: calculator with input '1000 * (1 + 0.05)^2 - 1000'
+[DEBUG] Observation: '102.5'
+[DEBUG] Local model text: '102.5'
+[DEBUG] Local model text: '4'
+# FrugalRoute | engine=langgraph
+
+[local       ] remote=   0 route_p=0.26 conf=1.0  id=0 Classify sentiment: 'I love this, works 
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=1 Classify sentiment: 'This is the worst p
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=2 Classify sentiment: 'The package arrived
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=3 Is this spam? 'You won a free prize, cli
+[local       ] remote=   0 route_p=0.27 conf=1.0  id=4 Label the topic: 'The GDP grew 3% last q
+[local       ] remote=   0 route_p=0.28 conf=1.0  id=5 Classify sentiment given sarcasm: 'Oh gr
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=6 Extract all email addresses from: contac
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=7 Extract the phone number from: call me a
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=8 Extract the date from: the meeting is on
+[local       ] remote=   0 route_p=0.28 conf=0.9  id=9 Extract the total price from: 2 items at
+[local       ] remote=   0 route_p=0.28 conf=0.9  id=10 Extract all company names from: Apple an
+[local       ] remote=   0 route_p=0.29 conf=0.9  id=11 Extract the implied deadline from: submi
+[local       ] remote=   0 route_p=0.3  conf=0.9  id=12 Summarize in 5 words: The quarterly repo
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=13 Summarize: The cat sat on the mat and th
+[local       ] remote=   0 route_p=0.3  conf=0.9  id=14 Summarize the key risk: Latency rose 40%
+[local       ] remote=   0 route_p=0.28 conf=None id=15 Summarize a dense legal clause about ind
+[local       ] remote=   0 route_p=0.25 conf=0.9  id=16 What is the capital of France?
+[local       ] remote=   0 route_p=0.26 conf=0.9  id=17 What is the chemical symbol for gold?
+[local       ] remote=   0 route_p=0.87 conf=1.0  id=18 How many continents are there?
+[local       ] remote=   0 route_p=0.25 conf=0.9  id=19 Who wrote Romeo and Juliet?
+[local       ] remote=   0 route_p=0.26 conf=0.9  id=20 What year did the Berlin Wall fall?
+[local       ] remote=   0 route_p=0.27 conf=0.9  id=21 What is the boiling point of water at se
+[local       ] remote=   0 route_p=0.89 conf=0.65 id=22 Why does increasing temperature speed up
+[local       ] remote=   0 route_p=0.88 conf=0.6  id=23 Explain step by step why the sky appears
+[local       ] remote=   0 route_p=0.88 conf=0.9  id=24 Deduce who is oldest: Ann is older than 
+[local       ] remote=   0 route_p=0.89 conf=0.9  id=25 Explain the reasoning: if all A are B an
+[local       ] remote=   0 route_p=0.88 conf=0.65 id=26 Why would a semantic cache reduce token 
+[local       ] remote=   0 route_p=0.88 conf=0.65 id=27 Explain step by step how backpropagation
+[local       ] remote=   0 route_p=0.87 conf=None id=28 Calculate the sum of 145 and 278.
+[local       ] remote=   0 route_p=0.87 conf=1.0  id=29 How many is 12 multiplied by 12?
+[local       ] remote=   0 route_p=0.87 conf=None id=30 Solve for x: 2x + 6 = 20.
+[local       ] remote=   0 route_p=0.24 conf=0.9  id=31 What is 15% of 240?
+[local       ] remote=   0 route_p=0.87 conf=None id=32 Calculate the product of 23 and 47.
+[local       ] remote=   0 route_p=0.88 conf=1.0  id=33 A train travels 60 km in 45 minutes; how
+[local       ] remote=   0 route_p=0.27 conf=None id=34 Compute the compound interest on 1000 at
+[local       ] remote=   0 route_p=0.88 conf=1.0  id=35 How many multiply steps to compute 2^10 
+
+remote_tokens=0  tokens_saved=0  free%=100.0  escalate%=0.0  cache_hits=0
+
+results -> out/Qwen2.5-3B-Instruct.jsonl  (36 tasks, remote_tokens=0)
+
+Parsing results...
+Running on remote: docker rm -f frugal-vllm
+Finished Qwen/Qwen2.5-3B-Instruct
+
+
+==================================================
+Benchmarking microsoft/Phi-3.5-mini-instruct
+==================================================
+Running on remote: docker rm -f frugal-vllm
+Running on remote: docker run -d --name frugal-vllm --network host -v /root/.cache/huggingface:/root/.cache/huggingface -e VLLM_HOST_IP=127.0.0.1 -e GLOO_SOCKET_IFNAME=lo -e NCCL_SOCKET_IFNAME=lo --device=/dev/kfd --device=/dev/dri --group-add video --ipc=host --cap-add=SYS_PTRACE --security-opt seccomp=unconfined vllm/vllm-openai-rocm:v0.23.0 --model microsoft/Phi-3.5-mini-instruct --host 0.0.0.0 --port 8001 --api-key frugal-amd-7k2x --enable-prefix-caching --max-model-len 8192 --trust-remote-code
+Waiting for vLLM to be ready...
+vLLM is ready!
+Running on remote: rocm-smi --showuse | grep 'GPU use'
+Running harness.py...
+samples = 36   raw local accuracy = 0.694
+ECE before = 0.346   isotonic = 0.038   platt = 0.055
+best calibrator = isotonic   (Brier = 0.196)
+saved -> calib.json  (set CALIB_PATH=calib.json to use it)
+
+Per-category local accuracy:
+  classification       6/6 = 1.00
+  extraction           4/6 = 0.67
+  math                 7/8 = 0.88
+  qa                   6/6 = 1.00
+  reasoning            2/6 = 0.33
+  summarization        0/4 = 0.00
+
+AutoMix gate: belief_threshold=0.90  remote_calls=32/36  accuracy=1.000  saved -> automix.json
+
+threshold sweep (accuracy floor = 0.8):
+  thr   remote_calls   accuracy
+  0.00        0        0.694
+  0.10        0        0.694
+  0.20        0        0.694
+  0.30        0        0.694
+  0.40        0        0.694
+  0.50        0        0.694
+  0.60       15        0.889
+  0.70       15        0.889
+  0.80       15        0.889
+  0.90       36        1.000
+  1.00       36        1.000
+
+RECOMMEND CONFIDENCE_THRESHOLD = 0.55  ->  remote_calls = 15/36  accuracy = 0.889  tokens_saved = 58.3%
+
+PredictiveRouter trained. weights = [-1.42, 3.19, 0.44]
+
+Running run.py...
+
+Parsing results...
+Running on remote: docker rm -f frugal-vllm
