@@ -15,6 +15,14 @@ import { Zap, MessageSquare, BarChart3, Settings, Cpu, Plus, Clock, ChevronDown,
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { loadSessions, type ChatSession } from "../lib/sessions";
+import { api } from "../lib/api";
+
+type HealthResp = {
+  ollama_online: boolean;
+  local_model: string;
+  gpu_vram_mb: number;
+  ram_gb: number;
+};
 
 function NotFoundComponent() {
   return (
@@ -104,6 +112,7 @@ function Sidebar() {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [recentOpen, setRecentOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  const [health, setHealth] = useState<HealthResp | null>(null);
 
   // Load sessions from localStorage and refresh when updated; restore collapse pref
   useEffect(() => {
@@ -112,6 +121,25 @@ function Sidebar() {
     try { setCollapsed(localStorage.getItem("frugal_sidebar_collapsed") === "1"); } catch { /* ignore */ }
     window.addEventListener("frugal_sessions_updated", refresh);
     return () => window.removeEventListener("frugal_sessions_updated", refresh);
+  }, []);
+
+  // Poll real backend health so the status badge reflects this machine, not a
+  // hardcoded demo string. Ollama/local-model state can change anytime (server
+  // restarts, model switched in Settings), so keep polling, not just on mount.
+  useEffect(() => {
+    let cancelled = false;
+    const poll = async () => {
+      try {
+        const res = await fetch(api("/api/health"));
+        const data: HealthResp = await res.json();
+        if (!cancelled) setHealth(data);
+      } catch {
+        if (!cancelled) setHealth((h) => (h ? { ...h, ollama_online: false } : h));
+      }
+    };
+    poll();
+    const id = setInterval(poll, 8000);
+    return () => { cancelled = true; clearInterval(id); };
   }, []);
 
   const toggleCollapsed = () =>
@@ -252,26 +280,39 @@ function Sidebar() {
         {BOTTOM_NAV.map(({ to, label, icon: Icon }) => navRow(to, label, Icon, pathname === to))}
       </nav>
 
-      {/* Local node status — bottom */}
-      <div className={`glass rounded-xl ${collapsed ? "grid place-items-center p-2" : "p-3"}`}>
-        {collapsed ? (
-          <span className="relative flex h-2.5 w-2.5" title="Local node online">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400" />
-          </span>
-        ) : (
-          <>
-            <div className="flex items-center gap-2 text-xs">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400" />
+      {/* Local node status — bottom. Reflects THIS machine's real Ollama/GPU state,
+          polled from /api/health — not a fixed demo string. */}
+      {(() => {
+        const online = health?.ollama_online ?? false;
+        const dotColor = online ? "bg-emerald-400" : "bg-red-400";
+        const label = online ? "LOCAL NODE ONLINE" : "LOCAL NODE OFFLINE";
+        const specParts: string[] = [];
+        if (health?.local_model) specParts.push(health.local_model);
+        if (health?.gpu_vram_mb) specParts.push(`${(health.gpu_vram_mb / 1024).toFixed(1)}GB VRAM`);
+        else if (health?.ram_gb) specParts.push(`${health.ram_gb}GB RAM (CPU)`);
+        const spec = specParts.length ? specParts.join(" · ") : health ? "No model detected" : "Detecting…";
+        return (
+          <div className={`glass rounded-xl ${collapsed ? "grid place-items-center p-2" : "p-3"}`} title={spec}>
+            {collapsed ? (
+              <span className="relative flex h-2.5 w-2.5" title={label}>
+                {online && <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${dotColor} opacity-75`} />}
+                <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${dotColor}`} />
               </span>
-              <span className="font-mono-tech text-muted-foreground">LOCAL NODE ONLINE</span>
-            </div>
-            <div className="mt-1 font-mono-tech text-[10px] text-muted-foreground">Qwen 3B &middot; 12ms avg</div>
-          </>
-        )}
-      </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 text-xs">
+                  <span className="relative flex h-2 w-2">
+                    {online && <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${dotColor} opacity-75`} />}
+                    <span className={`relative inline-flex rounded-full h-2 w-2 ${dotColor}`} />
+                  </span>
+                  <span className="font-mono-tech text-muted-foreground">{label}</span>
+                </div>
+                <div className="mt-1 truncate font-mono-tech text-[10px] text-muted-foreground">{spec}</div>
+              </>
+            )}
+          </div>
+        );
+      })()}
     </aside>
   );
 }

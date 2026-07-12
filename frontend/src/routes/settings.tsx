@@ -36,10 +36,25 @@ export const Route = createFileRoute("/settings")({
 
 function SettingsPage() {
   const [localUrl, setLocalUrl] = useState("http://localhost:11434");
-  const [provider, setProvider] = useState("OpenAI");
+  // Default matches config.py's REMOTE_PROVIDER default (Fireworks), then gets
+  // overwritten with whatever the backend is actually configured for below —
+  // this dropdown should never silently disagree with the running server.
+  const [provider, setProvider] = useState("Fireworks");
   const [apiKey, setApiKey] = useState("");
   const [reveal, setReveal] = useState(false);
   const [threshold, setThreshold] = useState(0.72);
+
+  useEffect(() => {
+    fetch(api("/api/health"))
+      .then((r) => r.json())
+      .then((data) => {
+        if (data.remote_provider) {
+          const p = String(data.remote_provider);
+          setProvider(p.charAt(0).toUpperCase() + p.slice(1));
+        }
+      })
+      .catch(() => {/* keep default */});
+  }, []);
 
   const [models, setModels] = useState<ModelsResp | null>(null);
   const [loadingModels, setLoadingModels] = useState(false);
@@ -79,8 +94,8 @@ function SettingsPage() {
     loadCatalog();
   }, [loadModels, loadCatalog]);
 
-  async function startPull() {
-    const tag = pullTag;
+  async function startPull(tagOverride?: string) {
+    const tag = tagOverride ?? pullTag;
     if (!tag || pull) return;
     try {
       await fetch(api("/api/models/pull"), {
@@ -245,6 +260,46 @@ function SettingsPage() {
         subtitle="One-click pull from Ollama — Gemma, Qwen, Llama, Phi, Mistral, DeepSeek"
       >
         <div className="md:col-span-2">
+          {models?.recommended && (() => {
+            const rec = catalog.find((m) => m.tag === models.recommended);
+            const alreadyInstalled = models.available.some((m) => m.name === models.recommended);
+            return (
+              <div className="glass mb-4 flex flex-col gap-3 rounded-xl border border-primary/30 p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-primary/15 text-primary">
+                    <Star className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2 text-sm font-semibold">
+                      Recommended for your PC
+                    </div>
+                    <div className="mt-0.5 font-mono-tech text-[10px] uppercase tracking-widest text-muted-foreground">
+                      {rec?.label ?? models.recommended} — best fit for your detected GPU/VRAM
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => startPull(models.recommended!)}
+                  disabled={alreadyInstalled || !!pull}
+                  className="inline-flex h-[38px] shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground glow-red transition-transform hover:scale-[1.02] disabled:opacity-40 disabled:hover:scale-100"
+                >
+                  {alreadyInstalled ? (
+                    <>
+                      <Check className="h-4 w-4" /> Installed
+                    </>
+                  ) : pull?.tag === models.recommended ? (
+                    <>
+                      <RefreshCw className="h-4 w-4 animate-spin" /> Downloading…
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-4 w-4" /> One-Click Download
+                    </>
+                  )}
+                </button>
+              </div>
+            );
+          })()}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end">
             <label className="block flex-1">
               <div className="mb-1.5 font-mono-tech text-[10px] uppercase tracking-widest text-muted-foreground">
@@ -265,7 +320,7 @@ function SettingsPage() {
               </select>
             </label>
             <button
-              onClick={startPull}
+              onClick={() => startPull()}
               disabled={!pullTag || !!pull}
               className="inline-flex h-[42px] items-center justify-center gap-2 rounded-lg bg-primary px-5 text-sm font-semibold text-primary-foreground glow-red transition-transform hover:scale-[1.02] disabled:opacity-40 disabled:hover:scale-100"
             >

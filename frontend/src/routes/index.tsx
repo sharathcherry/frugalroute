@@ -27,24 +27,25 @@ const slides: Slide[] = [
   {
     kicker: "01 · WELCOME",
     title: "Welcome to FrugalRoute",
-    subtitle: "Hybrid AI Routing on AMD Ryzen AI",
+    subtitle: "Hybrid AI Routing, Tuned To Your Hardware",
     body: (
       <div className="space-y-4 text-sm leading-relaxed text-muted-foreground">
         <p>
-          FrugalRoute decides in <span className="text-foreground font-semibold">microseconds</span> whether a prompt
-          runs on your <span className="text-primary font-semibold">local AMD node</span> or a{" "}
+          FrugalRoute decides in <span className="text-foreground font-semibold">milliseconds</span> whether a prompt
+          runs on <span className="text-primary font-semibold">your local machine</span> or a{" "}
           <span className="text-accent font-semibold">frontier cloud model</span> — so you pay cents where you used
           to pay dollars.
         </p>
         <div className="glass rounded-xl p-4">
           <div className="font-mono-tech text-[10px] uppercase tracking-widest text-primary text-glow-red">
-            THE AMD STORY
+            HOW LOCAL ROUTING WORKS
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            Local inference runs on a <span className="text-foreground font-semibold">single AMD Ryzen AI</span>{" "}
-            NPU with Qwen 3B, hitting a{" "}
-            <span className="text-foreground font-semibold">12ms median latency</span> across a live routing
-            benchmark of 14.2M tokens.
+            On startup, FrugalRoute detects <span className="text-foreground font-semibold">your GPU/VRAM and RAM</span>{" "}
+            and auto-selects the largest local model that fits — no manual tuning. In our own benchmark suite
+            (6 open models on AMD Instinct MI300X), the best-fit model hit{" "}
+            <span className="text-foreground font-semibold">94% accuracy</span> with a{" "}
+            <span className="text-foreground font-semibold">79.5% local hit rate</span>.
           </p>
         </div>
       </div>
@@ -71,19 +72,19 @@ const slides: Slide[] = [
       {
         icon: <Database className="h-4 w-4" />,
         title: "Semantic Cache",
-        desc: "Vector-dedup hits repeat queries at a 34% rate, returning zero-cost cached completions.",
+        desc: "Vector-dedup catches repeat queries, returning zero-cost cached completions.",
         accent: "emerald",
       },
       {
         icon: <Cpu className="h-4 w-4" />,
-        title: "Local Path · Qwen 3B",
-        desc: "AMD Ryzen AI executes drafts, classification, and short-form generation at 12ms median.",
+        title: "Local Path · Auto-Selected",
+        desc: "Detects your GPU/VRAM on startup and picks the best-fitting installed model for drafts, classification, and short-form generation.",
         accent: "red",
       },
       {
         icon: <Cloud className="h-4 w-4" />,
-        title: "Cloud Path · GPT-4o",
-        desc: "Frontier providers are engaged only when the router demands maximum capability.",
+        title: "Cloud Path · Fireworks",
+        desc: "Frontier models are engaged only when the router demands maximum capability.",
         accent: "blue",
       },
     ],
@@ -272,13 +273,13 @@ function BackgroundOverview() {
         Costs <span className="text-accent text-glow-blue">Slashed.</span>
       </h1>
       <p className="max-w-xl text-lg text-muted-foreground">
-        FrugalRoute decides in microseconds whether a prompt runs on your local AMD node or a frontier cloud model.
+        FrugalRoute decides in milliseconds whether a prompt runs on your local machine or a frontier cloud model.
       </p>
       <div className="grid gap-5 md:grid-cols-3">
         {[
-          { k: "TOKENS SAVED", v: "14.2M" },
-          { k: "LOCAL LATENCY", v: "12ms" },
-          { k: "CACHE HIT", v: "34%" },
+          { k: "BENCHMARKED ACCURACY", v: "94%" },
+          { k: "LOCAL HIT RATE", v: "79.5%" },
+          { k: "MODELS BENCHMARKED", v: "6" },
         ].map((s) => (
           <div key={s.k} className="glass rounded-2xl p-6">
             <div className="font-mono-tech text-[11px] uppercase tracking-widest text-muted-foreground">{s.k}</div>

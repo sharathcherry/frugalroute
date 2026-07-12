@@ -288,16 +288,55 @@ def pull_status(model: str):
     return _PULLS.get(model, {"status": "idle", "percent": 0, "done": False, "error": None})
 
 
+def _ollama_online():
+    """Quick reachability check — short timeout so the health endpoint stays snappy."""
+    import urllib.request
+    try:
+        urllib.request.urlopen(_ollama_base() + "/api/tags", timeout=2)
+        return True
+    except Exception:
+        return False
+
+
 @app.get("/api/health")
 def health():
     import providers
+    try:
+        import hwselect
+        vram = hwselect.total_vram_mb()
+        ram = hwselect.ram_gb()
+        recommended = hwselect.choose()  # cached after first (startup) call
+    except Exception:
+        vram, ram, recommended = 0, 0.0, None
     return {
         "ok": True,
         "engine": _ENGINE,
         "mock": config.MOCK,
         "local_model": providers.active_local_model(),
         "remote_model": config.REMOTE_MODEL,
+        "remote_provider": config.REMOTE_PROVIDER,
+        "ollama_online": _ollama_online(),
+        "gpu_vram_mb": vram,
+        "ram_gb": ram,
+        "recommended_model": recommended,
     }
+
+
+@app.on_event("startup")
+def _warm_hardware_detection():
+    """Detect GPU/VRAM/RAM and pick the best-fit local model in the background as
+    soon as the server boots, so the first /api/health or /api/models call from
+    the UI is instant instead of paying the detection cost on-demand."""
+    import threading
+
+    def _run():
+        try:
+            import hwselect
+            hwselect.choose(verbose=True)
+        except Exception as e:
+            print(f"[hwselect] background detection failed: {e}")
+
+    threading.Thread(target=_run, daemon=True).start()
 
 
 @app.post("/api/route")
