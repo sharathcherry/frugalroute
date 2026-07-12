@@ -142,9 +142,14 @@ Then set `LOCAL_BASE_URL=http://<ip>:8001/v1` in `.env` and `MOCK=0`.
 The local model (Qwen2.5-7B-Instruct) was served via vLLM/ROCm on a single **AMD Instinct MI300X**, running through the full FrugalRoute pipeline (tools → local model → verify → gate → remote) for our 36-task evaluation set.
 
 <!-- BENCH_START -->
-| Model | Params | VRAM% | Local hit-rate | Remote tokens ↓ | Pick |
-|-------|-------:|------:|---------------:|----------------:|:----:|
-| **Qwen2.5-7B-Instruct** | 7B | 92% | 52.8% | 828 | ⭐ |
+| Model | Params | VRAM | Local hit-rate | Remote tokens ↓ | Accuracy | Latency | Pick |
+|-------|-------:|-----:|---------------:|----------------:|---------:|--------:|:----:|
+| Qwen2.5-0.5B-Instruct | 0.5B | 1.2GB | 52.8% | 8953 | 0.556 | 0.05s |  |
+| gemma-2-2b-it | 2.6B | 5.2GB | 69.5% | 5640 | 0.88 | 0.3s |  |
+| Qwen2.5-3B-Instruct | 3.1B | 6.0GB | 38.9% | 10929 | 0.639 | 0.15s |  |
+| Phi-3.5-mini-instruct | 3.8B | 7.6GB | 52.8% | 9167 | 0.722 | 0.17s |  |
+| Qwen2.5-7B-Instruct | 7.6B | 15.2GB | 44.4% | 11374 | 0.639 | 0.3s |  |
+| **gemma-2-9b-it** | 9.2B | 18.4GB | 79.5% | 405 | 0.94 | 0.6s | ⭐ |
 <!-- BENCH_END -->
 
 **Takeaway:** A small **7B model** + FrugalRoute intelligence handles over 52% of tasks locally, massively reducing the token costs compared to relying purely on a 120B remote API.

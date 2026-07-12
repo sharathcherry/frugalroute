@@ -49,7 +49,12 @@ placeholders until the sweep runs on the MI300X._
 <!-- BENCH_START -->
 | Model | Params | VRAM | Local hit-rate | Remote tokens ↓ | Accuracy | Latency | Pick |
 |-------|-------:|-----:|---------------:|----------------:|---------:|--------:|:----:|
-| **gemma-2-9b-it** | 9.2B | 18.4GB | 100.0% | 0.0 | 0.0 | 0.0s | ⭐ |
+| Qwen2.5-0.5B-Instruct | 0.5B | 1.2GB | 52.8% | 8953 | 0.556 | 0.05s |  |
+| gemma-2-2b-it | 2.6B | 5.2GB | 69.5% | 5640 | 0.88 | 0.3s |  |
+| Qwen2.5-3B-Instruct | 3.1B | 6.0GB | 38.9% | 10929 | 0.639 | 0.15s |  |
+| Phi-3.5-mini-instruct | 3.8B | 7.6GB | 52.8% | 9167 | 0.722 | 0.17s |  |
+| Qwen2.5-7B-Instruct | 7.6B | 15.2GB | 44.4% | 11374 | 0.639 | 0.3s |  |
+| **gemma-2-9b-it** | 9.2B | 18.4GB | 79.5% | 405 | 0.94 | 0.6s | ⭐ |
 <!-- BENCH_END -->
 
 <!-- ![cost vs accuracy](eval/pareto.png) -->

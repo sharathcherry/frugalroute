@@ -5,10 +5,12 @@ import subprocess
 import requests
 
 MODELS = [
+    "Qwen/Qwen2.5-0.5B-Instruct",
+    "google/gemma-2-2b-it",
+    "Qwen/Qwen2.5-3B-Instruct",
+    "microsoft/Phi-3.5-mini-instruct",
     "Qwen/Qwen2.5-7B-Instruct",
-    "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
-    "google/gemma-2-9b-it",
-    "Qwen/Qwen2.5-32B-Instruct"
+    "google/gemma-2-9b-it"
 ]
 
 MODEL_METADATA = {
@@ -106,8 +108,12 @@ def run_benchmarks():
         
         # 3. Run eval
         print("Running run.py...")
+        import time
+        t0 = time.time()
         out_file = f"out/{model.split('/')[-1]}.jsonl"
         run_res = subprocess.run(["python", "run.py", "--input", "eval/tasks.jsonl", "--output", out_file], capture_output=True, text=True, check=False)
+        total_time = time.time() - t0
+        avg_lat = total_time / 36.0
         print(run_res.stdout)
         
         # 4. Parse results from run.py stdout
@@ -122,8 +128,7 @@ def run_benchmarks():
             
             local_hit = extract_stat(r"free%")
             rem_tokens = extract_stat(r"remote_tokens")
-            acc = 0.0 # Not calculated in batch mode currently
-            lat = 0.0 # Latency not tracked by run.py
+            lat = round(avg_lat, 2)
             
             model_name = model.split("/")[-1]
             meta = MODEL_METADATA.get(model_name, {"params": "?", "vram_gb": "?"})
