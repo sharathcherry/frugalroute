@@ -37,6 +37,20 @@ def main():
     with open(readme_path, "w", encoding="utf-8") as f:
         f.write(new_content)
     print(f"Updated README.md table")
+    
+    # Inject into BENCHMARK.md
+    bench_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "BENCHMARK.md")
+    with open(bench_path, "r", encoding="utf-8") as f:
+        bench_content = f.read()
+    new_bench_content = re.sub(
+        r"<!-- BENCH_START -->.*?<!-- BENCH_END -->",
+        f"<!-- BENCH_START -->\n{table_md}\n<!-- BENCH_END -->",
+        bench_content,
+        flags=re.DOTALL
+    )
+    with open(bench_path, "w", encoding="utf-8") as f:
+        f.write(new_bench_content)
+    print(f"Updated BENCHMARK.md table")
 
     # Generate Pareto Chart
     plt.figure(figsize=(10, 6))

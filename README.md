@@ -146,16 +146,18 @@ full FrugalRoute pipeline (tools → local model → verify → gate → remote)
 <!-- BENCH_START -->
 | Model | Params | VRAM | Local hit-rate | Remote tokens ↓ | Accuracy | Latency | Pick |
 |-------|-------:|-----:|---------------:|----------------:|---------:|--------:|:----:|
-| Qwen2.5-0.5B-Instruct | 0.5B | 1.2GB | 45.0% | 1250 | 0.68 | 0.15s |  |
-| Llama-3.2-1B-Instruct | 1.2B | 2.4GB | 51.0% | 1100 | 0.72 | 0.2s |  |
-| SmolLM2-1.7B-Instruct | 1.7B | 3.4GB | 58.0% | 980 | 0.76 | 0.22s |  |
-| Gemma-2-2b-it | 2.6B | 5.2GB | 69.5% | 640 | 0.88 | 0.3s |  |
-| Qwen2.5-3B-Instruct | 3.0B | 6.0GB | 70.0% | 625 | 0.89 | 0.35s |  |
-| Phi-3.5-mini-instruct | 3.8B | 7.6GB | 72.0% | 580 | 0.9 | 0.38s |  |
-| Qwen2.5-7B-Instruct | 7.6B | 15.2GB | 75.0% | 490 | 0.92 | 0.5s |  |
-| DeepSeek-R1-Distill-Qwen-7B | 7.0B | 14.0GB | 76.5% | 450 | 0.93 | 0.65s |  |
-| **Gemma-2-9b-it** | 9.2B | 18.4GB | 79.5% | 405 | 0.94 | 0.6s | ⭐ |
-| Qwen2.5-32B-Instruct | 32.5B | 65.0GB | 81.0% | 390 | 0.95 | 1.95s | ✗ (3x latency) |
+| Qwen2.5-0.5B-Instruct | 0.5B | 1.2GB | 100.0% | 0.0 | 0.556 | 0.0s |  |
+| Qwen2.5-1.5B-Instruct | 1.5B | 2.0GB | 97.2% | 732.0 | 0.639 | 0.0s |  |
+| Llama-3.2-1B-Instruct | 1.2B | 2.4GB | 0.0% | 0.0 | 0.611 | 0.0s |  |
+| gemma-2-2b-it | 2.6B | 5.2GB | 0.0% | 0.0 | 0.722 | 0.0s |  |
+| Qwen2.5-3B-Instruct | 3.1B | 6.0GB | 100.0% | 0.0 | 0.639 | 0.0s |  |
+| Llama-3.2-3B-Instruct | 3.2B | 6.2GB | 100.0% | 0.0 | 0.611 | 0.0s |  |
+| Phi-3.5-mini-instruct | 3.8B | 7.6GB | 0.0% | 0.0 | 0.694 | 0.0s |  |
+| Mistral-7B-Instruct-v0.3 | 7B | 14.0GB | 97.2% | 211.0 | 0.639 | 0.0s |  |
+| Qwen2.5-7B-Instruct | 7.6B | 15.2GB | 97.2% | 185.0 | 0.639 | 0.0s |  |
+| DeepSeek-R1-Distill-Qwen-7B | 7.0B | 14.0GB | 100.0% | 0.0 | 0.667 | 0.0s |  |
+| **gemma-2-9b-it** | 9.2B | 18.4GB | 0.0% | 0.0 | 0.75 | 0.0s | ⭐ |
+| Qwen2.5-32B-Instruct | 32.5B | 65.0GB | 100.0% | 0.0 | 0.667 | 0.0s | ✗ (3x latency) |
 <!-- BENCH_END -->
 
 ![cost vs accuracy](eval/pareto.png)
@@ -206,14 +208,20 @@ on an **AMD Instinct MI300X**, ranked by **remote tokens at accuracy ≥ floor**
 Full methodology + reproduce steps: **[BENCHMARK.md](BENCHMARK.md)**.
 
 <!-- BENCH_START -->
-| Model | Params | Local hit-rate | Remote tokens ↓ | Accuracy | Pick |
-|-------|-------:|---------------:|----------------:|---------:|:----:|
-| gemma2:9b             | 9.2B | — | — | — | ⭐ |
-| qwen2.5:7b-instruct   | 7.6B | — | — | — |   |
-| gemma2:2b             | 2.6B | — | — | — |   |
-| qwen2.5:3b-instruct   | 3.1B | — | — | — |   |
-| phi3.5                | 3.8B | — | — | — |   |
-| qwen2.5:32b (control) | 32B  | — | — | — | ✗ |
+| Model | Params | VRAM | Local hit-rate | Remote tokens ↓ | Accuracy | Latency | Pick |
+|-------|-------:|-----:|---------------:|----------------:|---------:|--------:|:----:|
+| Qwen2.5-0.5B-Instruct | 0.5B | 1.2GB | 100.0% | 0.0 | 0.556 | 0.0s |  |
+| Qwen2.5-1.5B-Instruct | 1.5B | 2.0GB | 97.2% | 732.0 | 0.639 | 0.0s |  |
+| Llama-3.2-1B-Instruct | 1.2B | 2.4GB | 0.0% | 0.0 | 0.611 | 0.0s |  |
+| gemma-2-2b-it | 2.6B | 5.2GB | 0.0% | 0.0 | 0.722 | 0.0s |  |
+| Qwen2.5-3B-Instruct | 3.1B | 6.0GB | 100.0% | 0.0 | 0.639 | 0.0s |  |
+| Llama-3.2-3B-Instruct | 3.2B | 6.2GB | 100.0% | 0.0 | 0.611 | 0.0s |  |
+| Phi-3.5-mini-instruct | 3.8B | 7.6GB | 0.0% | 0.0 | 0.694 | 0.0s |  |
+| Mistral-7B-Instruct-v0.3 | 7B | 14.0GB | 97.2% | 211.0 | 0.639 | 0.0s |  |
+| Qwen2.5-7B-Instruct | 7.6B | 15.2GB | 97.2% | 185.0 | 0.639 | 0.0s |  |
+| DeepSeek-R1-Distill-Qwen-7B | 7.0B | 14.0GB | 100.0% | 0.0 | 0.667 | 0.0s |  |
+| **gemma-2-9b-it** | 9.2B | 18.4GB | 0.0% | 0.0 | 0.75 | 0.0s | ⭐ |
+| Qwen2.5-32B-Instruct | 32.5B | 65.0GB | 100.0% | 0.0 | 0.667 | 0.0s | ✗ (3x latency) |
 <!-- BENCH_END -->
 
 _Numbers fill in after running `bash eval/run_benchmarks.sh` on the GPU. Models tested:

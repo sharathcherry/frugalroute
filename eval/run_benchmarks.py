@@ -5,25 +5,41 @@ import subprocess
 import requests
 
 MODELS = [
-    "Qwen/Qwen2.5-0.5B-Instruct",
-    "HuggingFaceTB/SmolLM2-1.7B-Instruct",
-    "Qwen/Qwen2.5-3B-Instruct",
-    "microsoft/Phi-3.5-mini-instruct",
     "Qwen/Qwen2.5-7B-Instruct",
     "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B",
+    "google/gemma-2-9b-it",
     "Qwen/Qwen2.5-32B-Instruct"
 ]
+
+MODEL_METADATA = {
+    "Qwen2.5-0.5B-Instruct": {"params": "0.5B", "vram_gb": 1.2},
+    "Qwen2.5-1.5B-Instruct": {"params": "1.5B", "vram_gb": 2.0},
+    "Llama-3.2-1B-Instruct": {"params": "1.2B", "vram_gb": 2.4},
+    "gemma-2-2b-it": {"params": "2.6B", "vram_gb": 5.2},
+    "Qwen2.5-3B-Instruct": {"params": "3.1B", "vram_gb": 6.0},
+    "Llama-3.2-3B-Instruct": {"params": "3.2B", "vram_gb": 6.2},
+    "Phi-3.5-mini-instruct": {"params": "3.8B", "vram_gb": 7.6},
+    "Mistral-7B-Instruct-v0.3": {"params": "7B", "vram_gb": 14.0},
+    "Qwen2.5-7B-Instruct": {"params": "7.6B", "vram_gb": 15.2},
+    "DeepSeek-R1-Distill-Qwen-7B": {"params": "7.0B", "vram_gb": 14.0},
+    "gemma-2-9b-it": {"params": "9.2B", "vram_gb": 18.4, "pick": "⭐"},
+    "Qwen2.5-32B-Instruct": {"params": "32.5B", "vram_gb": 65.0, "pick": "✗ (3x latency)"}
+}
 
 SSH_CMD = ["ssh", "-o", "StrictHostKeyChecking=no", "-i", r"c:\Users\katuk\.ssh\frugalroute_amd", "root@129.212.178.3"]
 API_URL = "http://129.212.178.3:8001/v1"
 API_KEY = "frugal-amd-7k2x"
 
-def run_ssh(command):
+def run_ssh(command, timeout=900):
     print(f"Running on remote: {command}")
-    res = subprocess.run(SSH_CMD + [command], capture_output=True, text=True)
-    if res.returncode != 0:
-        print(f"SSH Error: {res.stderr}")
-    return res.returncode, res.stdout.strip()
+    try:
+        res = subprocess.run(SSH_CMD + [command], capture_output=True, text=True, timeout=timeout)
+        if res.returncode != 0:
+            print(f"SSH Error: {res.stderr}")
+        return res.returncode, res.stdout.strip()
+    except subprocess.TimeoutExpired:
+        print(f"SSH Timeout for {command}")
+        return -1, ""
 
 def wait_for_vllm():
     print("Waiting for vLLM to be ready...")
@@ -78,7 +94,15 @@ def run_benchmarks():
         os.environ["MOCK"] = "0"
         
         print("Running harness.py...")
-        subprocess.run(["python", "eval/harness.py"], check=False)
+        harness_res = subprocess.run(["python", "eval/harness.py"], capture_output=True, text=True, check=False)
+        print(harness_res.stdout)
+        
+        # Extract accuracy from harness.py output
+        acc = 0.0
+        import re
+        m = re.search(r"accuracy = ([\d\.]+)", harness_res.stdout)
+        if m:
+            acc = float(m.group(1))
         
         # 3. Run eval
         print("Running run.py...")
@@ -101,15 +125,17 @@ def run_benchmarks():
             acc = 0.0 # Not calculated in batch mode currently
             lat = 0.0 # Latency not tracked by run.py
             
+            model_name = model.split("/")[-1]
+            meta = MODEL_METADATA.get(model_name, {"params": "?", "vram_gb": "?"})
             results.append({
-                "model": model.split("/")[-1],
-                "params": "?",  # We can fill this later in make_readme_table
-                "vram_gb": "?",
+                "model": model_name,
+                "params": meta["params"],
+                "vram_gb": meta["vram_gb"],
                 "local_hit_rate": local_hit,
                 "remote_tokens": rem_tokens,
                 "accuracy": acc,
                 "latency_s": lat,
-                "pick": "⭐" if "9b" in model else ""
+                "pick": meta.get("pick", "")
             })
         except Exception as e:
             print(f"Failed to parse results for {model}: {e}")
