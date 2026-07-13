@@ -1,0 +1,34 @@
+{
+  "tag": "smoke210_gemma4_12b",
+  "n": 210,
+  "accuracy": 0.9857,
+  "local_hit_rate_pct": 98.6,
+  "remote_tokens": 650,
+  "per_category": {
+    "classification": {
+      "correct": 28,
+      "total": 30,
+      "acc": 0.933
+    },
+    "extraction": {
+      "correct": 40,
+      "total": 40,
+      "acc": 1.0
+    },
+    "math": {
+      "correct": 70,
+      "total": 70,
+      "acc": 1.0
+    },
+    "qa": {
+      "correct": 39,
+      "total": 40,
+      "acc": 0.975
+    },
+    "reasoning": {
+      "correct": 30,
+      "total": 30,
+      "acc": 1.0
+    }
+  }
+}

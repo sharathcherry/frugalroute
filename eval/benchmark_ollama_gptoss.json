@@ -1,0 +1,12 @@
+[
+  {
+    "model": "gpt-oss:20b",
+    "params": "20B",
+    "vram_gb": 40.0,
+    "local_hit_rate": 100.0,
+    "remote_tokens": 0.0,
+    "accuracy": 0.722,
+    "latency_s": 0.5,
+    "pick": ""
+  }
+]

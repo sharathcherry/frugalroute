@@ -19,14 +19,16 @@ import subprocess
 # Ranked catalog: (ollama tag, approx GPU footprint MB at Ollama's default Q4
 # incl. weights + KV/compute at ~4k ctx, capability rank). Ascending capability.
 CATALOG = [
-    ("qwen2.5:0.5b-instruct",  900, 1),
-    ("qwen2.5:1.5b-instruct", 1600, 2),
-    ("llama3.2:3b-instruct",  2600, 3),
-    ("qwen2.5:3b-instruct",   2400, 3),
-    ("qwen2.5:7b-instruct",   5200, 4),
-    ("gemma2:9b",             6800, 5),
-    ("qwen2.5:14b-instruct",  9800, 6),
-    ("qwen2.5:32b-instruct", 20000, 7),
+    ("qwen3:4b",        2500, 1),
+    ("gemma4:e2b",      7200, 1),
+    ("gemma4:e4b",      9600, 2),
+    ("qwen3:14b",       9300, 2),
+    ("gemma4:26b",     17000, 3),
+    ("qwen3:8b",        5200, 3),
+    ("qwen3:30b-a3b",  18000, 3),
+    ("qwen3:32b",      20000, 3),
+    ("gemma4:31b",     19000, 4),
+    ("gemma4:12b",      7600, 5),
 ]
 
 # VRAM held back for the display, CUDA context, KV-cache growth and compute
@@ -135,7 +137,7 @@ def choose(verbose=False):
     else:
         # Nothing that fits is installed: fall back to the smallest installed model.
         chosen = next((t for (t, mb, r) in CATALOG if t in installed),
-                      ideal or "qwen2.5:3b-instruct")
+                      ideal or "qwen3:4b")
         if ideal and ideal not in installed:
             reason = (f"ideal fit is {ideal} (not installed; run "
                       f"`ollama pull {ideal}` or set AUTO_PULL=1). Using {chosen}.")

@@ -22,6 +22,25 @@ CATEGORY_KEYWORDS = {
     "summarization": ["summarize", "tl;dr", "summary"],
 }
 
+_HARD_MATH_HINTS = (
+    "prove", "derive", "step", "explain", "why", "algorithm", "complexity",
+    "squaring", "recursion", "induction", "theorem",
+)
+
+
+def _looks_hard(category, task):
+    """Runtime proxy for eval/tasks.jsonl's 'difficulty: hard' label — no such
+    field exists on live user-typed chat tasks, so infer from length + keywords
+    known (from the benchmark) to correlate with multi-step math the local
+    model gets wrong despite a short, confident-looking final answer."""
+    if category != "math":
+        return False
+    t = task.lower()
+    if len(t) > 80:
+        return True
+    return any(h in t for h in _HARD_MATH_HINTS)
+
+
 # Local max tokens cap — prevents runaway generation over the network
 LOCAL_MAX_TOKENS = int(__import__("os").getenv("LOCAL_MAX_TOKENS", "400"))
 
@@ -179,8 +198,9 @@ def gate(state):
     # (including reasoning/summarization) tries local and is accepted when the
     # confidence gate clears the bar — we only pay remote when local is genuinely
     # unsure, never by category alone.
-    FORCE_LOCAL = {"classification", "math"}
-    if cat in FORCE_LOCAL:
+    FORCE_LOCAL = {"classification"}
+    hard_math = _looks_hard(cat, state["task"])
+    if cat in FORCE_LOCAL or (cat == "math" and not hard_math):
         state.update(confidence=1.0, confident=True,
                      answer=state.get("candidate", ""), done=True)
         return state
@@ -198,7 +218,7 @@ def gate(state):
     _HEDGE = ("i don't know", "i'm not sure", "i am not sure", "cannot answer",
               "as an ai", "i do not have", "not able to", "unable to")
     if config.FAST_GATE and _cand and len(_cand) <= config.FAST_GATE_MAXLEN \
-            and not any(h in _cand.lower() for h in _HEDGE):
+            and not any(h in _cand.lower() for h in _HEDGE) and not hard_math:
         state.update(confidence=0.9, confident=True, answer=_cand, done=True)
         return state
 

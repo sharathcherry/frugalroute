@@ -18,6 +18,12 @@ import tokens
 # Falls back to config.LOCAL_MODEL when unset.
 _LOCAL_OVERRIDE = None
 
+# Runtime override for the active REMOTE model (set from the UI via
+# /api/models/remote/select) — lets the user pick any chat-capable model the
+# configured remote provider (Fireworks) actually has, instead of being pinned
+# to config.REMOTE_MODEL forever.
+_REMOTE_OVERRIDE = None
+
 
 def set_local_model(name):
     """Switch the active local model at runtime (no restart needed)."""
@@ -27,6 +33,16 @@ def set_local_model(name):
 
 def active_local_model():
     return _LOCAL_OVERRIDE or config.LOCAL_MODEL
+
+
+def set_remote_model(name):
+    """Switch the active remote model at runtime (no restart needed)."""
+    global _REMOTE_OVERRIDE
+    _REMOTE_OVERRIDE = name or None
+
+
+def active_remote_model():
+    return _REMOTE_OVERRIDE or config.REMOTE_MODEL
 
 
 def _mock_complete(messages, model, kind):
@@ -50,7 +66,7 @@ def _remote_client_and_model(model):
         return client, (model or config.AZURE_OPENAI_DEPLOYMENT)  # Azure: model = deployment name
     from openai import OpenAI
     client = OpenAI(base_url=config.REMOTE_BASE_URL, api_key=config.REMOTE_API_KEY)
-    return client, (model or config.REMOTE_MODEL)
+    return client, (model or active_remote_model())
 
 
 def complete(messages, kind="remote", model=None, base_url=None, api_key=None,

@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   Send,
-  Paperclip,
   Zap,
   Cloud,
   Brain,
@@ -15,11 +14,18 @@ import {
   Activity,
   DollarSign,
   Gauge,
-  Command,
   ArrowUpRight,
   PanelRight,
   X,
+  ChevronDown,
+  Check,
+  HelpCircle,
 } from "lucide-react";
+import { OpenAI as OpenAIIcon, Zhipu as ZhipuIcon, DeepSeek as DeepSeekIcon, Moonshot as MoonshotIcon, Minimax as MinimaxIcon, Qwen as QwenIcon, Nvidia as NvidiaIcon } from "@lobehub/icons";
+
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import type { Components } from "react-markdown";
 import { type Msg, type Source, type ChatSession, loadSessions, saveSession } from "../lib/sessions";
 import { api } from "../lib/api";
 
@@ -98,10 +104,24 @@ function routeReason(source: Source, routeP?: number, confidence?: number): stri
   }, no cloud tokens spent.`;
 }
 
+// uuid() only works in secure contexts (HTTPS or localhost) —
+// throws "crypto.randomUUID is not a function" over plain HTTP on an IP.
+// This falls back to a Math.random-based v4-shaped id in that case.
+function uuid(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
+  }
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
 export default function ChatPage() {
   const { session: sessionParam } = Route.useSearch();
 
-  const [sessionId] = useState(() => sessionParam ?? crypto.randomUUID());
+  const [sessionId] = useState(() => sessionParam ?? uuid());
   const [messages, setMessages] = useState<Msg[]>(() => {
     if (sessionParam) {
       const found = loadSessions().find((s) => s.id === sessionParam);
@@ -136,7 +156,7 @@ export default function ChatPage() {
     const q = (text ?? input).trim();
     if (!q || thinking) return;
     setInput("");
-    setMessages((m) => [...m, { id: crypto.randomUUID(), role: "user", text: q }]);
+    setMessages((m) => [...m, { id: uuid(), role: "user", text: q }]);
     setThinking("local"); // optimistic; corrected once the router responds
 
     try {
@@ -156,7 +176,7 @@ export default function ChatPage() {
       setMessages((m) => [
         ...m,
         {
-          id: crypto.randomUUID(),
+          id: uuid(),
           role: "assistant",
           text: data.answer || "(no answer returned)",
           source,
@@ -178,7 +198,7 @@ export default function ChatPage() {
       setMessages((m) => [
         ...m,
         {
-          id: crypto.randomUUID(),
+          id: uuid(),
           role: "assistant",
           text: `Could not reach the FrugalRoute backend. Make sure the server is running on port 8000.\n\n\`${String(err)}\``,
           source: "local",
@@ -250,7 +270,7 @@ export default function ChatPage() {
       <div className="relative z-10 flex flex-1 min-h-0">
         {/* Messages column */}
         <div className="flex-1 overflow-y-auto">
-          <div className="mx-auto flex max-w-3xl flex-col gap-6 px-4 py-8 md:px-8">
+          <div className="mx-auto flex max-w-5xl flex-col gap-6 px-4 py-8 md:px-8">
             {messages.length === 0 && !thinking && <EmptyState onPick={(p) => send(p)} />}
             {messages.map((m) =>
               m.role === "user" ? <UserBubble key={m.id} text={m.text} /> : <AssistantBubble key={m.id} msg={m} />,
@@ -270,11 +290,9 @@ export default function ChatPage() {
 
       {/* Composer — reserve the Route Inspector width on xl so it centers on the same column as the messages */}
       <div className={`relative z-10 border-t border-border/60 bg-background/60 p-4 backdrop-blur-xl md:p-6 ${inspectorOpen ? "xl:pr-80" : ""}`}>
-        <div className="mx-auto max-w-3xl">
+        <div className="mx-auto max-w-5xl">
           <div className="glass-strong group relative flex items-end gap-2 rounded-2xl p-2 ring-1 ring-transparent transition-all focus-within:ring-primary/40 focus-within:glow-red">
-            <button className="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground">
-              <Paperclip className="h-4 w-4" />
-            </button>
+            <RemoteModelPicker />
             <textarea
               ref={taRef}
               value={input}
@@ -290,23 +308,15 @@ export default function ChatPage() {
               placeholder="Ask anything — FrugalRoute picks the cheapest capable model…"
               className="min-h-[40px] max-h-40 flex-1 resize-none bg-transparent px-2 py-2.5 text-sm outline-none placeholder:text-muted-foreground disabled:opacity-50"
             />
-            <div className="flex items-center gap-1">
-              <span className="hidden items-center gap-1 rounded-md border border-border/60 bg-white/5 px-2 py-1 font-mono-tech text-[10px] text-muted-foreground md:inline-flex">
-                <Command className="h-3 w-3" /> ⏎
-              </span>
-              <button
-                onClick={() => send()}
-                disabled={!input.trim() || !!thinking}
-                className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground glow-red transition-transform hover:scale-105 disabled:opacity-40 disabled:hover:scale-100"
-              >
-                <Send className="h-4 w-4" />
-              </button>
-            </div>
+            <button
+              onClick={() => send()}
+              disabled={!input.trim() || !!thinking}
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary text-primary-foreground glow-red transition-transform hover:scale-105 disabled:opacity-40 disabled:hover:scale-100"
+            >
+              <Send className="h-4 w-4" />
+            </button>
           </div>
-          <div className="mt-2 flex items-center justify-between px-1">
-            <div className="font-mono-tech text-[10px] uppercase tracking-widest text-muted-foreground">
-              Local-first · threshold 0.55
-            </div>
+          <div className="mt-2 flex items-center justify-end px-1">
             <div className="font-mono-tech text-[10px] uppercase tracking-widest text-muted-foreground">
               Enter to send · Shift+Enter newline
             </div>
@@ -445,6 +455,267 @@ function EmptyState({ onPick }: { onPick: (p: string) => void }) {
   );
 }
 
+function CodeBlock({ inline, className, children }: { inline?: boolean; className?: string; children?: React.ReactNode }) {
+  const [copied, setCopied] = useState(false);
+  const lang = /language-(\w+)/.exec(className || "")?.[1];
+  const code = String(children ?? "").replace(/\n$/, "");
+
+  if (inline) {
+    return (
+      <code className="rounded bg-white/10 px-1.5 py-0.5 font-mono-tech text-[0.85em] text-foreground">
+        {children}
+      </code>
+    );
+  }
+
+  return (
+    <div className="my-2 overflow-hidden rounded-lg border border-white/10 bg-black/40">
+      <div className="flex items-center justify-between border-b border-white/10 bg-white/[0.03] px-3 py-1.5">
+        <span className="font-mono-tech text-[10px] uppercase tracking-widest text-muted-foreground">
+          {lang || "code"}
+        </span>
+        <button
+          onClick={() => {
+            navigator.clipboard?.writeText(code);
+            setCopied(true);
+            setTimeout(() => setCopied(false), 1200);
+          }}
+          className="font-mono-tech text-[10px] uppercase tracking-widest text-muted-foreground transition-colors hover:text-foreground"
+        >
+          {copied ? "Copied" : "Copy"}
+        </button>
+      </div>
+      <pre className="overflow-x-auto px-3 py-2 text-xs leading-relaxed">
+        <code className={`font-mono-tech ${className ?? ""}`}>{code}</code>
+      </pre>
+    </div>
+  );
+}
+
+const MARKDOWN_COMPONENTS: Components = {
+  code(props) {
+    const { className, children, ...rest } = props as { className?: string; children?: React.ReactNode; node?: unknown };
+    const inline = !/\n/.test(String(children ?? "")) && !(className || "").includes("language-");
+    return <CodeBlock inline={inline} className={className}>{children}</CodeBlock>;
+  },
+  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+  ul: ({ children }) => <ul className="mb-2 ml-4 list-disc space-y-0.5 last:mb-0">{children}</ul>,
+  ol: ({ children }) => <ol className="mb-2 ml-4 list-decimal space-y-0.5 last:mb-0">{children}</ol>,
+  h1: ({ children }) => <h1 className="mb-1.5 mt-2 text-base font-semibold first:mt-0">{children}</h1>,
+  h2: ({ children }) => <h2 className="mb-1.5 mt-2 text-[0.95rem] font-semibold first:mt-0">{children}</h2>,
+  h3: ({ children }) => <h3 className="mb-1 mt-2 text-sm font-semibold first:mt-0">{children}</h3>,
+  strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
+  a: ({ children, href }) => (
+    <a href={href} target="_blank" rel="noreferrer" className="text-primary underline underline-offset-2">
+      {children}
+    </a>
+  ),
+  blockquote: ({ children }) => (
+    <blockquote className="my-2 border-l-2 border-white/20 pl-3 text-muted-foreground">{children}</blockquote>
+  ),
+  hr: () => <hr className="my-3 border-white/10" />,
+  table: ({ children }) => (
+    <div className="my-2 overflow-x-auto">
+      <table className="w-full border-collapse text-xs">{children}</table>
+    </div>
+  ),
+  th: ({ children }) => <th className="border border-white/10 bg-white/5 px-2 py-1 text-left font-semibold">{children}</th>,
+  td: ({ children }) => <td className="border border-white/10 px-2 py-1">{children}</td>,
+};
+
+function Markdown({ text }: { text: string }) {
+  return (
+    <div className="text-sm leading-relaxed [&_>*:last-child]:mb-0">
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={MARKDOWN_COMPONENTS}>
+        {text}
+      </ReactMarkdown>
+    </div>
+  );
+}
+
+type RemoteModelInfo = {
+  id: string;
+  label: string;
+  context_length: number | null;
+  supports_tools: boolean;
+  supports_image_input?: boolean;
+};
+type RemoteModelGroup = { provider: string; models: RemoteModelInfo[] };
+
+// Distinct icon + accent color per provider family so the picker reads as a
+// grid of providers (like picking a app icon) rather than a wall of text.
+// No real brand logos are bundled here (no external asset pipeline), so each
+// provider gets a deliberately distinct lucide icon + color as a stand-in.
+// Real brand marks from @lobehub/icons — a library purpose-built for AI/LLM
+// provider logos (unlike simple-icons, it actually carries OpenAI and Zhipu,
+// which simple-icons dropped/never had). Each icon already renders in its
+// own authentic brand color, so no manual color override is needed.
+const PROVIDER_ICON: Record<string, typeof Cloud> = {
+  "OpenAI (gpt-oss)": OpenAIIcon,
+  "Zhipu (GLM)": ZhipuIcon,
+  "DeepSeek": DeepSeekIcon,
+  "Moonshot (Kimi)": MoonshotIcon,
+  "MiniMax": MinimaxIcon,
+  "Alibaba (Qwen)": QwenIcon,
+  "NVIDIA (Nemotron)": NvidiaIcon,
+};
+
+function providerIcon(name: string) {
+  return { icon: PROVIDER_ICON[name] ?? HelpCircle, color: "" };
+}
+
+function RemoteModelPicker() {
+  const [groups, setGroups] = useState<RemoteModelGroup[]>([]);
+  const [active, setActive] = useState<string | null>(null);
+  const [catalogSize, setCatalogSize] = useState<number | null>(null);
+  const [availableCount, setAvailableCount] = useState<number | null>(null);
+  const [open, setOpen] = useState(false);
+  const [expanded, setExpanded] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const popRef = useRef<HTMLDivElement>(null);
+
+  const load = useCallback(() => {
+    fetch(api("/api/models/remote"))
+      .then((r) => r.json())
+      .then((d) => {
+        setGroups(d.groups ?? []);
+        setActive(d.active ?? null);
+        setError(d.error ?? null);
+        setCatalogSize(d.total_catalog_size ?? null);
+        setAvailableCount(d.instantly_available ?? null);
+      })
+      .catch(() => setError("Could not reach the backend to list remote models."));
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    if (!open) return;
+    function onClick(e: MouseEvent) {
+      if (popRef.current && !popRef.current.contains(e.target as Node)) { setOpen(false); setExpanded(null); }
+    }
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, [open]);
+
+  const activeModel = groups.flatMap((g) => g.models).find((m) => m.id === active);
+  const activeLabel = activeModel?.label ?? active?.split("/").pop() ?? "…";
+  const activeGroup = groups.find((g) => g.models.some((m) => m.id === active));
+
+  async function choose(id: string) {
+    setBusy(true);
+    try {
+      await fetch(api("/api/models/remote/select"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: id }),
+      });
+      setActive(id);
+      setOpen(false);
+      setExpanded(null);
+    } catch {
+      setError("Could not switch remote model — backend unreachable.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const ActiveIcon = activeGroup ? providerIcon(activeGroup.provider).icon : Cloud;
+  const activeColor = activeGroup ? providerIcon(activeGroup.provider).color : "text-muted-foreground";
+
+  return (
+    <div className="relative" ref={popRef}>
+      <button
+        onClick={() => setOpen((v) => !v)}
+        className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-white/5 hover:text-foreground"
+        title="Choose the remote (cloud) model used when a query escalates"
+      >
+        <ActiveIcon className={`h-3.5 w-3.5 ${activeColor}`} />
+        <span className="font-mono-tech">{activeLabel}</span>
+        <ChevronDown className={`h-3 w-3 transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+
+      {open && (
+        <div className="absolute bottom-full right-0 z-30 mb-2 w-80 overflow-hidden rounded-xl border border-white/10 bg-background/95 shadow-2xl backdrop-blur-xl">
+          <div className="border-b border-white/10 px-3 py-2">
+            <div className="font-mono-tech text-[10px] uppercase tracking-widest text-muted-foreground">
+              Remote model — pick a provider
+            </div>
+          </div>
+          <div className="max-h-96 overflow-y-auto p-2">
+            {error && <div className="px-2 py-2 text-xs text-red-400">{error}</div>}
+            {!error && groups.length === 0 && (
+              <div className="px-2 py-2 text-xs text-muted-foreground">Loading…</div>
+            )}
+
+            {/* Provider icon grid */}
+            <div className="grid grid-cols-4 gap-2">
+              {groups.map((g) => {
+                const { icon: Icon, color } = providerIcon(g.provider);
+                const isExpanded = expanded === g.provider;
+                const hasActive = g.models.some((m) => m.id === active);
+                return (
+                  <button
+                    key={g.provider}
+                    onClick={() => setExpanded(isExpanded ? null : g.provider)}
+                    title={g.provider}
+                    className={`relative flex flex-col items-center gap-1 rounded-lg p-2 text-center transition-colors ${
+                      isExpanded ? "bg-white/10 ring-1 ring-white/20" : "hover:bg-white/5"
+                    }`}
+                  >
+                    <Icon className={`h-5 w-5 ${color}`} />
+                    <span className="line-clamp-2 text-[9px] leading-tight text-muted-foreground">
+                      {g.provider.replace(/\s*\(.*\)/, "")}
+                    </span>
+                    {hasActive && (
+                      <span className="absolute right-1 top-1 h-1.5 w-1.5 rounded-full bg-primary" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Expanded provider's models */}
+            {expanded && (
+              <div className="mt-2 border-t border-white/10 pt-2">
+                <div className="mb-1 px-1 font-mono-tech text-[10px] uppercase tracking-widest text-muted-foreground/70">
+                  {expanded}
+                </div>
+                {groups
+                  .find((g) => g.provider === expanded)
+                  ?.models.map((m) => (
+                    <button
+                      key={m.id}
+                      disabled={busy}
+                      onClick={() => choose(m.id)}
+                      className={`flex w-full items-center justify-between gap-2 rounded-lg px-2 py-1.5 text-left text-xs transition-colors hover:bg-white/5 ${
+                        m.id === active ? "text-primary" : "text-foreground"
+                      }`}
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <span className="font-mono-tech">{m.label}</span>
+                        {m.context_length && (
+                          <span className="text-[10px] text-muted-foreground">
+                            {(m.context_length / 1000).toFixed(0)}k ctx
+                          </span>
+                        )}
+                        {m.supports_image_input && (
+                          <span className="text-[10px] text-muted-foreground">· vision</span>
+                        )}
+                      </span>
+                      {m.id === active && <Check className="h-3 w-3 shrink-0" />}
+                    </button>
+                  ))}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function UserBubble({ text }: { text: string }) {
   return (
     <div className="flex items-start justify-end gap-3">
@@ -485,7 +756,7 @@ function AssistantBubble({ msg }: { msg: Msg }) {
           )}
         </div>
         <div className={`glass rounded-2xl rounded-tl-md border ${meta.border} px-4 py-3 text-sm leading-relaxed`}>
-          <div className="whitespace-pre-wrap">{msg.text}</div>
+          <Markdown text={msg.text} />
         </div>
         <div className="mt-2 flex items-center gap-1 opacity-60 transition-opacity group-hover:opacity-100">
           <IconBtn title="Copy" onClick={() => navigator.clipboard?.writeText(msg.text)}>

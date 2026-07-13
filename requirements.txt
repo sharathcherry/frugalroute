@@ -16,3 +16,8 @@ fastapi>=0.110
 uvicorn>=0.29
 
 # NOTE: calibrate.py (Platt/Isotonic/ECE) is pure-Python — no sklearn needed.
+
+# Real tool-use: calculator + web_search (tools.py) — DDGS for general search,
+# yfinance as a stock-price fast path.
+ddgs>=9.0
+yfinance>=1.5

@@ -1,0 +1,210 @@
+{"task": "What is 664 + 124?", "category": "math", "difficulty": "easy", "gold": "788"}
+{"task": "What is 769 + 291?", "category": "math", "difficulty": "easy", "gold": "1060"}
+{"task": "What is 5 * 23?", "category": "math", "difficulty": "easy", "gold": "115"}
+{"task": "What is 4 * 20?", "category": "math", "difficulty": "easy", "gold": "80"}
+{"task": "What is 442 + 42?", "category": "math", "difficulty": "easy", "gold": "484"}
+{"task": "What is 105 + 233?", "category": "math", "difficulty": "easy", "gold": "338"}
+{"task": "What is 527 + 626?", "category": "math", "difficulty": "easy", "gold": "1153"}
+{"task": "What is 22 * 24?", "category": "math", "difficulty": "easy", "gold": "528"}
+{"task": "What is 568 + 439?", "category": "math", "difficulty": "easy", "gold": "1007"}
+{"task": "What is 613 - 469?", "category": "math", "difficulty": "easy", "gold": "144"}
+{"task": "What is 838 + 900?", "category": "math", "difficulty": "easy", "gold": "1738"}
+{"task": "What is 787 + 835?", "category": "math", "difficulty": "easy", "gold": "1622"}
+{"task": "What is 724 - 442?", "category": "math", "difficulty": "easy", "gold": "282"}
+{"task": "What is 294 + 169?", "category": "math", "difficulty": "easy", "gold": "463"}
+{"task": "What is 990 - 791?", "category": "math", "difficulty": "easy", "gold": "199"}
+{"task": "What is 114 - 104?", "category": "math", "difficulty": "easy", "gold": "10"}
+{"task": "What is 377 - 109?", "category": "math", "difficulty": "easy", "gold": "268"}
+{"task": "What is 628 + 280?", "category": "math", "difficulty": "easy", "gold": "908"}
+{"task": "What is 5 * 14?", "category": "math", "difficulty": "easy", "gold": "70"}
+{"task": "What is 575 - 90?", "category": "math", "difficulty": "easy", "gold": "485"}
+{"task": "What is 30 * 29?", "category": "math", "difficulty": "easy", "gold": "870"}
+{"task": "What is 380 + 601?", "category": "math", "difficulty": "easy", "gold": "981"}
+{"task": "What is 731 + 81?", "category": "math", "difficulty": "easy", "gold": "812"}
+{"task": "What is 687 - 243?", "category": "math", "difficulty": "easy", "gold": "444"}
+{"task": "What is 91 + 885?", "category": "math", "difficulty": "easy", "gold": "976"}
+{"task": "What is 897 - 113?", "category": "math", "difficulty": "easy", "gold": "784"}
+{"task": "What is 28 * 13?", "category": "math", "difficulty": "easy", "gold": "364"}
+{"task": "What is 389 - 176?", "category": "math", "difficulty": "easy", "gold": "213"}
+{"task": "What is 696 - 224?", "category": "math", "difficulty": "easy", "gold": "472"}
+{"task": "What is 22 * 4?", "category": "math", "difficulty": "easy", "gold": "88"}
+{"task": "What is 633 + 660?", "category": "math", "difficulty": "easy", "gold": "1293"}
+{"task": "What is 556 + 756?", "category": "math", "difficulty": "easy", "gold": "1312"}
+{"task": "What is 483 - 177?", "category": "math", "difficulty": "easy", "gold": "306"}
+{"task": "What is 24 * 19?", "category": "math", "difficulty": "easy", "gold": "456"}
+{"task": "What is 711 - 234?", "category": "math", "difficulty": "easy", "gold": "477"}
+{"task": "What is 5% of 240?", "category": "math", "difficulty": "med", "gold": "12"}
+{"task": "Compute the compound interest on 2000 at 5% for 2 years.", "category": "math", "difficulty": "hard", "gold": "205"}
+{"task": "What is 25% of 240?", "category": "math", "difficulty": "med", "gold": "60"}
+{"task": "Compute the compound interest on 1000 at 6% for 2 years.", "category": "math", "difficulty": "hard", "gold": "123.6"}
+{"task": "A train travels 150 km in 60 minutes; how many km/h is that?", "category": "math", "difficulty": "hard", "gold": "150"}
+{"task": "A train travels 90 km in 45 minutes; how many km/h is that?", "category": "math", "difficulty": "hard", "gold": "120"}
+{"task": "What is the average of 16, 48, 36, 35?", "category": "math", "difficulty": "med", "gold": "33.75"}
+{"task": "Compute the compound interest on 5000 at 6% for 2 years.", "category": "math", "difficulty": "hard", "gold": "618"}
+{"task": "A train travels 150 km in 45 minutes; how many km/h is that?", "category": "math", "difficulty": "hard", "gold": "200"}
+{"task": "What is the average of 9, 33, 32, 6?", "category": "math", "difficulty": "med", "gold": "20"}
+{"task": "What is 5% of 800?", "category": "math", "difficulty": "med", "gold": "40"}
+{"task": "What is the average of 41, 11, 44, 28?", "category": "math", "difficulty": "med", "gold": "31"}
+{"task": "What is 2 to the power of 9?", "category": "math", "difficulty": "hard", "gold": "512"}
+{"task": "A train travels 150 km in 60 minutes; how many km/h is that?", "category": "math", "difficulty": "hard", "gold": "150"}
+{"task": "Compute the compound interest on 5000 at 4% for 2 years.", "category": "math", "difficulty": "hard", "gold": "408"}
+{"task": "What is 25% of 600?", "category": "math", "difficulty": "med", "gold": "150"}
+{"task": "Compute the compound interest on 5000 at 5% for 2 years.", "category": "math", "difficulty": "hard", "gold": "512.5"}
+{"task": "What is 20% of 320?", "category": "math", "difficulty": "med", "gold": "64"}
+{"task": "What is the average of 30, 1, 47, 47?", "category": "math", "difficulty": "med", "gold": "31.25"}
+{"task": "Compute the compound interest on 5000 at 4% for 2 years.", "category": "math", "difficulty": "hard", "gold": "408"}
+{"task": "What is 2 to the power of 8?", "category": "math", "difficulty": "hard", "gold": "256"}
+{"task": "What is 2 to the power of 7?", "category": "math", "difficulty": "hard", "gold": "128"}
+{"task": "Compute the compound interest on 1000 at 6% for 2 years.", "category": "math", "difficulty": "hard", "gold": "123.6"}
+{"task": "What is 2 to the power of 8?", "category": "math", "difficulty": "hard", "gold": "256"}
+{"task": "A train travels 60 km in 30 minutes; how many km/h is that?", "category": "math", "difficulty": "hard", "gold": "120"}
+{"task": "Compute the compound interest on 2000 at 4% for 2 years.", "category": "math", "difficulty": "hard", "gold": "163.2"}
+{"task": "What is 25% of 240?", "category": "math", "difficulty": "med", "gold": "60"}
+{"task": "What is 20% of 200?", "category": "math", "difficulty": "med", "gold": "40"}
+{"task": "What is 25% of 800?", "category": "math", "difficulty": "med", "gold": "200"}
+{"task": "What is the average of 9, 43, 31, 36?", "category": "math", "difficulty": "med", "gold": "29.75"}
+{"task": "What is the average of 17, 34, 39, 28?", "category": "math", "difficulty": "med", "gold": "29.5"}
+{"task": "What is the average of 35, 49, 47, 45?", "category": "math", "difficulty": "med", "gold": "44"}
+{"task": "What is the average of 46, 20, 26, 43?", "category": "math", "difficulty": "med", "gold": "33.75"}
+{"task": "Compute the compound interest on 2000 at 6% for 2 years.", "category": "math", "difficulty": "hard", "gold": "247.2"}
+{"task": "A train travels 60 km in 30 minutes; how many km/h is that?", "category": "math", "difficulty": "hard", "gold": "120"}
+{"task": "Classify the sentiment: 'I absolutely love this, best purchase all year!'", "category": "classification", "difficulty": "easy", "gold": "positive"}
+{"task": "Classify the sentiment: 'This completely ruined my week, total disaster.'", "category": "classification", "difficulty": "easy", "gold": "negative"}
+{"task": "Classify the sentiment: 'It arrived on Tuesday as scheduled.'", "category": "classification", "difficulty": "med", "gold": "neutral"}
+{"task": "Classify the sentiment: 'Incredible service, will definitely buy again!'", "category": "classification", "difficulty": "easy", "gold": "positive"}
+{"task": "Classify the sentiment: 'Awful experience, I want my money back.'", "category": "classification", "difficulty": "easy", "gold": "negative"}
+{"task": "Classify the sentiment: 'The box was medium sized and grey.'", "category": "classification", "difficulty": "med", "gold": "neutral"}
+{"task": "Classify the sentiment: 'Best decision I've made this year, thank you!'", "category": "classification", "difficulty": "easy", "gold": "positive"}
+{"task": "Classify the sentiment: 'Never buying from this company again, terrible.'", "category": "classification", "difficulty": "easy", "gold": "negative"}
+{"task": "Classify the sentiment: 'The item weighs about two kilograms.'", "category": "classification", "difficulty": "med", "gold": "neutral"}
+{"task": "Classify the sentiment: 'Exceeded every expectation, absolutely fantastic!'", "category": "classification", "difficulty": "easy", "gold": "positive"}
+{"task": "Classify the sentiment: 'Broken on arrival, extremely disappointed.'", "category": "classification", "difficulty": "easy", "gold": "negative"}
+{"task": "Classify the sentiment: 'The manual has twelve pages.'", "category": "classification", "difficulty": "med", "gold": "neutral"}
+{"task": "Classify the sentiment: 'Couldn't be happier with the results!'", "category": "classification", "difficulty": "easy", "gold": "positive"}
+{"task": "Classify the sentiment: 'Waste of money, do not recommend.'", "category": "classification", "difficulty": "easy", "gold": "negative"}
+{"task": "Classify the sentiment: 'The store opens at nine in the morning.'", "category": "classification", "difficulty": "med", "gold": "neutral"}
+{"task": "Classify the sentiment: 'Five stars, exactly what I needed!'", "category": "classification", "difficulty": "easy", "gold": "positive"}
+{"task": "Classify the sentiment: 'Completely unusable, returning immediately.'", "category": "classification", "difficulty": "easy", "gold": "negative"}
+{"task": "Classify the sentiment: 'Delivery takes three to five business days.'", "category": "classification", "difficulty": "med", "gold": "neutral"}
+{"task": "Classify the sentiment: 'Outstanding quality, thrilled with this!'", "category": "classification", "difficulty": "easy", "gold": "positive"}
+{"task": "Classify the sentiment: 'Regret this purchase entirely, poor quality.'", "category": "classification", "difficulty": "easy", "gold": "negative"}
+{"task": "Is this email spam? 'CONGRATULATIONS!! You've WON a free iPhone, click now!!!'", "category": "classification", "difficulty": "easy", "gold": "spam"}
+{"task": "Is this email spam? 'Hi, attaching the Q2 budget spreadsheet for your review.'", "category": "classification", "difficulty": "easy", "gold": "not spam"}
+{"task": "Is this email spam? 'URGENT: verify your account now or it will be suspended!!!'", "category": "classification", "difficulty": "easy", "gold": "spam"}
+{"task": "Is this email spam? 'Reminder: our meeting is rescheduled to 3pm tomorrow.'", "category": "classification", "difficulty": "easy", "gold": "not spam"}
+{"task": "Is this email spam? 'You have been selected for a cash prize, act now!'", "category": "classification", "difficulty": "easy", "gold": "spam"}
+{"task": "Classify the topic of: 'The central bank raised interest rates by half a point.'", "category": "classification", "difficulty": "med", "gold": "economics"}
+{"task": "Classify the topic of: 'The striker scored twice in the final ten minutes.'", "category": "classification", "difficulty": "med", "gold": "sports"}
+{"task": "Classify the topic of: 'Astronomers detected a new exoplanet in a nearby star system.'", "category": "classification", "difficulty": "med", "gold": "science"}
+{"task": "Classify the topic of: 'The senate passed the new infrastructure bill today.'", "category": "classification", "difficulty": "med", "gold": "politics"}
+{"task": "Classify the topic of: 'The new smartphone features a faster processor and better camera.'", "category": "classification", "difficulty": "med", "gold": "technology"}
+{"task": "Extract the phone number from: 'Call me at 555-2049 anytime.'", "category": "extraction", "difficulty": "easy", "gold": "555-2049"}
+{"task": "Extract the total price from: '2 items at $10 each plus $5 shipping.'", "category": "extraction", "difficulty": "med", "gold": "25"}
+{"task": "Extract the phone number from: 'Call me at 555-4608 anytime.'", "category": "extraction", "difficulty": "easy", "gold": "555-4608"}
+{"task": "Extract the email address from: 'Please contact john@example.com for details.'", "category": "extraction", "difficulty": "easy", "gold": "john@example.com"}
+{"task": "Extract the phone number from: 'Call me at 555-2104 anytime.'", "category": "extraction", "difficulty": "easy", "gold": "555-2104"}
+{"task": "Extract the email address from: 'Please contact bob@example.com for details.'", "category": "extraction", "difficulty": "easy", "gold": "bob@example.com"}
+{"task": "Extract the phone number from: 'Call me at 555-5562 anytime.'", "category": "extraction", "difficulty": "easy", "gold": "555-5562"}
+{"task": "Extract the combined total from: 'Team A shipped 37 units and Team B shipped 79 units.'", "category": "extraction", "difficulty": "med", "gold": "116"}
+{"task": "Extract the phone number from: 'Call me at 555-8744 anytime.'", "category": "extraction", "difficulty": "easy", "gold": "555-8744"}
+{"task": "Extract the phone number from: 'Call me at 555-8749 anytime.'", "category": "extraction", "difficulty": "easy", "gold": "555-8749"}
+{"task": "Extract the combined total from: 'Team A shipped 34 units and Team B shipped 22 units.'", "category": "extraction", "difficulty": "med", "gold": "56"}
+{"task": "Extract the email address from: 'Please contact priya@mail.net for details.'", "category": "extraction", "difficulty": "easy", "gold": "priya@mail.net"}
+{"task": "Extract the combined total from: 'Team A shipped 62 units and Team B shipped 69 units.'", "category": "extraction", "difficulty": "med", "gold": "131"}
+{"task": "Extract the email address from: 'Please contact john@example.com for details.'", "category": "extraction", "difficulty": "easy", "gold": "john@example.com"}
+{"task": "Extract the combined total from: 'Team A shipped 53 units and Team B shipped 23 units.'", "category": "extraction", "difficulty": "med", "gold": "76"}
+{"task": "Extract the phone number from: 'Call me at 555-4139 anytime.'", "category": "extraction", "difficulty": "easy", "gold": "555-4139"}
+{"task": "Extract the phone number from: 'Call me at 555-9786 anytime.'", "category": "extraction", "difficulty": "easy", "gold": "555-9786"}
+{"task": "Extract the combined total from: 'Team A shipped 27 units and Team B shipped 64 units.'", "category": "extraction", "difficulty": "med", "gold": "91"}
+{"task": "Extract the phone number from: 'Call me at 555-5563 anytime.'", "category": "extraction", "difficulty": "easy", "gold": "555-5563"}
+{"task": "Extract the combined total from: 'Team A shipped 41 units and Team B shipped 19 units.'", "category": "extraction", "difficulty": "med", "gold": "60"}
+{"task": "Extract the combined total from: 'Team A shipped 80 units and Team B shipped 22 units.'", "category": "extraction", "difficulty": "med", "gold": "102"}
+{"task": "Extract the email address from: 'Please contact diego@example.com for details.'", "category": "extraction", "difficulty": "easy", "gold": "diego@example.com"}
+{"task": "Extract the email address from: 'Please contact alice@company.org for details.'", "category": "extraction", "difficulty": "easy", "gold": "alice@company.org"}
+{"task": "Extract the combined total from: 'Team A shipped 72 units and Team B shipped 71 units.'", "category": "extraction", "difficulty": "med", "gold": "143"}
+{"task": "Extract the phone number from: 'Call me at 555-7570 anytime.'", "category": "extraction", "difficulty": "easy", "gold": "555-7570"}
+{"task": "Extract the email address from: 'Please contact alice@corp.io for details.'", "category": "extraction", "difficulty": "easy", "gold": "alice@corp.io"}
+{"task": "Extract the email address from: 'Please contact priya@mail.net for details.'", "category": "extraction", "difficulty": "easy", "gold": "priya@mail.net"}
+{"task": "Extract the combined total from: 'Team A shipped 46 units and Team B shipped 64 units.'", "category": "extraction", "difficulty": "med", "gold": "110"}
+{"task": "Extract the combined total from: 'Team A shipped 29 units and Team B shipped 34 units.'", "category": "extraction", "difficulty": "med", "gold": "63"}
+{"task": "Extract the total price from: '3 items at $4 each plus $5 shipping.'", "category": "extraction", "difficulty": "med", "gold": "17"}
+{"task": "Extract the email address from: 'Please contact bob@example.com for details.'", "category": "extraction", "difficulty": "easy", "gold": "bob@example.com"}
+{"task": "Extract the email address from: 'Please contact diego@corp.io for details.'", "category": "extraction", "difficulty": "easy", "gold": "diego@corp.io"}
+{"task": "Extract the phone number from: 'Call me at 555-1931 anytime.'", "category": "extraction", "difficulty": "easy", "gold": "555-1931"}
+{"task": "Extract the email address from: 'Please contact alice@example.com for details.'", "category": "extraction", "difficulty": "easy", "gold": "alice@example.com"}
+{"task": "Extract the email address from: 'Please contact alice@corp.io for details.'", "category": "extraction", "difficulty": "easy", "gold": "alice@corp.io"}
+{"task": "Extract the email address from: 'Please contact diego@company.org for details.'", "category": "extraction", "difficulty": "easy", "gold": "diego@company.org"}
+{"task": "Extract the email address from: 'Please contact diego@example.com for details.'", "category": "extraction", "difficulty": "easy", "gold": "diego@example.com"}
+{"task": "Extract the combined total from: 'Team A shipped 84 units and Team B shipped 82 units.'", "category": "extraction", "difficulty": "med", "gold": "166"}
+{"task": "Extract the total price from: '4 items at $5 each plus $5 shipping.'", "category": "extraction", "difficulty": "med", "gold": "25"}
+{"task": "Extract the total price from: '3 items at $6 each plus $3 shipping.'", "category": "extraction", "difficulty": "med", "gold": "21"}
+{"task": "What is the capital of France?", "category": "qa", "difficulty": "easy", "gold": "Paris"}
+{"task": "What is the capital of Japan?", "category": "qa", "difficulty": "easy", "gold": "Tokyo"}
+{"task": "What is the capital of Australia?", "category": "qa", "difficulty": "easy", "gold": "Canberra"}
+{"task": "What is the chemical symbol for gold?", "category": "qa", "difficulty": "easy", "gold": "Au"}
+{"task": "What is the chemical symbol for iron?", "category": "qa", "difficulty": "easy", "gold": "Fe"}
+{"task": "How many continents are there?", "category": "qa", "difficulty": "easy", "gold": "7"}
+{"task": "Who wrote Romeo and Juliet?", "category": "qa", "difficulty": "easy", "gold": "Shakespeare"}
+{"task": "Who wrote Hamlet?", "category": "qa", "difficulty": "easy", "gold": "Shakespeare"}
+{"task": "What year did the Berlin Wall fall?", "category": "qa", "difficulty": "easy", "gold": "1989"}
+{"task": "What year did World War II end?", "category": "qa", "difficulty": "easy", "gold": "1945"}
+{"task": "What is the boiling point of water at sea level in Celsius?", "category": "qa", "difficulty": "easy", "gold": "100"}
+{"task": "What is the freezing point of water in Celsius?", "category": "qa", "difficulty": "easy", "gold": "0"}
+{"task": "What is the largest planet in our solar system?", "category": "qa", "difficulty": "easy", "gold": "Jupiter"}
+{"task": "What is the smallest planet in our solar system?", "category": "qa", "difficulty": "easy", "gold": "Mercury"}
+{"task": "Who painted the Mona Lisa?", "category": "qa", "difficulty": "easy", "gold": "Leonardo da Vinci"}
+{"task": "Who developed the theory of general relativity?", "category": "qa", "difficulty": "easy", "gold": "Einstein"}
+{"task": "What is the tallest mountain in the world?", "category": "qa", "difficulty": "easy", "gold": "Everest"}
+{"task": "What is the longest river in the world?", "category": "qa", "difficulty": "easy", "gold": "Nile"}
+{"task": "What is the hardest natural substance on Earth?", "category": "qa", "difficulty": "easy", "gold": "diamond"}
+{"task": "What gas do plants absorb during photosynthesis?", "category": "qa", "difficulty": "easy", "gold": "carbon dioxide"}
+{"task": "What is the SI unit of electric current?", "category": "qa", "difficulty": "easy", "gold": "ampere"}
+{"task": "What is the main function of red blood cells?", "category": "qa", "difficulty": "easy", "gold": "carry oxygen"}
+{"task": "What is the currency of Japan?", "category": "qa", "difficulty": "easy", "gold": "yen"}
+{"task": "What is the currency of the United Kingdom?", "category": "qa", "difficulty": "easy", "gold": "pound"}
+{"task": "Who was the first President of the United States?", "category": "qa", "difficulty": "easy", "gold": "Washington"}
+{"task": "What is the square root of 144?", "category": "qa", "difficulty": "easy", "gold": "12"}
+{"task": "What is the atomic number of hydrogen?", "category": "qa", "difficulty": "easy", "gold": "1"}
+{"task": "What is the national language of Brazil?", "category": "qa", "difficulty": "easy", "gold": "Portuguese"}
+{"task": "What is the largest ocean on Earth?", "category": "qa", "difficulty": "easy", "gold": "Pacific"}
+{"task": "What does CPU stand for?", "category": "qa", "difficulty": "easy", "gold": "central processing unit"}
+{"task": "What is the speed of light in km per second, roughly?", "category": "qa", "difficulty": "easy", "gold": "300000"}
+{"task": "What planet is known as the Red Planet?", "category": "qa", "difficulty": "easy", "gold": "Mars"}
+{"task": "What is the capital of Germany?", "category": "qa", "difficulty": "easy", "gold": "Berlin"}
+{"task": "What is the capital of Canada?", "category": "qa", "difficulty": "easy", "gold": "Ottawa"}
+{"task": "Who is credited with inventing the telephone?", "category": "qa", "difficulty": "easy", "gold": "Alexander Graham Bell"}
+{"task": "What is the powerhouse of the cell called?", "category": "qa", "difficulty": "easy", "gold": "mitochondria"}
+{"task": "What is the chemical formula for water?", "category": "qa", "difficulty": "easy", "gold": "H2O"}
+{"task": "What is the capital of Italy?", "category": "qa", "difficulty": "easy", "gold": "Rome"}
+{"task": "How many sides does a hexagon have?", "category": "qa", "difficulty": "easy", "gold": "6"}
+{"task": "What is the currency of the United States?", "category": "qa", "difficulty": "easy", "gold": "dollar"}
+{"task": "Deduce who is oldest: Ann is older than Bob, Bob is older than Cy.", "category": "reasoning", "difficulty": "med", "gold": "Ann"}
+{"task": "Deduce who is youngest: Ann is older than Bob, Bob is older than Cy.", "category": "reasoning", "difficulty": "med", "gold": "Cy"}
+{"task": "If all A are B and all B are C, are all A C?", "category": "reasoning", "difficulty": "med", "gold": "yes"}
+{"task": "If no cats are dogs, and all poodles are dogs, can a poodle be a cat?", "category": "reasoning", "difficulty": "med", "gold": "no"}
+{"task": "A farmer has 17 sheep, all but 9 die. How many are left?", "category": "reasoning", "difficulty": "med", "gold": "9"}
+{"task": "If a bat and a ball cost $1.10 together, and the bat costs $1.00 more than the ball, how much does the ball cost?", "category": "reasoning", "difficulty": "hard", "gold": "0.05"}
+{"task": "What is the next number in the sequence 2, 6, 12, 20, 30?", "category": "reasoning", "difficulty": "med", "gold": "42"}
+{"task": "What is the next number in the sequence 1, 1, 2, 3, 5, 8?", "category": "reasoning", "difficulty": "med", "gold": "13"}
+{"task": "If today is Wednesday, what day of the week is it in 8 days?", "category": "reasoning", "difficulty": "med", "gold": "Thursday"}
+{"task": "If today is Monday, what day of the week is it in 10 days?", "category": "reasoning", "difficulty": "med", "gold": "Thursday"}
+{"task": "Three friends split a bill of $90 equally. How much does each person pay?", "category": "reasoning", "difficulty": "easy", "gold": "30"}
+{"task": "If all the mangoes in a basket are ripe except two, and there are 12 mangoes, how many are unripe?", "category": "reasoning", "difficulty": "med", "gold": "2"}
+{"task": "Maria arrives before Tom, and Tom arrives before Sam. Who arrives last?", "category": "reasoning", "difficulty": "easy", "gold": "Sam"}
+{"task": "Maria arrives before Tom, and Tom arrives before Sam. Who arrives first?", "category": "reasoning", "difficulty": "easy", "gold": "Maria"}
+{"task": "A clock shows 3:00. How many degrees are between the hour and minute hands?", "category": "reasoning", "difficulty": "hard", "gold": "90"}
+{"task": "If a train travels 120 miles in 2 hours, then 180 miles in the next 3 hours, what is its average speed for the whole trip in mph?", "category": "reasoning", "difficulty": "hard", "gold": "60"}
+{"task": "How many multiply steps to compute 2^10 by squaring?", "category": "reasoning", "difficulty": "hard", "gold": "4"}
+{"task": "If it takes 5 machines 5 minutes to make 5 widgets, how long would 100 machines take to make 100 widgets?", "category": "reasoning", "difficulty": "hard", "gold": "5"}
+{"task": "A is taller than B. B is taller than C. Who is shortest?", "category": "reasoning", "difficulty": "easy", "gold": "C"}
+{"task": "A is taller than B. B is taller than C. Who is tallest?", "category": "reasoning", "difficulty": "easy", "gold": "A"}
+{"task": "If today is Friday, what day of the week is it in 3 days?", "category": "reasoning", "difficulty": "easy", "gold": "Monday"}
+{"task": "If today is Sunday, what day of the week is it in 14 days?", "category": "reasoning", "difficulty": "easy", "gold": "Sunday"}
+{"task": "What is the next number in the sequence 3, 6, 9, 12, 15?", "category": "reasoning", "difficulty": "easy", "gold": "18"}
+{"task": "What is the next number in the sequence 1, 2, 4, 8, 16?", "category": "reasoning", "difficulty": "easy", "gold": "32"}
+{"task": "Five friends split a bill of $100 equally. How much does each person pay?", "category": "reasoning", "difficulty": "easy", "gold": "20"}
+{"task": "If a train travels 100 miles in 2 hours, what is its average speed in mph?", "category": "reasoning", "difficulty": "easy", "gold": "50"}
+{"task": "A is older than B. C is older than A. Who is oldest?", "category": "reasoning", "difficulty": "easy", "gold": "C"}
+{"task": "A is older than B. C is older than A. Who is youngest?", "category": "reasoning", "difficulty": "easy", "gold": "B"}
+{"task": "If it takes 2 workers 4 hours to paint a fence, how many hours would 1 worker take alone?", "category": "reasoning", "difficulty": "med", "gold": "8"}
+{"task": "What is the missing number in the sequence 5, 10, ?, 20, 25?", "category": "reasoning", "difficulty": "easy", "gold": "15"}

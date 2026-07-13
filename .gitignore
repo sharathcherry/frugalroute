@@ -36,3 +36,10 @@ out/
 .vscode/
 .idea/
 *.swp
+
+# Local venv / run logs (environment-specific, not portable)
+.venv/
+*.log
+eval/gpu_logs/
+eval/logs/
+query_log.jsonl

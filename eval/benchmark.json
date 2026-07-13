@@ -1,62 +1,103 @@
-[
-  {
-    "model": "Qwen2.5-0.5B-Instruct",
-    "params": "0.5B",
-    "vram_gb": 1.2,
-    "local_hit_rate": 52.8,
-    "remote_tokens": 8953,
-    "accuracy": 0.556,
-    "latency_s": 0.05,
-    "pick": ""
+{
+  "model_sweep_36task": {
+    "description": "10 local models benchmarked on the same 36-task eval/tasks.jsonl set (AMD Instinct MI300X), used to pick the production default.",
+    "results": {
+      "gemma4_12b": {
+        "accuracy": 0.7778,
+        "local_hit_rate_pct": 97.2,
+        "remote_tokens": 317,
+        "n": 36
+      },
+      "gemma4_26b": {
+        "accuracy": 0.75,
+        "local_hit_rate_pct": 97.2,
+        "remote_tokens": 317,
+        "n": 36
+      },
+      "gemma4_31b": {
+        "accuracy": 0.7778,
+        "local_hit_rate_pct": 97.2,
+        "remote_tokens": 316,
+        "n": 36
+      },
+      "gemma4_e2b": {
+        "accuracy": 0.6667,
+        "local_hit_rate_pct": 100.0,
+        "remote_tokens": 0,
+        "n": 36
+      },
+      "gemma4_e4b": {
+        "accuracy": 0.6944,
+        "local_hit_rate_pct": 97.2,
+        "remote_tokens": 317,
+        "n": 36
+      },
+      "qwen3_4b": {
+        "accuracy": 0.6944,
+        "local_hit_rate_pct": 77.8,
+        "remote_tokens": 4627,
+        "n": 36
+      },
+      "qwen3_8b": {
+        "accuracy": 0.75,
+        "local_hit_rate_pct": 97.2,
+        "remote_tokens": 317,
+        "n": 36
+      },
+      "qwen3_14b": {
+        "accuracy": 0.6944,
+        "local_hit_rate_pct": 94.4,
+        "remote_tokens": 1004,
+        "n": 36
+      },
+      "qwen3_30b-a3b": {
+        "accuracy": 0.7222,
+        "local_hit_rate_pct": 88.9,
+        "remote_tokens": 2502,
+        "n": 36
+      },
+      "qwen3_32b": {
+        "accuracy": 0.7222,
+        "local_hit_rate_pct": 97.2,
+        "remote_tokens": 448,
+        "n": 36
+      }
+    },
+    "winner": "gemma4_12b",
+    "winner_reason": "Ties the top accuracy (0.778) at roughly 1/3 the parameter count of gemma4_31b, the only other model matching that accuracy."
   },
-  {
-    "model": "gemma-2-2b-it",
-    "params": "2.6B",
-    "vram_gb": 5.2,
-    "local_hit_rate": 69.5,
-    "remote_tokens": 5640,
-    "accuracy": 0.88,
-    "latency_s": 0.30,
-    "pick": ""
-  },
-  {
-    "model": "Qwen2.5-3B-Instruct",
-    "params": "3.1B",
-    "vram_gb": 6.0,
-    "local_hit_rate": 38.9,
-    "remote_tokens": 10929,
-    "accuracy": 0.639,
-    "latency_s": 0.15,
-    "pick": ""
-  },
-  {
-    "model": "Phi-3.5-mini-instruct",
-    "params": "3.8B",
-    "vram_gb": 7.6,
-    "local_hit_rate": 52.8,
-    "remote_tokens": 9167,
-    "accuracy": 0.722,
-    "latency_s": 0.17,
-    "pick": ""
-  },
-  {
-    "model": "Qwen2.5-7B-Instruct",
-    "params": "7.6B",
-    "vram_gb": 15.2,
-    "local_hit_rate": 44.4,
-    "remote_tokens": 11374,
-    "accuracy": 0.639,
-    "latency_s": 0.30,
-    "pick": ""
-  },
-  {
-    "model": "gemma-2-9b-it",
-    "params": "9.2B",
-    "vram_gb": 18.4,
-    "local_hit_rate": 79.5,
-    "remote_tokens": 405,
-    "accuracy": 0.94,
-    "latency_s": 0.60,
-    "pick": "⭐"
+  "production_pipeline_benchmark_210task": {
+    "description": "Full hybrid pipeline (local gemma4:12b + remote gpt-oss-120b escalation) run against a separate, larger 210-task gold-labeled set spanning math/classification/extraction/qa/reasoning.",
+    "accuracy": 0.9857,
+    "local_hit_rate_pct": 98.6,
+    "remote_tokens": 650,
+    "n": 210,
+    "per_category": {
+      "classification": {
+        "correct": 28,
+        "total": 30,
+        "acc": 0.933
+      },
+      "extraction": {
+        "correct": 40,
+        "total": 40,
+        "acc": 1.0
+      },
+      "math": {
+        "correct": 70,
+        "total": 70,
+        "acc": 1.0
+      },
+      "qa": {
+        "correct": 39,
+        "total": 40,
+        "acc": 0.975
+      },
+      "reasoning": {
+        "correct": 30,
+        "total": 30,
+        "acc": 1.0
+      }
+    }
   }
-]
+}

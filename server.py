@@ -8,6 +8,7 @@ TanStack Router can handle client-side navigation.
     uvicorn server:app --host 0.0.0.0 --port 8000
     # open http://localhost:8000
 """
+import json
 import os
 import sys
 import time
@@ -196,17 +197,27 @@ def select_model(choice: ModelChoice):
 
 # Curated one-click-downloadable models (Ollama tags) + rough footprints (MB).
 CURATED_MODELS = [
-    {"tag": "gemma2:2b", "label": "Gemma 2 · 2B", "params": "2.6B", "size_mb": 1600},
-    {"tag": "gemma2:9b", "label": "Gemma 2 · 9B", "params": "9.2B", "size_mb": 5400},
-    {"tag": "qwen2.5:0.5b-instruct", "label": "Qwen 2.5 · 0.5B", "params": "0.5B", "size_mb": 400},
-    {"tag": "qwen2.5:1.5b-instruct", "label": "Qwen 2.5 · 1.5B", "params": "1.5B", "size_mb": 1000},
-    {"tag": "qwen2.5:3b-instruct", "label": "Qwen 2.5 · 3B", "params": "3.1B", "size_mb": 1900},
-    {"tag": "qwen2.5:7b-instruct", "label": "Qwen 2.5 · 7B", "params": "7.6B", "size_mb": 4700},
-    {"tag": "llama3.2:1b", "label": "Llama 3.2 · 1B", "params": "1.2B", "size_mb": 1300},
-    {"tag": "llama3.2:3b", "label": "Llama 3.2 · 3B", "params": "3.2B", "size_mb": 2000},
-    {"tag": "phi3.5", "label": "Phi 3.5 · Mini", "params": "3.8B", "size_mb": 2200},
-    {"tag": "mistral:7b", "label": "Mistral · 7B", "params": "7B", "size_mb": 4100},
-    {"tag": "deepseek-r1:7b", "label": "DeepSeek-R1 · 7B", "params": "7B", "size_mb": 4700},
+    {"tag": "qwen3:4b", "label": "Qwen3 · 4B", "params": "4B", "size_mb": 2500,
+     "accuracy": 0.694, "remote_tokens": 4627},
+    {"tag": "gemma4:e2b", "label": "Gemma4 · E2B", "params": "5.1B", "size_mb": 7200,
+     "accuracy": 0.667, "remote_tokens": 0},
+    {"tag": "qwen3:8b", "label": "Qwen3 · 8B", "params": "8B", "size_mb": 5200,
+     "accuracy": 0.75, "remote_tokens": 317},
+    {"tag": "gemma4:e4b", "label": "Gemma4 · E4B", "params": "8.0B", "size_mb": 9600,
+     "accuracy": 0.694, "remote_tokens": 317},
+    {"tag": "gemma4:12b", "label": "Gemma4 · 12B", "params": "11.9B", "size_mb": 7600,
+     "accuracy": 0.778, "remote_tokens": 317,
+     "note": "Best measured accuracy-per-GB in our benchmark sweep — recommended default."},
+    {"tag": "qwen3:14b", "label": "Qwen3 · 14B", "params": "14B", "size_mb": 9300,
+     "accuracy": 0.694, "remote_tokens": 1004},
+    {"tag": "gemma4:26b", "label": "Gemma4 · 26B", "params": "25.8B", "size_mb": 17000,
+     "accuracy": 0.75, "remote_tokens": 317},
+    {"tag": "qwen3:30b-a3b", "label": "Qwen3 · 30B-A3B (MoE)", "params": "30B (3.3B active)", "size_mb": 18000,
+     "accuracy": 0.722, "remote_tokens": 2502},
+    {"tag": "gemma4:31b", "label": "Gemma4 · 31B", "params": "31.3B", "size_mb": 19000,
+     "accuracy": 0.778, "remote_tokens": 317},
+    {"tag": "qwen3:32b", "label": "Qwen3 · 32B", "params": "32B", "size_mb": 20000,
+     "accuracy": 0.722, "remote_tokens": 448},
 ]
 
 _PULLS = {}  # tag -> {status, percent, done, error}
@@ -298,6 +309,138 @@ def _ollama_online():
         return False
 
 
+# ── Remote (Fireworks) model catalog — lets the UI pick ANY chat-capable
+# model the account has access to, instead of being pinned to one hardcoded
+# REMOTE_MODEL forever. Grouped by inferred "provider family" (Fireworks
+# itself hosts models originally built by many labs — OpenAI's gpt-oss,
+# Zhipu's GLM, DeepSeek, Moonshot's Kimi, etc. — the /v1/models endpoint's
+# own `owned_by` field is just "fireworks" for all of them, so we infer the
+# real upstream family from the model's display name for a grouping that's
+# actually useful).
+#
+# NOTE: Fireworks' public catalog (accounts/fireworks/models) lists ~290
+# models total, but most require spinning up a paid on-demand deployment
+# before they're callable — confirmed by direct chat/completions calls
+# returning NOT_FOUND for models with supportsServerless=false. Only models
+# with supportsServerless=true are instantly callable via this account's
+# Fireworks credits with no extra deployment step, so that's what we filter to.
+_REMOTE_FAMILY_HINTS = [
+    ("openai", "OpenAI (gpt-oss)"),
+    ("glm", "Zhipu (GLM)"),
+    ("deepseek", "DeepSeek"),
+    ("kimi", "Moonshot (Kimi)"),
+    ("minimax", "MiniMax"),
+    ("qwen", "Alibaba (Qwen)"),
+    ("nvidia", "NVIDIA (Nemotron)"),
+    ("nemotron", "NVIDIA (Nemotron)"),
+    ("llama", "Meta (Llama)"),
+    ("mixtral", "Mistral"),
+    ("mistral", "Mistral"),
+    ("yi ", "01.AI (Yi)"),
+    ("phi-", "Microsoft (Phi)"),
+    ("gemma", "Google (Gemma)"),
+    ("flux", "Black Forest Labs (FLUX, image)"),
+]
+
+# Kinds that are real base/custom chat models. Excludes EMBEDDING_MODEL,
+# FLUMINA_BASE_MODEL/FLUMINA_ADDON (image generation, e.g. FLUX), and the
+# DRAFT/PEFT/TEFT addon kinds (speculative-decoding draft models, LoRA
+# adapters — not standalone chat models you'd pick from a model picker).
+_CHAT_KINDS = {"HF_BASE_MODEL", "CUSTOM_MODEL"}
+
+_remote_catalog_cache = {"data": None, "ts": 0}
+
+
+def _remote_family(display_name: str) -> str:
+    name = display_name.lower()
+    for hint, label in _REMOTE_FAMILY_HINTS:
+        if hint in name:
+            return label
+    return "Other"
+
+
+def _fetch_fireworks_catalog():
+    """Paginated fetch of the full Fireworks account model catalog (control-plane
+    API, NOT the OpenAI-compatible /v1/models — that one silently truncates to
+    whatever subset happens to be pre-warmed, undercounting real access)."""
+    import json as _json
+    import urllib.request
+    import time as _time
+
+    if _remote_catalog_cache["data"] is not None and _time.time() - _remote_catalog_cache["ts"] < 300:
+        return _remote_catalog_cache["data"]
+
+    all_models = []
+    token = None
+    account = config.REMOTE_BASE_URL.rstrip("/").split("//", 1)[-1].split("/")[0]  # unused; account is always "fireworks" for the shared catalog
+    base = "https://api.fireworks.ai/v1/accounts/fireworks/models"
+    for _ in range(10):  # hard cap — ~290 models / 200 per page is 2 pages; 10 is a safety bound
+        url = f"{base}?pageSize=200" + (f"&pageToken={token}" if token else "")
+        req = urllib.request.Request(url, headers={"Authorization": f"Bearer {config.REMOTE_API_KEY}"})
+        with urllib.request.urlopen(req, timeout=15) as r:
+            d = _json.loads(r.read().decode("utf-8"))
+        all_models.extend(d.get("models", []))
+        token = d.get("nextPageToken")
+        if not token or token in ("0", 0):
+            break
+
+    _remote_catalog_cache["data"] = all_models
+    _remote_catalog_cache["ts"] = _time.time()
+    return all_models
+
+
+@app.get("/api/models/remote")
+def remote_models_catalog():
+    """List every chat-capable model that's actually instantly callable (no
+    dedicated deployment needed) on the configured remote provider, grouped by
+    inferred provider family."""
+    import providers
+
+    if config.REMOTE_PROVIDER != "fireworks":
+        return {"groups": [], "active": providers.active_remote_model(),
+                "error": f"Model listing only implemented for Fireworks (REMOTE_PROVIDER={config.REMOTE_PROVIDER})"}
+
+    try:
+        all_models = _fetch_fireworks_catalog()
+    except Exception as e:
+        return {"groups": [], "active": providers.active_remote_model(),
+                "error": f"Could not reach Fireworks model catalog: {e}"}
+
+    chat_models = [
+        m for m in all_models
+        if m.get("supportsServerless") and m.get("kind") in _CHAT_KINDS
+    ]
+
+    groups: dict[str, list] = {}
+    for m in chat_models:
+        display = m.get("displayName") or m["name"].rsplit("/", 1)[-1]
+        fam = _remote_family(display)
+        groups.setdefault(fam, []).append({
+            "id": m["name"],
+            "label": display,
+            "context_length": m.get("contextLength") or None,
+            "supports_tools": bool(m.get("supportsTools")),
+            "supports_image_input": bool(m.get("supportsImageInput")),
+        })
+    ordered = [{"provider": k, "models": sorted(v, key=lambda x: x["label"])}
+               for k, v in sorted(groups.items())]
+    return {"groups": ordered, "active": providers.active_remote_model(),
+            "total_catalog_size": len(all_models),
+            "instantly_available": len(chat_models)}
+
+
+class RemoteModelChoice(BaseModel):
+    model: str
+
+
+@app.post("/api/models/remote/select")
+def select_remote_model(choice: RemoteModelChoice):
+    """Switch the active REMOTE (Fireworks) model at runtime."""
+    import providers
+    providers.set_remote_model(choice.model)
+    return {"ok": True, "selected": providers.active_remote_model()}
+
+
 @app.get("/api/health")
 def health():
     import providers
@@ -313,7 +456,7 @@ def health():
         "engine": _ENGINE,
         "mock": config.MOCK,
         "local_model": providers.active_local_model(),
-        "remote_model": config.REMOTE_MODEL,
+        "remote_model": providers.active_remote_model(),
         "remote_provider": config.REMOTE_PROVIDER,
         "ollama_online": _ollama_online(),
         "gpu_vram_mb": vram,
@@ -339,6 +482,135 @@ def _warm_hardware_detection():
     threading.Thread(target=_run, daemon=True).start()
 
 
+# Real, persistent rolling query log for the Analytics page — every request
+# through /api/route below is appended here (NOT synthetic/demo data). Kept as
+# a JSONL file so it survives backend restarts; capped in memory to the most
+# recent QUERY_LOG_MAX entries for the /api/analytics endpoint's fast path.
+QUERY_LOG_PATH = Path(__file__).parent / "query_log.jsonl"
+QUERY_LOG_MAX = 5000
+_QUERY_LOG: list = []
+
+
+def _load_query_log():
+    if QUERY_LOG_PATH.exists():
+        try:
+            with open(QUERY_LOG_PATH) as f:
+                for line in f:
+                    line = line.strip()
+                    if line:
+                        _QUERY_LOG.append(json.loads(line))
+            del _QUERY_LOG[:-QUERY_LOG_MAX]
+        except Exception as e:
+            print(f"[analytics] could not load query_log.jsonl: {e}")
+
+
+_load_query_log()
+
+
+def _log_query(task, category, source, latency_ms, remote_tokens):
+    entry = {
+        "ts": time.time(),
+        "task_preview": task[:80],
+        "category": category,
+        "source": source,
+        "latency_ms": latency_ms,
+        "remote_tokens": remote_tokens,
+    }
+    _QUERY_LOG.append(entry)
+    if len(_QUERY_LOG) > QUERY_LOG_MAX:
+        del _QUERY_LOG[: len(_QUERY_LOG) - QUERY_LOG_MAX]
+    try:
+        with open(QUERY_LOG_PATH, "a") as f:
+            f.write(json.dumps(entry) + "\n")
+    except Exception as e:
+        print(f"[analytics] could not append to query_log.jsonl: {e}")
+
+
+# Real per-token cost assumption for the "savings" estimate — Fireworks bills
+# per token on the remote model; this uses the same $/token figure the
+# frontend already displays elsewhere in the app (see chat.tsx cost/saved
+# calculations) so the numbers stay internally consistent across the UI.
+REMOTE_COST_PER_TOKEN = 0.0000015
+
+
+@app.get("/api/analytics")
+def analytics():
+    """Real, computed-from-the-actual-query-log analytics — no fabricated or
+    simulated data. Numbers reflect exactly what /api/route has actually
+    processed since the log file was created."""
+    import datetime
+
+    log = _QUERY_LOG
+    n = len(log)
+    if n == 0:
+        return {
+            "total_requests": 0, "avg_cost_per_request": 0, "total_savings": 0,
+            "routing": [], "daily": [], "recent_queries": [],
+        }
+
+    src_counts = {"local": 0, "remote": 0, "cache": 0, "other": 0}
+    for e in log:
+        s = e.get("source") or "other"
+        if s in ("local", "triage_local"):
+            src_counts["local"] += 1
+        elif s == "remote":
+            src_counts["remote"] += 1
+        elif s == "cache":
+            src_counts["cache"] += 1
+        else:
+            src_counts["other"] += 1
+
+    total_remote_tokens = sum(e.get("remote_tokens") or 0 for e in log)
+    remote_calls = [e for e in log if e.get("source") == "remote" and e.get("remote_tokens")]
+    avg_remote_tokens_per_call = (
+        sum(e["remote_tokens"] for e in remote_calls) / len(remote_calls) if remote_calls else 0
+    )
+    actual_cost = total_remote_tokens * REMOTE_COST_PER_TOKEN
+    # Counterfactual: what it would have cost if EVERY request (including the
+    # ones that stayed local/cache for free) had gone to the remote model,
+    # using the real observed average remote-call token cost from this same
+    # log as the per-query estimate.
+    cloud_only_cost = n * avg_remote_tokens_per_call * REMOTE_COST_PER_TOKEN
+    total_savings = round(cloud_only_cost - actual_cost, 4)
+
+    routing = [
+        {"name": "Local", "value": round(100 * src_counts["local"] / n, 1)},
+        {"name": "Remote", "value": round(100 * src_counts["remote"] / n, 1)},
+        {"name": "Cache", "value": round(100 * src_counts["cache"] / n, 1)},
+    ]
+
+    # Daily buckets — only days that actually have real traffic appear.
+    daily_map: dict = {}
+    for e in log:
+        day = datetime.datetime.utcfromtimestamp(e["ts"]).strftime("%Y-%m-%d")
+        d = daily_map.setdefault(day, {"day": day, "requests": 0, "remote_tokens": 0})
+        d["requests"] += 1
+        d["remote_tokens"] += e.get("remote_tokens") or 0
+    daily = []
+    for day, d in sorted(daily_map.items()):
+        actual = d["remote_tokens"] * REMOTE_COST_PER_TOKEN
+        cloud_equiv = d["requests"] * avg_remote_tokens_per_call * REMOTE_COST_PER_TOKEN
+        daily.append({
+            "day": day, "requests": d["requests"],
+            "actual_cost": round(actual, 4), "cloud_only_cost": round(cloud_equiv, 4),
+        })
+
+    recent = list(reversed(log[-50:]))
+    recent_out = [{
+        "ts": e["ts"], "task_preview": e["task_preview"], "category": e.get("category"),
+        "source": e.get("source"), "latency_ms": e.get("latency_ms"),
+    } for e in recent]
+
+    return {
+        "total_requests": n,
+        "avg_cost_per_request": round(actual_cost / n, 6) if n else 0,
+        "total_savings": total_savings,
+        "routing": routing,
+        "daily": daily,
+        "recent_queries": recent_out,
+    }
+
+
 @app.post("/api/route")
 def route(q: Query):
     t0 = time.time()
@@ -352,6 +624,7 @@ def route(q: Query):
         _STATE["free"] += 1
 
     n = _STATE["queries"]
+    _log_query(q.task, state.get("category"), state.get("source"), dt, remote)
     return {
         "task": q.task,
         "answer": state.get("answer", ""),

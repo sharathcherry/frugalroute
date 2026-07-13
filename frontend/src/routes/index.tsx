@@ -12,6 +12,7 @@ import {
   Sparkles,
   X,
 } from "lucide-react";
+import { HardwareRecommendation } from "@/components/HardwareRecommendation";
 export const Route = createFileRoute("/")({
   component: Overview,
 });
@@ -41,13 +42,22 @@ const slides: Slide[] = [
             HOW LOCAL ROUTING WORKS
           </div>
           <p className="mt-2 text-sm text-muted-foreground">
-            On startup, FrugalRoute detects <span className="text-foreground font-semibold">your GPU/VRAM and RAM</span>{" "}
-            and auto-selects the largest local model that fits — no manual tuning. In our own benchmark suite
-            (6 open models on AMD Instinct MI300X), the best-fit model hit{" "}
-            <span className="text-foreground font-semibold">94% accuracy</span> with a{" "}
-            <span className="text-foreground font-semibold">79.5% local hit rate</span>.
+            Every prompt gets a free, local answer first. The local model then{" "}
+            <span className="text-foreground font-semibold">rates its own confidence</span>, which is run through a
+            calibration curve so that number reflects real accuracy, not the model's raw self-assessment. Only when
+            that calibrated confidence falls below the threshold does the query escalate to the cloud model — so you
+            pay only for the fraction of prompts the local model genuinely can't handle well.
+          </p>
+          <p className="mt-2 text-sm text-muted-foreground">
+            The local model itself is chosen the same way, server-side:{" "}
+            <span className="text-foreground font-semibold">this backend queries its own GPU and RAM directly</span>{" "}
+            (via rocm-smi / nvidia-smi — not a browser guess), filters down to whichever of our 10 measured models
+            actually fit in memory, and recommends the one with the best measured accuracy among those. You can
+            override that pick or pull any of the 10 straight from this page with{" "}
+            <span className="text-foreground font-semibold">Download now</span>.
           </p>
         </div>
+        <HardwareRecommendation />
       </div>
     ),
     cta: "Next",
@@ -167,7 +177,7 @@ function Overview() {
                   </div>
                 </div>
                 {/* Body */}
-                <div className="mt-6 max-h-[46vh] overflow-y-auto pr-1">
+                <div className="mt-6 max-h-[46vh] overflow-y-auto pr-1 modal-scroll">
                   {slide.body}
                   {slide.items && (
                     <div className="space-y-3">
@@ -277,9 +287,9 @@ function BackgroundOverview() {
       </p>
       <div className="grid gap-5 md:grid-cols-3">
         {[
-          { k: "BENCHMARKED ACCURACY", v: "94%" },
-          { k: "LOCAL HIT RATE", v: "79.5%" },
-          { k: "MODELS BENCHMARKED", v: "6" },
+          { k: "BENCHMARKED ACCURACY", v: "77.8%" },
+          { k: "LOCAL HIT RATE", v: "97.2%" },
+          { k: "PIPELINE ACCURACY", v: "98.6%" },
         ].map((s) => (
           <div key={s.k} className="glass rounded-2xl p-6">
             <div className="font-mono-tech text-[11px] uppercase tracking-widest text-muted-foreground">{s.k}</div>

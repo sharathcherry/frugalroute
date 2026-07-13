@@ -155,18 +155,42 @@ These benchmarks were ran directly on the AMD MI300X via Ollama. All models succ
 
 **Takeaway:** The **12B model** achieves the highest overall accuracy (77.78%) while retaining a phenomenal 97.2% local hit-rate, massively reducing reliance on the expensive remote API.
 
-### General Benchmarks (vLLM)
+### Qwen3 Benchmarks (Ollama)
+
+Same 36-task evaluation set, same MI300X, same full pipeline — run right after the Gemma 4 sweep above so the two families are directly comparable.
 
 <!-- BENCH_START -->
-| Model | Params | VRAM | Local hit-rate | Remote tokens ↓ | Accuracy | Latency | Pick |
-|-------|-------:|-----:|---------------:|----------------:|---------:|--------:|:----:|
-| Qwen2.5-0.5B-Instruct | 0.5B | 1.2GB | 52.8% | 8953 | 0.556 | 0.05s |  |
-| gemma-2-2b-it | 2.6B | 5.2GB | 69.5% | 5640 | 0.88 | 0.3s |  |
-| Qwen2.5-3B-Instruct | 3.1B | 6.0GB | 38.9% | 10929 | 0.639 | 0.15s |  |
-| Phi-3.5-mini-instruct | 3.8B | 7.6GB | 52.8% | 9167 | 0.722 | 0.17s |  |
-| Qwen2.5-7B-Instruct | 7.6B | 15.2GB | 44.4% | 11374 | 0.639 | 0.3s |  |
-| **gemma-2-9b-it** | 9.2B | 18.4GB | 79.5% | 405 | 0.94 | 0.6s | ⭐ |
+| Model | Local hit-rate | Remote tokens ↓ | Accuracy | Pick |
+|-------|---------------:|----------------:|---------:|:----:|
+| qwen3:4b | 77.8% | 4627 | 0.694 | |
+| qwen3:8b | 97.2% | 317 | 0.750 | |
+| qwen3:14b | 94.4% | 1004 | 0.694 | |
+| qwen3:30b-a3b | 88.9% | 2502 | 0.722 | |
+| qwen3:32b | 97.2% | 448 | 0.722 | |
 <!-- BENCH_END -->
+
+**Takeaway:** across both families, **gemma4:12b stays the production default** — it ties the best accuracy of any model tested (0.778, matched only by gemma4:31b) at roughly a third of the parameter count, with a 97.2% local hit-rate.
+
+### Production Pipeline Benchmark (210 tasks, gold-labeled)
+
+The 36-task set above compares raw model quality. This is a separate, larger, held-out benchmark of the **actual production pipeline** — local `gemma4:12b` with real escalation to remote `gpt-oss-120b` — across math, classification, extraction, qa, and reasoning, each answer checked against a fixed gold label.
+
+| Metric | Result |
+|---|---:|
+| Tasks | 210 |
+| Overall accuracy | **98.6%** |
+| Local hit-rate | **98.6%** (only 3 of 210 needed the cloud model) |
+| Remote tokens spent | 650 |
+
+| Category | Accuracy |
+|---|---:|
+| Math | 100.0% (70/70) |
+| Reasoning | 100.0% (30/30) |
+| Extraction | 100.0% (40/40) |
+| QA | 97.5% (39/40) |
+| Classification | 93.3% (28/30) |
+
+Full breakdown: [`eval/benchmark.json`](eval/benchmark.json) · raw run: [`out/smoke210.jsonl`](out/smoke210.jsonl) · scoring: [`out/smoke210.score.json`](out/smoke210.score.json)
 
 ![Cost vs Accuracy Pareto Frontier](eval/pareto.png)
 

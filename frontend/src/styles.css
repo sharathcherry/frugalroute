@@ -142,3 +142,25 @@
   100% { stroke-dashoffset: -40; }
 }
 @utility animate-flow { animation: flow 1.2s linear infinite; }
+
+/* Slim, dark, theme-matching scrollbar for the welcome modal body (and
+   anywhere else .modal-scroll is applied) — replaces the default bright
+   OS scrollbar that clashed with the dark UI. */
+.modal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--foreground) 25%, transparent) transparent;
+}
+.modal-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--foreground) 25%, transparent);
+  border-radius: 999px;
+}
+.modal-scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--foreground) 40%, transparent);
+}
+
