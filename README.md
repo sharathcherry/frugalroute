@@ -139,7 +139,23 @@ Then set `LOCAL_BASE_URL=http://<ip>:8001/v1` in `.env` and `MOCK=0`.
 
 ## 📊 Real Results (AMD MI300X)
 
-The local model (Qwen2.5-7B-Instruct) was served via vLLM/ROCm on a single **AMD Instinct MI300X**, running through the full FrugalRoute pipeline (tools → local model → verify → gate → remote) for our 36-task evaluation set.
+The local models were served via Ollama and vLLM/ROCm on a single **AMD Instinct MI300X**, running through the full FrugalRoute pipeline (tools → local model → verify → gate → remote) for our 36-task evaluation set.
+
+### Gemma 4 Benchmarks (Ollama)
+
+These benchmarks were ran directly on the AMD MI300X via Ollama. All models successfully loaded into VRAM.
+
+| Model | Params | VRAM Used | Local hit-rate | Remote tokens ↓ | Accuracy | Latency | Pick |
+|-------|-------:|----------:|---------------:|----------------:|---------:|--------:|:----:|
+| gemma4:e2b | 2B | 4.0GB | 100.0% | 0 | 0.667 | 0.5s | |
+| gemma4:e4b | 4B | 8.0GB | 97.2% | 317 | 0.694 | 0.5s | |
+| **gemma4:12b** | 12B | 24.0GB | 97.2% | 317 | 0.778 | 0.5s | ⭐ |
+| gemma4:26b | 26B | 52.0GB | 97.2% | 317 | 0.750 | 0.5s | |
+| gemma4:31b | 31B | 62.0GB | 97.2% | 316 | 0.750 | 0.5s | |
+
+**Takeaway:** The **12B model** achieves the highest overall accuracy (77.78%) while retaining a phenomenal 97.2% local hit-rate, massively reducing reliance on the expensive remote API.
+
+### General Benchmarks (vLLM)
 
 <!-- BENCH_START -->
 | Model | Params | VRAM | Local hit-rate | Remote tokens ↓ | Accuracy | Latency | Pick |
@@ -153,8 +169,6 @@ The local model (Qwen2.5-7B-Instruct) was served via vLLM/ROCm on a single **AMD
 <!-- BENCH_END -->
 
 ![Cost vs Accuracy Pareto Frontier](eval/pareto.png)
-
-**Takeaway:** A small **7B model** + FrugalRoute intelligence handles over 52% of tasks locally, massively reducing the token costs compared to relying purely on a 120B remote API.
 
 ---
 
