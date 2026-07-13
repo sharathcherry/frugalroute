@@ -1,0 +1,39 @@
+{
+  "tag": "gemma4_31b",
+  "n": 36,
+  "accuracy": 0.7778,
+  "local_hit_rate_pct": 97.2,
+  "remote_tokens": 316,
+  "per_category": {
+    "classification": {
+      "correct": 6,
+      "total": 6,
+      "acc": 1.0
+    },
+    "extraction": {
+      "correct": 5,
+      "total": 6,
+      "acc": 0.833
+    },
+    "math": {
+      "correct": 8,
+      "total": 8,
+      "acc": 1.0
+    },
+    "qa": {
+      "correct": 6,
+      "total": 6,
+      "acc": 1.0
+    },
+    "reasoning": {
+      "correct": 2,
+      "total": 6,
+      "acc": 0.333
+    },
+    "summarization": {
+      "correct": 1,
+      "total": 4,
+      "acc": 0.25
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "tag": "gemma4_e2b",
+  "n": 36,
+  "accuracy": 0.6667,
+  "local_hit_rate_pct": 100.0,
+  "remote_tokens": 0,
+  "per_category": {
+    "classification": {
+      "correct": 6,
+      "total": 6,
+      "acc": 1.0
+    },
+    "extraction": {
+      "correct": 4,
+      "total": 6,
+      "acc": 0.667
+    },
+    "math": {
+      "correct": 6,
+      "total": 8,
+      "acc": 0.75
+    },
+    "qa": {
+      "correct": 6,
+      "total": 6,
+      "acc": 1.0
+    },
+    "reasoning": {
+      "correct": 2,
+      "total": 6,
+      "acc": 0.333
+    },
+    "summarization": {
+      "correct": 0,
+      "total": 4,
+      "acc": 0.0
+    }
+  }
+}

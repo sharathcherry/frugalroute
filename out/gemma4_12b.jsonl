@@ -1,0 +1,36 @@
+{"id": "0", "answer": "positive", "source": "local", "remote_tokens": 0}
+{"id": "1", "answer": "negative", "source": "local", "remote_tokens": 0}
+{"id": "2", "answer": "neutral", "source": "local", "remote_tokens": 0}
+{"id": "3", "answer": "spam", "source": "local", "remote_tokens": 0}
+{"id": "4", "answer": "Economics", "source": "local", "remote_tokens": 0}
+{"id": "5", "answer": "negative", "source": "local", "remote_tokens": 0}
+{"id": "6", "answer": "a@x.com, b@y.org", "source": "local", "remote_tokens": 0}
+{"id": "7", "answer": "555-1234", "source": "local", "remote_tokens": 0}
+{"id": "8", "answer": "2026-07-06", "source": "local", "remote_tokens": 0}
+{"id": "9", "answer": "$13", "source": "local", "remote_tokens": 0}
+{"id": "10", "answer": "Apple, Microsoft, AMD", "source": "local", "remote_tokens": 0}
+{"id": "11", "answer": "July 10, 2026", "source": "local", "remote_tokens": 0}
+{"id": "12", "answer": "Cloud drove 12% revenue growth.", "source": "local", "remote_tokens": 0}
+{"id": "13", "answer": "The cat fell asleep on the mat.", "source": "local", "remote_tokens": 0}
+{"id": "14", "answer": "Post-deployment performance degradation and increased error rates leading to user churn.", "source": "local", "remote_tokens": 0}
+{"id": "15", "answer": "Please provide the text of the clause you would like me to summarize.", "source": "local", "remote_tokens": 0}
+{"id": "16", "answer": "Paris", "source": "local", "remote_tokens": 0}
+{"id": "17", "answer": "Au", "source": "local", "remote_tokens": 0}
+{"id": "18", "answer": "7", "source": "local", "remote_tokens": 0}
+{"id": "19", "answer": "William Shakespeare", "source": "local", "remote_tokens": 0}
+{"id": "20", "answer": "1989", "source": "local", "remote_tokens": 0}
+{"id": "21", "answer": "100", "source": "local", "remote_tokens": 0}
+{"id": "22", "answer": "1. **Increased Kinetic Energy**: Higher temperatures provide particles with more kinetic energy, causing them to move faster.\n2. **More Frequent Collisions**: Faster-moving particles collide with each other more often.\n3. **Overcoming Activation Energy**: A higher proportion of these collisions occur with enough energy to surpass the activation energy barrier.\n4. **Increased Reaction Rate**: More successful collisions per unit of time result in a faster chemical reaction.", "source": "local", "remote_tokens": 0}
+{"id": "23", "answer": "1. **Sunlight Composition**: Sunlight is composed of all colors of the rainbow (white light).\n2. **Atmospheric Interaction**: As sunlight enters Earth's atmosphere, it strikes gas molecules and small particles.\n3. **Rayleigh Scattering**: Shorter wavelengths (blue and violet) scatter much more easily than longer wavelengths (red and yellow) when they hit these molecules.\n4. **Scattering Direction**: Because blue light scatters in all directions, it is visible from every part of the sky.\n5. **Human Perception**: Although violet light also has a short wavelength, our eyes are far more sensitive to blue, making the sky appear blue rather than purple.", "source": "local", "remote_tokens": 0}
+{"id": "24", "answer": "Ann", "source": "local", "remote_tokens": 0}
+{"id": "25", "answer": "Yes, because the relationship is transitive. If every A belongs to category B, and every member of category B belongs to category C, then all members of A must necessarily belong to category C.", "source": "local", "remote_tokens": 0}
+{"id": "26", "answer": "A semantic cache reduces token cost by identifying and serving responses for semantically similar queries from a local database instead of sending those requests to the LLM. This avoids redundant processing and eliminates the need to spend tokens on near-identical questions.", "source": "local", "remote_tokens": 0}
+{"id": "27", "answer": "1. **Forward Pass**: Input data passes through the network layers to produce an output prediction.\n2. **Loss Calculation**: A loss function measures the difference between the predicted output and the actual target.\n3. **Backward Pass**: The chain rule is applied to calculate the gradient of the loss function with respect to each weight, moving backward from the output layer to the input layer.\n4. **Weight Update**: Weights are updated by subtracting a portion of the calculated gradient (scaled by a learning rate) from their current values.", "source": "local", "remote_tokens": 0}
+{"id": "28", "answer": "423", "source": "local", "remote_tokens": 0}
+{"id": "29", "answer": "144", "source": "local", "remote_tokens": 0}
+{"id": "30", "answer": "7", "source": "local", "remote_tokens": 0}
+{"id": "31", "answer": "36", "source": "local", "remote_tokens": 0}
+{"id": "32", "answer": "1081", "source": "local", "remote_tokens": 0}
+{"id": "33", "answer": "80", "source": "local", "remote_tokens": 0}
+{"id": "34", "answer": "102.5", "source": "local", "remote_tokens": 0}
+{"id": "35", "answer": "\\(2\\) squared means multiplying the number by itself:\n\n\\[\n2^2 = 2 \\times 2 = 4\n\\]\n\nSo the result is **4**.", "source": "remote", "remote_tokens": 316}

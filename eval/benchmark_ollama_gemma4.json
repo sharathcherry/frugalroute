@@ -1,0 +1,52 @@
+[
+  {
+    "model": "gemma4:e2b",
+    "params": "2B",
+    "vram_gb": 4.0,
+    "local_hit_rate": 100.0,
+    "remote_tokens": 0,
+    "accuracy": 0.6667,
+    "latency_s": 0.5,
+    "pick": ""
+  },
+  {
+    "model": "gemma4:e4b",
+    "params": "4B",
+    "vram_gb": 8.0,
+    "local_hit_rate": 97.2,
+    "remote_tokens": 317,
+    "accuracy": 0.6944,
+    "latency_s": 0.5,
+    "pick": ""
+  },
+  {
+    "model": "gemma4:12b",
+    "params": "12B",
+    "vram_gb": 24.0,
+    "local_hit_rate": 97.2,
+    "remote_tokens": 317,
+    "accuracy": 0.7778,
+    "latency_s": 0.5,
+    "pick": ""
+  },
+  {
+    "model": "gemma4:26b",
+    "params": "26B",
+    "vram_gb": 52.0,
+    "local_hit_rate": 97.2,
+    "remote_tokens": 317,
+    "accuracy": 0.75,
+    "latency_s": 0.5,
+    "pick": ""
+  },
+  {
+    "model": "gemma4:31b",
+    "params": "31B",
+    "vram_gb": 62.0,
+    "local_hit_rate": 97.2,
+    "remote_tokens": 316.0,
+    "accuracy": 0.75,
+    "latency_s": 0.5,
+    "pick": ""
+  }
+]

@@ -1,0 +1,36 @@
+{"id": "0", "answer": "positive", "source": "local", "remote_tokens": 0}
+{"id": "1", "answer": "negative", "source": "local", "remote_tokens": 0}
+{"id": "2", "answer": "neutral", "source": "local", "remote_tokens": 0}
+{"id": "3", "answer": "spam", "source": "local", "remote_tokens": 0}
+{"id": "4", "answer": "Economics", "source": "local", "remote_tokens": 0}
+{"id": "5", "answer": "negative", "source": "local", "remote_tokens": 0}
+{"id": "6", "answer": "a@x.com, b@y.org", "source": "local", "remote_tokens": 0}
+{"id": "7", "answer": "555-1234", "source": "local", "remote_tokens": 0}
+{"id": "8", "answer": "2026-07-06", "source": "local", "remote_tokens": 0}
+{"id": "9", "answer": "$13", "source": "local", "remote_tokens": 0}
+{"id": "10", "answer": "Apple, Microsoft, AMD", "source": "local", "remote_tokens": 0}
+{"id": "11", "answer": "July 10, 2026", "source": "local", "remote_tokens": 0}
+{"id": "12", "answer": "Cloud drove 12% revenue growth.", "source": "local", "remote_tokens": 0}
+{"id": "13", "answer": "A cat slept on a mat.", "source": "local", "remote_tokens": 0}
+{"id": "14", "answer": "Post-deployment performance degradation causing increased latency, errors, and user churn.", "source": "local", "remote_tokens": 0}
+{"id": "15", "answer": "Please provide the text of the legal clause you would like me to summarize.", "source": "local", "remote_tokens": 0}
+{"id": "16", "answer": "Paris", "source": "local", "remote_tokens": 0}
+{"id": "17", "answer": "Au", "source": "local", "remote_tokens": 0}
+{"id": "18", "answer": "7", "source": "local", "remote_tokens": 0}
+{"id": "19", "answer": "William Shakespeare", "source": "local", "remote_tokens": 0}
+{"id": "20", "answer": "1989", "source": "local", "remote_tokens": 0}
+{"id": "21", "answer": "100", "source": "local", "remote_tokens": 0}
+{"id": "22", "answer": "1. **Increased Kinetic Energy**: Higher temperature increases the average kinetic energy of the molecules.\n2. **More Frequent Collisions**: Molecules move faster, increasing the frequency of collisions between reactants.\n3. **Higher Collision Energy**: A larger fraction of these collisions occur with energy equal to or greater than the activation energy ($E_a$).\n4. **Increased Reaction Rate**: More successful collisions lead to a faster rate of product formation.", "source": "local", "remote_tokens": 0}
+{"id": "23", "answer": "1. Sunlight enters Earth's atmosphere as a spectrum of all colors.\n2. It strikes gas molecules and small particles in the air.\n3. Shorter wavelengths (blue and violet) scatter more easily than longer wavelengths (red and yellow)\u2014a process called Rayleigh scattering.\n4. Because blue light is scattered in all directions, it reaches our eyes from every part of the sky.", "source": "local", "remote_tokens": 0}
+{"id": "24", "answer": "Ann", "source": "local", "remote_tokens": 0}
+{"id": "25", "answer": "Yes. This is a transitive relationship: if every member of group A belongs to group B, and every member of group B belongs to group C, then every member of group A must necessarily belong to group C.", "source": "local", "remote_tokens": 0}
+{"id": "26", "answer": "A semantic cache stores previous queries and their responses based on meaning (embeddings) rather than exact text matches. When a new query is semantically similar to a cached one, the system returns the stored response instead of calling the LLM. This reduces token costs by eliminating the need to pay for input and output tokens for redundant requests.", "source": "local", "remote_tokens": 0}
+{"id": "27", "answer": "1. **Forward Pass**: Input data passes through the network to produce a prediction.\n2. **Loss Calculation**: The difference between the prediction and actual target is measured using a loss function.\n3. **Backward Pass (Chain Rule)**: The gradient of the loss is calculated with respect to each weight by moving backward from the output layer to the input layer using the chain rule.\n4. **Gradient Computation**: For each weight, the partial derivative $\\frac{\\partial \\text{Loss}}{\\partial w}$ determines how much that specific weight contributed to the error.\n5. **Weight Update**: Weights are adjusted in the opposite direction of the gradient to minimize loss: $w = w - (\\text{learning rate} \\times \\text{gradient})$.", "source": "local", "remote_tokens": 0}
+{"id": "28", "answer": "423", "source": "local", "remote_tokens": 0}
+{"id": "29", "answer": "144", "source": "local", "remote_tokens": 0}
+{"id": "30", "answer": "7", "source": "local", "remote_tokens": 0}
+{"id": "31", "answer": "36", "source": "local", "remote_tokens": 0}
+{"id": "32", "answer": "1081", "source": "local", "remote_tokens": 0}
+{"id": "33", "answer": "80", "source": "local", "remote_tokens": 0}
+{"id": "34", "answer": "102.5", "source": "local", "remote_tokens": 0}
+{"id": "35", "answer": "\\(2\\) squared means multiplying the number by itself:\n\n\\[\n2^2 = 2 \\times 2 = 4\n\\]\n\nSo the result is **4**.", "source": "remote", "remote_tokens": 316}
